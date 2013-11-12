@@ -1,8 +1,11 @@
 import sys
 import os
+import re
+import cStringIO
 from optparse import OptionParser
 from colorama import init as init_colorama
 from termcolor import colored
+from bottle import route, request, response, template, static_file, run
 
 import distil
 from anchor_riak_connectivity import *
@@ -13,6 +16,98 @@ def debug(msg):
 	if DEBUG:
 		sys.stderr.write(str(msg) + '\n')
 		sys.stderr.flush()
+
+
+class response(object):
+	def __init__(self):
+		self.buffer = cStringIO.StringIO()
+
+	def write(self, data):
+		self.buffer.write(data)
+
+	def finalise(self):
+		self.value = self.buffer.getvalue()
+		self.buffer.close()
+		return self.value
+
+
+@route('/static/<filename>')
+def server_static(filename):
+	static_path = os.path.join( os.getcwd(), 'static' )
+	return static_file(filename, root=static_path)
+
+@route('/')
+def search():
+	r = response()
+	sys.stdout = r # Hack so you can now use `print` with gay abandon
+
+	template_dict = {}
+
+	q = request.query.q or ''
+	q = re.sub(r'[^a-zA-Z0-9 ]', '', q)
+	print >>sys.stderr, "Search term: %s" % q
+	if q:
+		q = q.split()[0]
+	template_dict['q_placeholder'] = q
+
+	if not template_dict['q_placeholder']:
+		template_dict['q_placeholder'] = "What be ye lookin' for?"
+
+	print """<html>
+<head>
+	<title>UMAD?</title>
+	<link rel="stylesheet" href="/static/umad.css">
+</head>
+
+<body>
+	<div id="container">
+		<div id="searchbox">
+			<img src="/static/umad.png" border="0"><br />
+
+			<form name="q" method="get" action="/">
+				<p id="searchform">
+					<input id="searchinput" name="q" placeholder="%(q_placeholder)s" type="search">
+					<input title="Unearth Me A Document!" value="Unearth Me A Document!" accesskey="s" type="submit">
+				</p>
+			</form>
+		</div>""" % template_dict
+
+
+	if q:
+		search_term = q.decode('utf8').encode('ascii', 'ignore')
+		(initial_search_term, search_term) = '('+search_term+')', 'blob:' + search_term
+		query_re = re.compile(initial_search_term, re.IGNORECASE)
+
+
+		# Search nao
+		results = c.fulltext_search(RIAK_BUCKET, search_term)
+		result_docs = results['docs']
+
+		if result_docs:
+			print """<div id="results">
+			<ul>"""
+
+
+			for doc in result_docs:
+				doc['summary'] = doc['blob'][:400]
+				doc['summary'] = query_re.sub(r'<strong>\1</strong>', doc['summary'])
+				print """<li><a href="%(id)s">%(id)s</a><br />
+				%(summary)s
+				</li>""" % doc
+
+			print """</ul>
+			</div>""" % template_dict
+		else:
+			print """<div id="results">No results found.</div>"""
+
+
+	print """
+	</div>
+</body>
+</html>
+""" % template_dict
+
+	return r.finalise()
 
 
 def main(argv=None):
@@ -64,5 +159,6 @@ def main(argv=None):
 
 
 if __name__ == "__main__":
-	sys.exit(main())
+	run(host='10.108.62.177', port=8080, debug=True)
+	#sys.exit(main())
 

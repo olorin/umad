@@ -1,0 +1,36 @@
+body {
+	background: white;
+	/* color: #225588; */
+	color: #444444;
+}
+
+#container {
+	margin: 10em auto;
+	width: 50%;
+}
+
+#searchbox {
+	text-align: center;
+	background: #eeeeee;
+	padding: 2em;
+	border-radius: 5px;
+}
+
+#searchinput {
+	width: 390px;
+	padding: 3px;
+}
+
+li {
+	margin: 1em;
+}
+
+ul {
+	list-style-type: none;
+}
+
+a {
+	color: #225588;
+	font-size: larger;
+}
+
