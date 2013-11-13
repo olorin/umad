@@ -2,6 +2,7 @@ import sys
 import os
 import re
 import cStringIO
+import cgi
 from optparse import OptionParser
 from colorama import init as init_colorama
 from termcolor import colored
@@ -105,7 +106,7 @@ def search():
 
 
 			for doc in result_docs:
-				doc['summary'] = doc['blob'][:400]
+				doc['summary'] = cgi.escape( doc['blob'][:400] )
 				doc['summary'] = query_re.sub(r'<strong>\1</strong>', doc['summary'])
 				doc['highlight'] = highlight_map(doc['id'])
 				print """<li class="%(highlight)s"><a href="%(id)s">%(id)s</a><br />
