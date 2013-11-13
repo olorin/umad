@@ -8,7 +8,7 @@ import distil
 from anchor_riak_connectivity import *
 
 
-DEBUG = False
+DEBUG = True
 def debug(msg):
 	if DEBUG:
 		sys.stderr.write(str(msg) + '\n')
@@ -24,20 +24,23 @@ def main(argv=None):
 
 	parser = OptionParser()
 	parser.set_defaults(action=None)
-	parser.add_option("--verbose", "-v", dest="debug",     action="store_true", default=False,     help="Log exactly what's happening")
+	parser.add_option("--quiet", "-q", dest="debug", action="store_false", default=True, help="Suppress nice human-readable reporting")
 	(options, urls) = parser.parse_args(args=argv)
 
 	DEBUG = options.debug
 
 	urls[:1] = []
 	debug("Your input files are: ")
-	debug(urls)
+	for url in urls:
+		debug("\t%s" % url)
 
 
 	for url in urls:
 		if url.startswith('/') and os.path.exists(url):
 			url = 'file://' + url
-		debug("Going to fetch %s ..." % url)
+		debug(colored("-" * len("URL: %s"%url), 'red'))
+		debug(colored("URL: %s" % url, 'red'))
+		debug(colored("-" * len("URL: %s"%url), 'red'))
 
 		try:
 			d = distil.Distiller(url)
@@ -45,15 +48,12 @@ def main(argv=None):
 			print "Don't know how to handle URL: %s" % url
 			continue
 
-		debug(colored("-" * len("URL: %s"%url), 'red'))
-		debug(colored("URL: %s" % url, 'red'))
-		debug(colored("-" * len("URL: %s"%url), 'red'))
 		for doc in d.docs:
 			debug(colored("Adding to index: %(url)s" % doc, 'green'))
 			print doc['blob']
 			add_to_index(doc['url'], doc['blob'])
 			debug(colored("Success!", 'green'))
-			print
+			debug("")
 
 
 	return 0
