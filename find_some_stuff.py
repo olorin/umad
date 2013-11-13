@@ -31,6 +31,20 @@ class response(object):
 		return self.value
 
 
+def highlight_map(url):
+	if url.startswith('https://map.engineroom.anchor.net.au/'):
+		return 'highlight-miku'
+	if url.startswith('https://rt.engineroom.anchor.net.au/'):
+		return 'highlight-luka'
+	if url.startswith('https://resources.engineroom.anchor.net.au/'):
+		return 'highlight-portal-orange'
+
+	return ''
+	return 'highlight-portal-blue'
+	return 'highlight-portal-red'
+
+
+
 @route('/static/<filename>')
 def server_static(filename):
 	static_path = os.path.join( os.getcwd(), 'static' )
@@ -53,7 +67,8 @@ def search():
 	if not template_dict['q_placeholder']:
 		template_dict['q_placeholder'] = "What be ye lookin' for?"
 
-	print """<html>
+	print """<!DOCTYPE html>
+<html>
 <head>
 	<title>UMAD?</title>
 	<link rel="stylesheet" href="/static/umad.css">
@@ -91,7 +106,8 @@ def search():
 			for doc in result_docs:
 				doc['summary'] = doc['blob'][:400]
 				doc['summary'] = query_re.sub(r'<strong>\1</strong>', doc['summary'])
-				print """<li><a href="%(id)s">%(id)s</a><br />
+				doc['highlight'] = highlight_map(doc['id'])
+				print """<li class="%(highlight)s"><a href="%(id)s">%(id)s</a><br />
 				%(summary)s
 				</li>""" % doc
 

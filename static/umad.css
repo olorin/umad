@@ -21,16 +21,23 @@ body {
 	padding: 3px;
 }
 
-li {
-	margin: 1em;
+a {
+	color: #225588;
+	font-size: larger;
 }
 
 ul {
 	list-style-type: none;
 }
 
-a {
-	color: #225588;
-	font-size: larger;
+li {
+	margin: 1em;
+	padding-left: 0.4em;
 }
+
+li.highlight-red           { border-left: 3px solid red; }
+li.highlight-miku          { border-left: 3px solid #3bb0b5; }
+li.highlight-luka          { border-left: 3px solid #fb7fe2; }
+li.highlight-portal-orange { border-left: 3px solid #f8b134; }
+li.highlight-portal-blue   { border-left: 3px solid #34a8f9; }
 
