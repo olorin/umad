@@ -58,10 +58,8 @@ def search():
 	template_dict = {}
 
 	q = request.query.q or ''
-	q = re.sub(r'[^a-zA-Z0-9 ]', '', q)
+	q = re.sub(r'([^a-zA-Z0-9"* ])', r'\\\1', q) # Riak barfs on "weird" characters right now, but this escaping seems to work (NB: yes this is fucked http://lzma.so/5VCFKP)
 	print >>sys.stderr, "Search term: %s" % q
-	if q:
-		q = q.split()[0]
 	template_dict['q_placeholder'] = q
 
 	if not template_dict['q_placeholder']:
@@ -90,7 +88,7 @@ def search():
 
 	if q:
 		search_term = q.decode('utf8').encode('ascii', 'ignore')
-		(initial_search_term, search_term) = '('+search_term+')', 'blob:' + search_term
+		(initial_search_term, search_term) = '('+search_term+')', 'blob:' + search_term # turn the search_term into a regex-group for later
 		query_re = re.compile(initial_search_term, re.IGNORECASE)
 
 
