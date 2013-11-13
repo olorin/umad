@@ -7,7 +7,6 @@ from colorama import init as init_colorama
 from termcolor import colored
 from bottle import route, request, response, template, static_file, run
 
-import distil
 from anchor_riak_connectivity import *
 
 
