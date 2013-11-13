@@ -1,4 +1,3 @@
-import sys
 import os
 import re
 from urllib import urlencode
@@ -83,6 +82,6 @@ def fetch(url):
 def blobify(url):
 	ticket = fetch(url)
 	message_texts = ' '.join([ "%(content)s %(subject)s %(from_realname)s %(from_email)s" % message for message in ticket['messages'] ])
-	return '%s %s' % (ticket['subject'], message_texts)
-
+	ticket_blob = '%s %s' % (ticket['subject'], message_texts)
+	return [{ 'url':url, 'blob':ticket_blob }]
 

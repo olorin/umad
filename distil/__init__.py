@@ -18,20 +18,12 @@ class Distiller(object):
 	def __init__(self, url):
 		self.url = url
 		self.fetcher = None
-		self.blob = ''
+		self.docs = [] # Each element looks like:  { 'url':"foo", 'blob':"bar" }
 
-		self.tidy_url()
+		# Tidy the URL here if needed
 		self.init_fetcher()
-		#print "Your fetcher is %s" % self.fetcher.__name__
 		self.blobify()
 
-
-	def __str__(self):
-		return self.blob
-
-	def tidy_url(self):
-		# No sanity checking yet
-		self.url = self.url
 
 	def init_fetcher(self):
 		'''Find a module with fetch and blobify capabilities that's suitable for the URL provided'''
@@ -61,5 +53,5 @@ class Distiller(object):
 
 
 	def blobify(self):
-		self.blob = self.fetcher.blobify(self.url)
+		self.docs = self.fetcher.blobify(self.url)
 

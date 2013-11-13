@@ -48,13 +48,12 @@ def main(argv=None):
 		debug(colored("-" * len("URL: %s"%url), 'red'))
 		debug(colored("URL: %s" % url, 'red'))
 		debug(colored("-" * len("URL: %s"%url), 'red'))
-		print d.blob
-		#print d.blob[:400]
-		#print type(d.blob[:400])
-		print
-
-		add_to_index(url, d.blob)
-		debug(colored("Added to index: %s" % url, 'green'))
+		for doc in d.docs:
+			debug(colored("Adding to index: %(url)s" % doc, 'green'))
+			print doc['blob']
+			add_to_index(doc['url'], doc['blob'])
+			debug(colored("Success!", 'green'))
+			print
 
 
 	return 0

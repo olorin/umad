@@ -13,6 +13,6 @@ def fetch(url):
 
 def blobify(url):
 	response = fetch(url)
-	return response.content
+	return [{ 'url':url, 'blob':response.content }]
 
 
