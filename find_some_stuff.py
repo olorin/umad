@@ -98,6 +98,10 @@ def search():
 		results = c.fulltext_search(RIAK_BUCKET, search_term)
 		result_docs = results['docs']
 
+		# Clean out cruft, because our index is dirty right now
+		result_docs = [ x for x in result_docs if not x['id'].startswith('https://ticket.api.anchor.com.au/') ]
+		result_docs = [ x for x in result_docs if not x['id'].startswith('provsys://') ]
+
 		if result_docs:
 			print """<div id="results">
 			<ul>"""
