@@ -31,7 +31,7 @@ class response(object):
 		return self.value
 
 
-def highlight_map(url):
+def highlight_document_source(url):
 	if url.startswith('https://map.engineroom.anchor.net.au/'):
 		return 'highlight-miku'
 	if url.startswith('https://rt.engineroom.anchor.net.au/'):
@@ -88,8 +88,8 @@ def search():
 
 	if q:
 		search_term = q.decode('utf8').encode('ascii', 'ignore')
-		(initial_search_term, search_term) = '('+search_term+')', 'blob:' + search_term # turn the search_term into a regex-group for later
-		query_re = re.compile(initial_search_term, re.IGNORECASE)
+		(initial_search_term, search_term) = search_term, 'blob:' + search_term # turn the search_term into a regex-group for later
+		query_re = re.compile('('+initial_search_term+')', re.IGNORECASE)
 
 
 		# Search nao
@@ -106,9 +106,16 @@ def search():
 
 
 			for doc in result_docs:
-				doc['summary'] = cgi.escape( doc['blob'][:400] )
+				first_instance = doc['blob'].find( initial_search_term.strip('"') )
+				print >>sys.stderr, "First instance of %s is at %s" % (initial_search_term, first_instance)
+
+				start_offset = 0
+				if first_instance >= 0: # should never fail
+					start_offset = max(first_instance-100, 0)
+
+				doc['summary'] = cgi.escape( doc['blob'][start_offset:start_offset+400] )
 				doc['summary'] = query_re.sub(r'<strong>\1</strong>', doc['summary'])
-				doc['highlight'] = highlight_map(doc['id'])
+				doc['highlight'] = highlight_document_source(doc['id'])
 				print """<li class="%(highlight)s"><a href="%(id)s">%(id)s</a><br />
 				%(summary)s
 				</li>""" % doc
