@@ -6,7 +6,7 @@ import cgi
 from optparse import OptionParser
 from colorama import init as init_colorama
 from termcolor import colored
-from bottle import route, request, response, template, static_file, run
+from bottle import route, request, template, static_file, run, view
 
 from anchor_riak_connectivity import *
 
@@ -16,19 +16,6 @@ def debug(msg):
 	if DEBUG:
 		sys.stderr.write(str(msg) + '\n')
 		sys.stderr.flush()
-
-
-class response(object):
-	def __init__(self):
-		self.buffer = cStringIO.StringIO()
-
-	def write(self, data):
-		self.buffer.write(data)
-
-	def finalise(self):
-		self.value = self.buffer.getvalue()
-		self.buffer.close()
-		return self.value
 
 
 def highlight_document_source(url):
@@ -51,46 +38,22 @@ def server_static(filename):
 	return static_file(filename, root=static_path)
 
 @route('/')
+@view('mainpage')
 def search():
-	r = response()
-	sys.stdout = r # Hack so you can now use `print` with gay abandon
-
-	template_dict = {}
-
 	q = request.query.q or ''
 	q = re.sub(r'([^a-zA-Z0-9"* ])', r'\\\1', q) # Riak barfs on "weird" characters right now, but this escaping seems to work (NB: yes this is fucked http://lzma.so/5VCFKP)
 	print >>sys.stderr, "Search term: %s" % q
-	template_dict['q_placeholder'] = q
 
-	if not template_dict['q_placeholder']:
-		template_dict['q_placeholder'] = "What be ye lookin' for?"
-
-	print """<!DOCTYPE html>
-<html>
-<head>
-	<title>UMAD?</title>
-	<link rel="stylesheet" href="/static/umad.css">
-</head>
-
-<body>
-	<div id="container">
-		<div id="searchbox">
-			<img src="/static/umad.png" border="0"><br />
-
-			<form name="q" method="get" action="/">
-				<p id="searchform">
-					<input id="searchinput" name="q" placeholder="%(q_placeholder)s" type="search">
-					<input title="Unearth Me A Document!" value="Unearth Me A Document!" accesskey="s" type="submit">
-				</p>
-			</form>
-		</div>""" % template_dict
+	# Fill up a dictionary to pass to the templating engine. It expects the searchterm and a list of document-hits
+	template_dict = {}
+	template_dict['searchterm'] = q
+	template_dict['hits'] = []
 
 
 	if q:
 		search_term = q.decode('utf8').encode('ascii', 'ignore')
 		(initial_search_term, search_term) = search_term, 'blob:' + search_term # turn the search_term into a regex-group for later
 		query_re = re.compile('('+initial_search_term+')', re.IGNORECASE)
-
 
 		# Search nao
 		results = c.fulltext_search(RIAK_BUCKET, search_term)
@@ -100,39 +63,30 @@ def search():
 		result_docs = [ x for x in result_docs if not x['id'].startswith('https://ticket.api.anchor.com.au/') ]
 		result_docs = [ x for x in result_docs if not x['id'].startswith('provsys://') ]
 
-		if result_docs:
-			print """<div id="results">
-			<ul>"""
+		for doc in result_docs:
+			first_instance = doc['blob'].find( initial_search_term.strip('"') )
+			print >>sys.stderr, "First instance of %s is at %s" % (initial_search_term, first_instance)
 
+			start_offset = 0
+			if first_instance >= 0: # should never fail
+				start_offset = max(first_instance-100, 0)
 
-			for doc in result_docs:
-				first_instance = doc['blob'].find( initial_search_term.strip('"') )
-				print >>sys.stderr, "First instance of %s is at %s" % (initial_search_term, first_instance)
+			# The extract *must* be safe for HTML inclusion, as we don't do further escaping later.
+			# We want this so we can do searchterm highlighting before passing it to the renderer.
+			hit = {}
+			hit['id'] = doc['id']
+			hit['extract'] = query_re.sub(r'<strong>\1</strong>', cgi.escape(doc['blob'][start_offset:start_offset+400])  )
+			hit['highlight_class'] = highlight_document_source(doc['id'])
 
-				start_offset = 0
-				if first_instance >= 0: # should never fail
-					start_offset = max(first_instance-100, 0)
+			# More About Escaping, we have:
+			#
+			# highlight_class: CSS identifier(?), used as an HTML attribute, please keep this sane and not requiring escaping; let renderer escape it
+			# id:              A URL, used as HTML and as an attribute; let renderer escape it
+			# extract:         Arbitrary text, used as HTML; we escape it
 
-				doc['summary'] = cgi.escape( doc['blob'][start_offset:start_offset+400] )
-				doc['summary'] = query_re.sub(r'<strong>\1</strong>', doc['summary'])
-				doc['highlight'] = highlight_document_source(doc['id'])
-				print """<li class="%(highlight)s"><a href="%(id)s">%(id)s</a><br />
-				%(summary)s
-				</li>""" % doc
+			template_dict['hits'].append(hit)
 
-			print """</ul>
-			</div>""" % template_dict
-		else:
-			print """<div id="results">No results found.</div>"""
-
-
-	print """
-	</div>
-</body>
-</html>
-""" % template_dict
-
-	return r.finalise()
+	return template_dict
 
 
 def main(argv=None):
@@ -144,7 +98,7 @@ def main(argv=None):
 
 	parser = OptionParser()
 	parser.set_defaults(action=None)
-	parser.add_option("--verbose", "-v", dest="debug",     action="store_true", default=False,     help="Log exactly what's happening")
+	parser.add_option("--verbose", "-v", dest="debug", action="store_true", default=False, help="Log exactly what's happening")
 	(options, search_terms) = parser.parse_args(args=argv)
 
 	DEBUG = options.debug
@@ -163,8 +117,7 @@ def main(argv=None):
 	search_term = search_term.decode('utf8').encode('ascii', 'ignore')
 	debug( colored("Seaching for '%s'" % search_term, 'green') )
 
-	# Look for substrings in the document blog
-	#search_term = 'blob:*' + search_term + '*'
+	# Cross your fingers and hope that Riak finds something
 	search_term = 'blob:' + search_term
 
 	# Search nao
