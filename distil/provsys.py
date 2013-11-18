@@ -74,6 +74,11 @@ def fetch(servername):
 
 
 def blobify(servername):
-	servers = [ { 'url':x['url'], 'blob':' '.join(x['server_data'].values()).lower() } for x in fetch(servername) ]
+	servers = [ {
+		'url':      x['url'],
+		'blob':     ' '.join(x['server_data'].values()).lower(),
+		'name':     x['server_data']['name'],
+		'customer': x['server_data']['customer_name'],
+		} for x in fetch(servername) ]
 	return servers
 

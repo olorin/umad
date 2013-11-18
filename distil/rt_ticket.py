@@ -69,19 +69,29 @@ def fetch(url):
 	ticket_json_blob = ticket_response.content # FIXME: add error-checking
 	ticket = json.loads(ticket_json_blob)
 	ticket_subject = ticket['subject']
+	ticket_status = ticket['status']
 
 	messages_response  = requests.get(messages_url, verify=True, headers=headers)
 	messages_json_blob = messages_response.content # FIXME: add error-checking
 	messages = json.loads(messages_json_blob)
 	messages = [ clean_message(x) for x in messages ]
 
-	return {'subject':ticket_subject, 'messages':messages}
+	return {'subject':ticket_subject, 'messages':messages, 'status':ticket_status}
 
 
 
 def blobify(url):
 	ticket = fetch(url)
 	message_texts = ' '.join([ "%(content)s %(subject)s %(from_realname)s %(from_email)s" % message for message in ticket['messages'] ])
-	ticket_blob = '%s %s' % (ticket['subject'], message_texts)
-	return [{ 'url':url, 'blob':ticket_blob }]
+	blob = '%s %s' % (ticket['subject'], message_texts)
+	ticketblob = [ {
+		'url':       url,
+		'blob':      blob,
+		'subject':   ticket['subject'],
+		'status':    ticket['status'],
+		'realnames': list(set( [ x['from_realname'] for x in ticket['messages'] if x['from_realname'] != '' ] )),
+		'emails':    list(set( [ x['from_email'] for x in ticket['messages'] if x['from_email'] != '' ] )),
+		} ]
+
+	return ticketblob
 

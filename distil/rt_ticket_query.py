@@ -52,15 +52,25 @@ def fetch(url):
 	for ticket in tickets:
 		ticket_url     = WEB_TICKET_URL_TEMPLATE % ticket
 		ticket_subject = ticket['subject']
+		ticket_status  = ticket['status']
 
 		messages_response  = requests.get(ticket['ticket_messages_url'], verify=True, headers=headers)
 		messages = json.loads(messages_response.content) # FIXME: add error-checking
 		messages = [ clean_message(x) for x in messages ]
 
-		yield { 'url':ticket_url, 'subject':ticket_subject, 'messages':messages }
+		yield { 'url':ticket_url, 'subject':ticket_subject, 'status':ticket_status, 'messages':messages }
 
 
 
 def blobify(url):
-	return [ { 'url':ticket['url'], 'blob': "%s %s" % ( ticket['subject'], blobify_messages(ticket['messages']) ) } for ticket in fetch(url) ]
+	ticketblobs = [ {
+		'url':       ticket['url'],
+		'blob':      "%s %s" % ( ticket['subject'], blobify_messages(ticket['messages']) ),
+		'subject':   ticket['subject'],
+		'status':    ticket['status'],
+		'realnames': list(set( [ x['from_realname'] for x in ticket['messages'] if x['from_realname'] != '' ] )),
+		'emails':    list(set( [ x['from_email'] for x in ticket['messages'] if x['from_email'] != '' ] )),
+		} for ticket in fetch(url) ]
+
+	return ticketblobs
 
