@@ -51,7 +51,7 @@ def main(argv=None):
 
 		for doc in d.docs:
 			debug(colored("Adding to index: %(url)s" % doc, 'green'))
-			print doc['blob']
+			print doc['blob'][:400]
 			add_to_index(doc['url'], doc)
 			debug(colored("Success!", 'green'))
 			debug("")
