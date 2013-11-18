@@ -36,9 +36,11 @@ def add_to_index(key, value):
 
 
 def search_index(search_term):
-	querydoc = {"query": {"match": {"blob": search_term}}}
+	# This doesn't work as well as passing search terms directly through lol
+	#querydoc = {"query": {"match": {"blob": search_term}}}
+	#results = es.search(index = ELASTICSEARCH_INDEX, body = querydoc)
 
-	results = es.search(index = ELASTICSEARCH_INDEX, body = querydoc)
+	results = es.search(index = ELASTICSEARCH_INDEX, q = search_term)
 	hits = results['hits']['hits']
 
 	# XXX: Do sorting and ranking here?
