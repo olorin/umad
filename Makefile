@@ -1,4 +1,4 @@
-.PHONY: pull_deploy pull restart push_deploy push kick_server
+.PHONY: pull_deploy pull restart rollout push kick_server
 
 pull_deploy: pull restart
 
@@ -8,7 +8,8 @@ pull:
 restart:
 	sudo /usr/local/bin/allah restart umad_gunicorn
 
-push_deploy: push kick_server
+
+rollout: push kick_server
 
 push:
 	git push
