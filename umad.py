@@ -92,7 +92,7 @@ def search():
 
 
 # For encapsulating in a WSGI container
-app = default_app()
+application = default_app()
 
 
 def main(argv=None):
