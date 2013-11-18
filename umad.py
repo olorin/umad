@@ -44,7 +44,7 @@ def server_static(filename):
 @view('mainpage')
 def search():
 	q = request.query.q or ''
-	q = re.sub(r'([^a-zA-Z0-9"* ])', r'\\\1', q) # Riak barfs on "weird" characters right now, but this escaping seems to work (NB: yes this is fucked http://lzma.so/5VCFKP)
+	#q = re.sub(r'([^a-zA-Z0-9"* ])', r'\\\1', q) # Riak barfs on "weird" characters right now, but this escaping seems to work (NB: yes this is fucked http://lzma.so/5VCFKP)
 	debug("Search term: %s" % q)
 
 	# Fill up a dictionary to pass to the templating engine. It expects the searchterm and a list of document-hits
