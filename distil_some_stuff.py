@@ -50,6 +50,8 @@ def main(argv=None):
 			continue
 
 		for doc in d.docs:
+			if doc is None:
+				continue
 			debug(colored("Adding to index: %(url)s" % doc, 'green'))
 			print doc['blob'][:400]
 			add_to_index(doc['url'], doc)

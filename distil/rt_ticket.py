@@ -68,6 +68,8 @@ def fetch(url):
 	ticket_response  = requests.get(ticket_url, verify=True, headers=headers)
 	ticket_json_blob = ticket_response.content # FIXME: add error-checking
 	ticket = json.loads(ticket_json_blob)
+	if 'code' in ticket: # we got a 404 or 403 or something
+		return None
 	ticket_subject = ticket['subject']
 	ticket_status = ticket['status']
 
@@ -82,6 +84,9 @@ def fetch(url):
 
 def blobify(url):
 	ticket = fetch(url)
+	if ticket is None:
+		return []
+
 	message_texts = ' '.join([ "%(content)s %(subject)s %(from_realname)s %(from_email)s" % message for message in ticket['messages'] ])
 	blob = '%s %s' % (ticket['subject'], message_texts)
 	ticketblob = [ {

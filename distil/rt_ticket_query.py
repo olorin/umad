@@ -50,6 +50,9 @@ def fetch(url):
 
 	# Index 'em
 	for ticket in tickets:
+		if 'code' in ticket: # we got a 404 or 403 or something
+			continue
+
 		ticket_url     = WEB_TICKET_URL_TEMPLATE % ticket
 		ticket_subject = ticket['subject']
 		ticket_status  = ticket['status']
