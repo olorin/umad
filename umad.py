@@ -67,7 +67,7 @@ def search():
 
 		for doc in result_docs:
 			first_instance = doc['blob'].find( initial_search_term.strip('"') )
-			print >>sys.stderr, "First instance of %s is at %s" % (initial_search_term, first_instance)
+			debug("First instance of %s is at %s" % (initial_search_term, first_instance))
 
 			start_offset = 0
 			if first_instance >= 0: # should never fail
