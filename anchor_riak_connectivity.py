@@ -1,5 +1,4 @@
 from riak import RiakClient
-import time
 
 RIAK_HOST = '110.173.154.175'
 RIAK_PORT = 8087
@@ -9,11 +8,6 @@ c = RiakClient(host=RIAK_HOST, pb_port=RIAK_PORT, protocol='pbc')
 
 index = c.bucket(RIAK_BUCKET)
 index.enable_search()
-
-def debug(msg):
-	import sys
-	sys.stderr.write(msg + '\n')
-	sys.stderr.flush()
 
 def add_to_index(key, value):
 	# Mangle the data to ascii, dropping any non-ascii characters.  We may
