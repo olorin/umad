@@ -9,6 +9,9 @@ index = c.bucket(RIAK_BUCKET)
 index.enable_search()
 
 def add_to_index(key, value):
+	# Our Riak processor is dumb right now, only uses the blob key of the document.
+	value = value['blob']
+
 	# Mangle the data to ascii, dropping any non-ascii characters.  We may
 	# work around this in future by indexing urlencoded documents, though
 	# it'll mean that all queries need to be urlencoded as well. Daft by
