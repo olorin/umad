@@ -4,21 +4,25 @@ import re
 import cStringIO
 import cgi
 from optparse import OptionParser
-from colorama import init as init_colorama
-from termcolor import colored
-from bottle import route, request, template, static_file, run, view
+from bottle import route, request, template, static_file, run, view, default_app
 
 from anchor_riak_connectivity import *
 
 
 DEBUG = False
-def debug(msg):
-	if DEBUG:
+def debug(msg, force_debug=False):
+	if DEBUG or force_debug:
 		sys.stderr.write(str(msg) + '\n')
 		sys.stderr.flush()
 
 
 def highlight_document_source(url):
+	# Valid values are kept in umad.css
+	# - highlight-miku
+	# - highlight-luka
+	# - highlight-portal-orange
+	# - highlight-portal-blue
+	# - highlight-red
 	if url.startswith('https://map.engineroom.anchor.net.au/'):
 		return 'highlight-miku'
 	if url.startswith('https://rt.engineroom.anchor.net.au/'):
@@ -27,8 +31,6 @@ def highlight_document_source(url):
 		return 'highlight-portal-orange'
 
 	return ''
-	return 'highlight-portal-blue'
-	return 'highlight-portal-red'
 
 
 
@@ -42,7 +44,7 @@ def server_static(filename):
 def search():
 	q = request.query.q or ''
 	q = re.sub(r'([^a-zA-Z0-9"* ])', r'\\\1', q) # Riak barfs on "weird" characters right now, but this escaping seems to work (NB: yes this is fucked http://lzma.so/5VCFKP)
-	print >>sys.stderr, "Search term: %s" % q
+	debug("Search term: %s" % q)
 
 	# Fill up a dictionary to pass to the templating engine. It expects the searchterm and a list of document-hits
 	template_dict = {}
@@ -89,54 +91,27 @@ def search():
 	return template_dict
 
 
-def main(argv=None):
-	init_colorama()
-	global DEBUG
+# For encapsulating in a WSGI container
+app = default_app()
 
+
+def main(argv=None):
 	if argv is None:
 		argv = sys.argv
 
 	parser = OptionParser()
-	parser.set_defaults(action=None)
-	parser.add_option("--verbose", "-v", dest="debug", action="store_true", default=False, help="Log exactly what's happening")
+	parser.add_option("--verbose", "-v", dest="debug", action="store_true", default=False,       help="Log exactly what's happening")
+	parser.add_option("--bind", "-b",    dest="bind_host",                  default='localhost', help="Hostname/IP to listen on, [default: %default]")
+	parser.add_option("--port", "-p",    dest="bind_port", type="int",      default=8080,        help="Port number to listen on, [default: %default]")
 	(options, search_terms) = parser.parse_args(args=argv)
 
+	global DEBUG
 	DEBUG = options.debug
 
-	search_terms[:1] = []
-	debug("Your search terms are: ")
-	debug(search_terms)
-
-	if not search_terms:
-		print "You need to give me a term to search for"
-		return 2
-
-	search_term = search_terms[0]
-
-	# Riak doesn't like unicode
-	search_term = search_term.decode('utf8').encode('ascii', 'ignore')
-	debug( colored("Seaching for '%s'" % search_term, 'green') )
-
-	# Cross your fingers and hope that Riak finds something
-	search_term = 'blob:' + search_term
-
-	# Search nao
-	results = c.fulltext_search(RIAK_BUCKET, search_term)
-	result_docs = results['docs']
-
-
-	for doc in result_docs:
-		print colored("URL: %s" % doc['id'], 'red')
-		print doc['blob'][:400]
-		print
-	print
-
-
+	run(host=options.bind_host, port=options.bind_port, debug=True)
 
 	return 0
 
-
 if __name__ == "__main__":
-	run(host='10.108.62.177', port=8080, debug=True)
-	#sys.exit(main())
+	sys.exit(main())
 
