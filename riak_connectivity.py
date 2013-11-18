@@ -1,8 +1,7 @@
 from riak import RiakClient
 
-RIAK_HOST = '110.173.154.175'
-RIAK_PORT = 8087
-RIAK_BUCKET = 'doc_index'
+from localconfig import *
+
 
 c = RiakClient(host=RIAK_HOST, pb_port=RIAK_PORT, protocol='pbc')
 

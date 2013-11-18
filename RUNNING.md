@@ -4,6 +4,20 @@ Distilling and Indexing
 Call `distil_some_stuff.py`, feeding it URLs and file paths.
 
 
+Config
+------
+
+You'll need a `localconfig.py`, this is not supplied in the codebase. It'll
+look something like this, just supply whatever variables are relevant for you.
+
+    RIAK_HOST = 'a.b.c.d'
+    RIAK_PORT = 8087
+    RIAK_BUCKET = 'doc_index'
+
+    ELASTICSEARCH_HOST = 'a.b.c.d'
+
+
+
 Searching
 =========
 

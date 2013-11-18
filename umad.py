@@ -6,7 +6,7 @@ import cgi
 from optparse import OptionParser
 from bottle import route, request, template, static_file, run, view, default_app
 
-from anchor_riak_connectivity import *
+from riak_backend import *
 
 
 DEBUG = False

@@ -5,7 +5,7 @@ from colorama import init as init_colorama
 from termcolor import colored
 
 import distil
-from anchor_riak_connectivity import *
+from riak_backend import *
 
 
 DEBUG = True
