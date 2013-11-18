@@ -26,3 +26,11 @@ def add_to_index(key, value):
 	blob.store()
 	return blob
 
+
+def search_index(search_term):
+	search_term = 'blob:' + search_term # We assume the search term has been cleaned up to ascii-only already
+
+	results = c.fulltext_search(RIAK_BUCKET, search_term)
+	result_docs = results['docs']
+
+	return result_docs

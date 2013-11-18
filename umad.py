@@ -54,20 +54,21 @@ def search():
 
 	if q:
 		search_term = q.decode('utf8').encode('ascii', 'ignore')
-		(initial_search_term, search_term) = search_term, 'blob:' + search_term # turn the search_term into a regex-group for later
-		query_re = re.compile('('+initial_search_term+')', re.IGNORECASE)
+		query_re = re.compile('('+search_term+')', re.IGNORECASE) # turn the search_term into a regex-group for later
 
 		# Search nao
-		results = c.fulltext_search(RIAK_BUCKET, search_term)
-		result_docs = results['docs']
+		result_docs = search_index(search_term)
 
 		# Clean out cruft, because our index is dirty right now
 		result_docs = [ x for x in result_docs if not x['id'].startswith('https://ticket.api.anchor.com.au/') ]
 		result_docs = [ x for x in result_docs if not x['id'].startswith('provsys://') ]
 
 		for doc in result_docs:
-			first_instance = doc['blob'].find( initial_search_term.strip('"') )
-			debug("First instance of %s is at %s" % (initial_search_term, first_instance))
+			# doc is a dictionary with keys:
+			#     blob
+			#     id
+			first_instance = doc['blob'].find( search_term.strip('"') )
+			debug("First instance of %s is at %s" % (search_term, first_instance))
 
 			start_offset = 0
 			if first_instance >= 0: # should never fail
