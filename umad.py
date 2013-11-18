@@ -81,12 +81,17 @@ def search():
 			hit['id'] = doc['id']
 			hit['extract'] = query_re.sub(r'<strong>\1</strong>', cgi.escape(doc['blob'][start_offset:start_offset+400])  )
 			hit['highlight_class'] = highlight_document_source(doc['id'])
+			if 'other_metadata' in doc:
+				hit['other_metadata'] = doc['other_metadata'] # any other keys that the backend might provide
+			else:
+				hit['other_metadata'] = []
 
 			# More About Escaping, we have:
 			#
 			# highlight_class: CSS identifier(?), used as an HTML attribute, please keep this sane and not requiring escaping; let renderer escape it
 			# id:              A URL, used as HTML and as an attribute; let renderer escape it
 			# extract:         Arbitrary text, used as HTML; we escape it
+			# other_metadata:  Arbitrary text, let the renderer escape it
 
 			template_dict['hits'].append(hit)
 
