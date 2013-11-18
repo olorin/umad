@@ -14,7 +14,9 @@ look something like this, just supply whatever variables are relevant for you.
     RIAK_PORT = 8087
     RIAK_BUCKET = 'doc_index'
 
-    ELASTICSEARCH_HOST = 'a.b.c.d'
+    ELASTICSEARCH_NODES = [ "your.fqdn.here:9200" ]
+    ELASTICSEARCH_INDEX = "umad"
+
 
 
 

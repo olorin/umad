@@ -6,6 +6,7 @@ from termcolor import colored
 
 import distil
 from riak_backend import *
+from elasticsearch_backend import *
 
 
 DEBUG = True

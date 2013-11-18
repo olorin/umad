@@ -7,6 +7,7 @@ from optparse import OptionParser
 from bottle import route, request, template, static_file, run, view, default_app
 
 from riak_backend import *
+from elasticsearch_backend import *
 
 
 DEBUG = False
