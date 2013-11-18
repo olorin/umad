@@ -24,6 +24,7 @@ def add_to_index(key, value):
 	else:
 		document = value
 
+	# Minimal requirement for the document is that it has a 'blob' key, but ES will support much richer arbitrary schemas
 	es.index(
 		index = ELASTICSEARCH_INDEX,
 		doc_type = doc_type,
@@ -43,7 +44,7 @@ def search_index(search_term):
 	# XXX: Do sorting and ranking here?
 
 	# A hit looks like this:
-	# {u'_score': 0.25, u'_type': u'provsys', u'_id': u'https://resources.engineroom.anchor.net.au/resources/6222', u'_source': {u'blob': u'complete virtual machine parley ocean170 lenny debian strategysteps pty ltd 11946'}, u'_index': u'umad'}
-	hits = [ {'id': x['_id'], 'blob': x['_source']['blob'] } for x in hits ]
+	# {'other_metadata': {u'url': u'https://resources.engineroom.anchor.net.au/resources/8737', u'customer': u"Barney's colo 7828", u'blob': u"complete virtual machine jellyfish misaka squeeze debian barney's colo 7828", u'name': u'misaka'}, 'score': 0.095891505000000002, 'id': u'https://resources.engineroom.anchor.net.au/resources/8737', 'blob': u"complete virtual machine jellyfish misaka squeeze debian barney's colo 7828"}
+	hits = [ {'id': x['_id'], 'blob': x['_source']['blob'], 'score':x['_score'], 'other_metadata':  [ (y,x['_source'][y]) for y in x['_source'] if y not in ('url','blob') ]  } for x in hits ]
 
 	return hits
