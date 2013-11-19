@@ -22,6 +22,7 @@ class MissingAuthToken(Exception):
 
 TICKET_URL_TEMPLATE = 'https://ticket.api.anchor.com.au/ticket/%s'
 TICKET_MESSAGE_URL_TEMPLATE = 'https://ticket.api.anchor.com.au/ticket_message?%s'
+WEB_TICKET_URL_TEMPLATE = 'https://rt.engineroom.anchor.net.au/Ticket/Display.html?id=%(_id)s'
 
 def clean_message(msg):
 	"msg is a dictionary, we care about subject, from_email, from_realname, content"
@@ -70,6 +71,7 @@ def fetch(url):
 	ticket = json.loads(ticket_json_blob)
 	if 'code' in ticket: # we got a 404 or 403 or something
 		return None
+	ticket_url = WEB_TICKET_URL_TEMPLATE % ticket # Canonicalise the ticket URL, as merged tickets could have been accessed by multiple URLs
 	ticket_subject = ticket['subject']
 	ticket_status = ticket['status']
 
@@ -78,7 +80,7 @@ def fetch(url):
 	messages = json.loads(messages_json_blob)
 	messages = [ clean_message(x) for x in messages ]
 
-	return {'subject':ticket_subject, 'messages':messages, 'status':ticket_status}
+	return {'url':ticket_url, 'subject':ticket_subject, 'messages':messages, 'status':ticket_status}
 
 
 
@@ -90,7 +92,7 @@ def blobify(url):
 	message_texts = ' '.join([ "%(content)s %(subject)s %(from_realname)s %(from_email)s" % message for message in ticket['messages'] ])
 	blob = '%s %s' % (ticket['subject'], message_texts)
 	ticketblob = [ {
-		'url':       url,
+		'url':       ticket['url'],
 		'blob':      blob,
 		'name':      ticket['subject'], # printable as a document title
 		'subject':   ticket['subject'],
