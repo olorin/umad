@@ -39,6 +39,21 @@ def add_to_index(key, value):
 	return
 
 
+# Useful for cleaning up mistakes when docs get indexed incorrectly, eg.:
+# >>> import elasticsearch_backend
+# >>> elasticsearch_backend.delete_from_index('https://rt.engineroom.anchor.net.au/Ticket/Display.html?id=123456')
+def delete_from_index(url):
+	doc_type = determine_doc_type(url)
+
+	es.delete(
+		index = ELASTICSEARCH_INDEX,
+		doc_type = doc_type,
+		id = url
+	)
+
+	return
+
+
 def search_index(search_term):
 	# This doesn't work as well as passing search terms directly through lol
 	#querydoc = {"query": {"match": {"blob": search_term}}}
