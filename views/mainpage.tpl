@@ -9,7 +9,7 @@
 	<div id="container">
 
 		<div id="searchbox">
-			<img src="/static/umad.png" style="border:0;" alt="UMAD logo"><br />
+			<a href="/?q=mad"><img src="/static/umad.png" style="border:0;" alt="UMAD logo"></a><br />
 
 			<form name="q" method="get" action="/">
 				<p id="searchform">
