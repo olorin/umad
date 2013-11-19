@@ -16,6 +16,14 @@ body {
 	border-radius: 5px;
 }
 
+#hitstats {
+	text-align: left;
+	background: #f3db92;
+	margin-top: 1em;
+	margin-bottom: 2em;
+	padding: 0.5em;
+}
+
 #searchinput {
 	width: 390px;
 	padding: 3px;

@@ -23,6 +23,12 @@
 		<div id="results">
 		% if searchterm:
 			% if hits:
+				<div id="hitstats">
+					<span style="font-size: larger;">Found <strong>{{ len(hits) }} results</strong></span>
+					% if hit_limit > 0 and len(hits) >= hit_limit:
+						<br /><em>Results may be truncated, hitlimit={{ hit_limit }}</em>
+					% end
+				</div>
 				<ul>
 				% for hit in hits:
 					% # This syntax is good for Bottle < 0.12, after that I think it should be:  include('result_hit.tpl', hit=hit)
