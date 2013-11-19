@@ -13,7 +13,7 @@
 
 			<form name="q" method="get" action="/">
 				<p id="searchform">
-					<input type="search" id="searchinput" name="q" placeholder="What be ye lookin' for?" value="{{ searchterm }}">
+					<input type="search" id="searchinput" name="q" placeholder="What be ye lookin' for?" value="{{ searchterm }}" autofocus="autofocus">
 					<input type="submit" value="Unearth Me A Document!">
 				</p>
 			</form>
