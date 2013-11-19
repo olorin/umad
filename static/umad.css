@@ -31,15 +31,32 @@ body {
 
 a {
 	color: #225588;
+}
+
+.hitlink a {
 	font-size: larger;
+}
+
+.hiturl {
+	font-size: smaller;
+	font-style: italic;
+	color: #aaaaaa;
+	padding-bottom: 0.7em;
 }
 
 ul {
 	list-style-type: none;
 }
 
+ul#hits li {
+	margin: 2em;
+}
+ul#hits li ul li.metadata {
+	margin: 0.5em;
+}
+
 li {
-	margin: 1em;
+	margin: 0.5em;
 	padding-left: 0.4em;
 }
 

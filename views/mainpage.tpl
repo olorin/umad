@@ -20,7 +20,7 @@
 		</div> <!-- END searchbox -->
 
 
-		<div id="results">
+		<div id="output">
 		% if searchterm:
 			% if hits:
 				<div id="hitstats">
@@ -29,7 +29,7 @@
 						<br /><em>Results may be truncated, hitlimit={{ hit_limit }}</em>
 					% end
 				</div>
-				<ul>
+				<ul id="hits">
 				% for hit in hits:
 					% # This syntax is good for Bottle < 0.12, after that I think it should be:  include('result_hit.tpl', hit=hit)
 					% include result_hit.tpl highlight_class=hit['highlight_class'], id=hit['id'], extract=hit['extract'], other_metadata=hit['other_metadata']
@@ -41,7 +41,7 @@
 		% else:
 			<!-- No results here ^_^ -->
 		% end
-		</div> <!-- END results -->
+		</div> <!-- END output -->
 
 	</div> <!-- END container -->
 </body>
