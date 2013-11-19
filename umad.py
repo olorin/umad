@@ -51,6 +51,7 @@ def search():
 	template_dict = {}
 	template_dict['searchterm'] = q
 	template_dict['hits'] = []
+	template_dict['hit_limit'] = 0
 
 
 	if q:
@@ -58,7 +59,9 @@ def search():
 		query_re = re.compile('('+search_term+')', re.IGNORECASE) # turn the search_term into a regex-group for later
 
 		# Search nao
-		result_docs = search_index(search_term)
+		results = search_index(search_term)
+		result_docs = results['hits']
+		template_dict['hit_limit'] = results['hit_limit']
 
 		# Clean out cruft, because our index is dirty right now
 		result_docs = [ x for x in result_docs if not x['id'].startswith('https://ticket.api.anchor.com.au/') ]

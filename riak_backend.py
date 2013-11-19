@@ -36,4 +36,4 @@ def search_index(search_term):
 	results = c.fulltext_search(RIAK_BUCKET, search_term)
 	result_docs = results['docs']
 
-	return result_docs
+	return {'hits':result_docs, 'hit_limit':0}
