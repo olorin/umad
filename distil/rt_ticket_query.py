@@ -1,3 +1,4 @@
+import sys
 import os
 import re
 from urllib import urlencode
@@ -46,7 +47,13 @@ def fetch(url):
 
 	# Get ALL the tickets! \o/
 	r = requests.get(url, verify=True, headers=headers)
-	tickets = json.loads(r.content)
+	try:
+		r.raise_for_status()
+	except:
+		print >>sys.stderr, "There was an error, got HTTP response %s" % r.status_code
+		return
+
+	tickets = json.loads(r.content) # FIXME: add error-checking
 
 	# Index 'em
 	for ticket in tickets:

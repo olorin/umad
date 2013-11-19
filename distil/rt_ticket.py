@@ -1,3 +1,4 @@
+import sys
 import os
 import re
 from urllib import urlencode
@@ -66,11 +67,18 @@ def fetch(url):
 
 	ticket_url, messages_url = tidy_url(url)
 
-	ticket_response  = requests.get(ticket_url, verify=True, headers=headers)
+	ticket_response = requests.get(ticket_url, verify=True, headers=headers)
+	try:
+		ticket_response.raise_for_status()
+	except:
+		print >>sys.stderr, "There was an error, got HTTP response %s" % ticket_response.status_code
+		return None
+
 	ticket_json_blob = ticket_response.content # FIXME: add error-checking
 	ticket = json.loads(ticket_json_blob)
-	if 'code' in ticket: # we got a 404 or 403 or something
+	if 'code' in ticket: # we got a 404 or 403 or something, probably redundant after the raise_for_status check
 		return None
+
 	ticket_url = WEB_TICKET_URL_TEMPLATE % ticket # Canonicalise the ticket URL, as merged tickets could have been accessed by multiple URLs
 	ticket_subject = ticket['subject']
 	ticket_status = ticket['status']
