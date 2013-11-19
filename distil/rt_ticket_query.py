@@ -69,6 +69,7 @@ def blobify(url):
 	ticketblobs = [ {
 		'url':       ticket['url'],
 		'blob':      "%s %s" % ( ticket['subject'], blobify_messages(ticket['messages']) ),
+		'name':      ticket['subject'], # printable as a document title
 		'subject':   ticket['subject'],
 		'status':    ticket['status'],
 		'realnames': list(set( [ x['from_realname'] for x in ticket['messages'] if x['from_realname'] != '' ] )),
