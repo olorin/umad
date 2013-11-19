@@ -6,15 +6,19 @@ from localconfig import *
 es = elasticsearch.Elasticsearch(ELASTICSEARCH_NODES)
 
 
+def determine_doc_type(url):
+	if url.startswith('https://map.engineroom.anchor.net.au/'):
+		return "moin_map"
+	if url.startswith('https://rt.engineroom.anchor.net.au/'):
+		return "rt"
+        if url.startswith('https://resources.engineroom.anchor.net.au/'):
+		return "provsys"
+
+	return "other"
+
+
 def add_to_index(key, value):
-	if key.startswith('https://map.engineroom.anchor.net.au/'):
-		doc_type = "moin_map"
-	elif key.startswith('https://rt.engineroom.anchor.net.au/'):
-		doc_type = "rt"
-        elif key.startswith('https://resources.engineroom.anchor.net.au/'):
-		doc_type = "provsys"
-	else:
-		doc_type = "other"
+	doc_type = determine_doc_type(key)
 
 	if type(value) == type('foo'):
 		# Process the string into a data structure
