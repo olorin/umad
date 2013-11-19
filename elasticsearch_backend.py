@@ -59,7 +59,7 @@ def search_index(search_term):
 	#querydoc = {"query": {"match": {"blob": search_term}}}
 	#results = es.search(index = ELASTICSEARCH_INDEX, body = querydoc)
 
-	results = es.search(index = ELASTICSEARCH_INDEX, q = search_term)
+	results = es.search(index = ELASTICSEARCH_INDEX, q = search_term, size=50)
 	hits = results['hits']['hits']
 
 	# XXX: Do sorting and ranking here?
