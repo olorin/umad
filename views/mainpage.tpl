@@ -3,6 +3,13 @@
 <head>
 	<title>UMAD?</title>
 	<link rel="stylesheet" href="/static/umad.css">
+
+	<script type="text/javascript">
+		function fillInSearchBox(searchterm) {
+			var box = document.getElementById("searchinput");
+			box.value = searchterm;
+		}
+	</script>
 </head>
 
 <body>
@@ -17,6 +24,9 @@
 					<input type="submit" value="Unearth Me A Document!">
 				</p>
 			</form>
+
+			% include motd.tpl
+
 		</div> <!-- END searchbox -->
 
 

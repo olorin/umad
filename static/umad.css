@@ -29,6 +29,18 @@ body {
 	padding: 3px;
 }
 
+#motd {
+	width: 75%;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: left;
+}
+
+#motd li {
+	list-style-type: disc;
+}
+
+
 a {
 	color: #225588;
 }
