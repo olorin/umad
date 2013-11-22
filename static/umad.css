@@ -18,6 +18,15 @@ body {
 	border-radius: 10px;
 }
 
+#searchinput {
+	width: 390px;
+	padding: 3px;
+}
+
+.maxwidth90 {
+	max-width: 90%;
+}
+
 #hitstats {
 	text-align: left;
 	background: #f3db92;
@@ -39,11 +48,6 @@ body {
 }
 
 
-
-#searchinput {
-	width: 390px;
-	padding: 3px;
-}
 
 #motd {
 	margin-left: auto;
