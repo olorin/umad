@@ -5,15 +5,17 @@ body {
 }
 
 #container {
-	margin: 10em auto;
+	margin: 8em auto;
 	width: 50%;
 }
 
 #searchbox {
+	margin-top: 1em;
+	margin-bottom: 1em;
 	text-align: center;
 	background: #eeeeee;
 	padding: 2em;
-	border-radius: 5px;
+	border-radius: 10px;
 }
 
 #hitstats {
@@ -24,16 +26,35 @@ body {
 	padding: 0.5em;
 }
 
+#hitstats .hitstats-explanation {
+	position: absolute;
+	background-color: #ffeebb;
+	padding: 0.5em;
+	visibility: hidden;
+	border: 1px dotted black;
+	z-index: 1;
+}
+#hitstats:hover .hitstats-explanation {
+	visibility: visible;
+}
+
+
+
 #searchinput {
 	width: 390px;
 	padding: 3px;
 }
 
 #motd {
-	width: 75%;
 	margin-left: auto;
 	margin-right: auto;
+	margin-top: 1em;
+	margin-bottom: 1em;
 	text-align: left;
+	padding: 0.5em 2em 1.5em 2em;
+	background-color: #e4edf7;
+	color: #334455;
+	border-radius: 10px;
 }
 
 #motd li {
@@ -45,6 +66,13 @@ body {
 	margin-top: 0.4em;
 	margin-bottom: 0.5em;
 	color: #707070
+}
+
+.hidden {
+	display: none;
+}
+.shown {
+	display: block;
 }
 
 

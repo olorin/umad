@@ -8,6 +8,7 @@
 		function fillInSearchBox(searchterm) {
 			var box = document.getElementById("searchinput");
 			box.value = searchterm;
+			box.focus();
 		}
 	</script>
 </head>
@@ -25,18 +26,28 @@
 				</p>
 			</form>
 
-			% include motd.tpl
-
 		</div> <!-- END searchbox -->
+
+	% if not searchterm:
+		<div id="motd">
+			% include motd.tpl
+		</div>
+	% else:
+		<div id="motd" class="hidden">
+			% include motd.tpl
+		</div>
+	% end
 
 
 		<div id="output">
 		% if searchterm:
 			% if hits:
 				<div id="hitstats">
-					<span style="font-size: larger;">Found <strong>{{ len(hits) }} results</strong></span>
+					<span style="font-size: larger;">Displaying <strong>{{ len(hits) }} results</strong></span>
 					% if hit_limit > 0 and len(hits) >= hit_limit:
-						<br /><em>Results may be truncated, hitlimit={{ hit_limit }}</em>
+						<div class="hitstats-explanation">
+							<em>Results may be truncated, hitlimit={{ hit_limit }}</em>
+						</div>
 					% end
 				</div>
 				<ul id="hits">

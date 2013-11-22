@@ -1,4 +1,3 @@
-			<div id="motd">
 				<h2>Don't panic.</h2>
 
 				<p>Pop your search term in, Elasticsearch (that's <em>ES</em> for particularly hoopy froods) will do the rest. Try searching for ticket numbers, customer names, people's names, phone numbers, anything you can think of.</p>
@@ -20,4 +19,3 @@
 						</li>
 					</ul>
 				</p>
-			</div>
