@@ -5,7 +5,6 @@ from colorama import init as init_colorama
 from termcolor import colored
 
 import distil
-from riak_backend import *
 from elasticsearch_backend import *
 
 
