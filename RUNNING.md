@@ -11,7 +11,7 @@ You'll need a `localconfig.py`, this is not supplied in the codebase. It'll
 look something like this, just supply whatever variables are relevant for you.
 
     ELASTICSEARCH_NODES = [ "your.fqdn.here:9200" ]
-    ELASTICSEARCH_INDEX = "umad"
+    MAX_HITS = 50
 
 
 
