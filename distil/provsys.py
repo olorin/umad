@@ -3,9 +3,6 @@ import os
 import re
 from urllib import urlencode
 import json
-# Fuck urllib2, that's effort. You may need to `pip install requests`.
-# http://docs.python-requests.org/en/latest/index.html
-import requests
 
 from provisioningclient import *
 
