@@ -57,7 +57,7 @@ def delete_from_index(url):
 
 
 def search_index(search_term):
-	results = es.search(index = '_all', q = search_term, size=MAX_HITS, df="blob", default_operator="AND")
+	results = es.search(index = ELASTICSEARCH_SEARCH_INDEXES, q = search_term, size=MAX_HITS, df="blob", default_operator="AND")
 	hits = results['hits']['hits']
 
 	# XXX: Do sorting and ranking here? Roll it into the search() call
