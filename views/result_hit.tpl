@@ -1,11 +1,12 @@
 				<li class="{{ highlight_class }}">
 				<div class="hitlink">
-					% # The `join` is paranoia against multiple metadatas called 'name'
+					% # The `join` is paranoia against multiple metadatas called 'name' or 'title'
 					% linktext = '||'.join([ x[1] for x in other_metadata if x[0] == 'name' ]) if "name" in [ x[0] for x in other_metadata ] else id
+					% linktext = '||'.join([ x[1] for x in other_metadata if x[0] == 'title' ]) if "title" in [ x[0] for x in other_metadata ] else linktext
 					<a href="{{ id }}">{{ linktext }}</a>
 				</div>
 
-				% if "name" in [ x[0] for x in other_metadata]:
+				% if "name" in [ x[0] for x in other_metadata] or "title" in [ x[0] for x in other_metadata]:
 				<div class="hiturl">{{ id }}</div>
 				% end
 
