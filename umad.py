@@ -81,6 +81,11 @@ def search():
 			hit = {}
 			hit['id'] = doc['id']
 			hit['extract'] = query_re.sub(r'<strong>\1</strong>', cgi.escape(doc['blob'][start_offset:start_offset+400])  )
+			# But if we have an excerpt, use that in preference to formatting the blob
+			if 'other_metadata' in doc:
+				other_metadata = dict(doc['other_metadata'])
+				if 'excerpt' in other_metadata:
+					hit['extract'] = query_re.sub(r'<strong>\1</strong>', cgi.escape(  other_metadata['excerpt']  )  )
 			hit['highlight_class'] = highlight_document_source(doc['id'])
 			if 'other_metadata' in doc:
 				hit['other_metadata'] = doc['other_metadata'] # any other keys that the backend might provide
