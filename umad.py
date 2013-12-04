@@ -53,7 +53,7 @@ def search():
 
 
 	if q:
-		search_term = q.decode('utf8').encode('ascii', 'ignore')
+		search_term = q.decode('utf8').encode('ascii', 'ignore') # XXX: Get rid of this later, we don't have to worry about Riak stupidity any more
 		query_re = re.compile('('+search_term+')', re.IGNORECASE) # turn the search_term into a regex-group for later
 
 		# Search nao

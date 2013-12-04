@@ -27,6 +27,8 @@ def add_to_index(key, value):
 	else:
 		document = value
 
+	# XXX: This would be the place to add a last_indexed key to the document
+
 	# Minimal requirement for the document is that it has a 'blob' key, but ES will support much richer arbitrary schemas
 	es.index(
 		index = index_name,

@@ -8,7 +8,17 @@ The interface is super simple:
 * You provide a callable named `blobify`
 * It's called with a single argument, a URL to the thing/s to be indexed. This is opaque and may have a bogus schema and everything. This is your problem for now.
 * Your callable returns an iterable of blobs to be indexed.
+    * `yield`ing is particularly elegant.
 * Blobs are a dictionary with two keys, a `url` and a `blob`. Because the canonical URL for a document may be different from what you provided, the distiller can clean it up for you. The blob is plain ascii text.
+
+
+Optional keys
+-------------
+
+You may return additional keys in your blob, indeed this is encouraged. Additional keys allow for more nuanced information to be presented to the user, and they are also directly searchable.
+
+* If `title` is present, it will be used when the document is displayed, instead of the raw `url`
+* `last_updated` is used to better rank documents if it's provided, newer documents get boosted higher (not yet implemented)
 
 
 Hello World distiller
