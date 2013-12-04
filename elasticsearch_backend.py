@@ -76,6 +76,11 @@ def search_index(search_term):
 	#     'id':    u'https://resources.engineroom.anchor.net.au/resources/8737',
 	#     'blob':  u"complete virtual machine jellyfish misaka squeeze debian barney's colo 7828"
 	# }
-	hits = [ {'id': x['_id'], 'blob': x['_source']['blob'], 'score':x['_score'], 'other_metadata':  [ (y,x['_source'][y]) for y in x['_source'] if y not in ('url','blob') ]  } for x in hits ]
+	hits = [ {
+		'id':             x['_id'],
+		'blob':           x['_source']['blob'],
+		'score':          x['_score'],
+		'other_metadata': [ (y,x['_source'][y]) for y in x['_source'] if y not in ('url','blob') ]
+		} for x in hits ]
 
 	return {'hits':hits, 'hit_limit':MAX_HITS}
