@@ -16,13 +16,21 @@
 				% end
 
 				<span style="white-space: pre-line;">{{! extract }}</span><br />
-				% if other_metadata: # only if the list is non-empty
-					<ul>
-					% for key in other_metadata:
-						<li class="metadata">{{ key }}: {{ other_metadata[key] }}</li>
+
+				<div class="metadata-button">
+					<span class="lsf">tag</span>
+
+					% if other_metadata: # only if the list is non-empty
+					<div class="other-metadata">
+						Other metadata
+						<ul>
+							% for key in other_metadata:
+							<li class="metadata">{{ key }}: {{ other_metadata[key] }}</li>
+							% end
+						</ul>
+					</div>
 					% end
-					</ul>
-				% end
+				</div>
 
 				<div class="doc-source-solo">
 					<span class="lsf" title="ONLY show {{ highlight_classes_to_doctypes[highlight_class] }}" onClick="javascript:killResultsNotMatchingClass('{{ highlight_class }}');">smile</span>

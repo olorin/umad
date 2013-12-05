@@ -118,6 +118,11 @@ li {
 	border-radius: 0.25em;
 }
 
+.result-card .metadata-button {
+	position: absolute;
+	bottom: 0.75em;
+	right: 0.75em;
+}
 .result-card .doc-source-solo {
 	position: absolute;
 	top: 0em;
@@ -142,6 +147,36 @@ li.highlight-miku          { border-left: 3px solid #3bb0b5; }
 li.highlight-luka          { border-left: 3px solid #fb7fe2; }
 li.highlight-portal-orange { border-left: 3px solid #f8b134; }
 li.highlight-portal-blue   { border-left: 3px solid #34a8f9; }
+
+
+/* Documents' other metadata appears in a position:absolute bubble */
+.result-card .metadata-button .other-metadata {
+	position: absolute;
+	border: 1px dotted #f3db92;
+	background-color: #ffeebb;
+	top: 0em;
+	left: 1.5em;
+	z-index: 1;
+	visibility: hidden;
+}
+.result-card .metadata-button:hover .other-metadata {
+	visibility: visible;
+}
+
+/* No hueg left padding plz */
+.other-metadata ul {
+	padding-left: 0em;
+	font-size: small;
+}
+
+.result-card .metadata-button:hover span.lsf {
+	color: #5555ff;
+}
+
+
+
+
+
 
 /* For Ligature font support: http://kudakurage.com/ligature_symbols/ */
 @font-face {
