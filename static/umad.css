@@ -117,3 +117,36 @@ li.highlight-luka          { border-left: 3px solid #fb7fe2; }
 li.highlight-portal-orange { border-left: 3px solid #f8b134; }
 li.highlight-portal-blue   { border-left: 3px solid #34a8f9; }
 
+/* For Ligature font support: http://kudakurage.com/ligature_symbols/ */
+@font-face {
+	font-family: 'LigatureSymbols';
+	src: url('LigatureSymbols-2.11.eot');
+	src: url('LigatureSymbols-2.11.eot?#iefix') format('embedded-opentype'),
+	     url('LigatureSymbols-2.11.woff') format('woff'),
+	     url('LigatureSymbols-2.11.ttf') format('truetype'),
+	     url('LigatureSymbols-2.11.svg#LigatureSymbols') format('svg');
+	src: url('LigatureSymbols-2.11.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+a .lsf {
+	text-decoration: none;
+}
+
+.lsf {
+	font-family: 'LigatureSymbols';
+	-webkit-text-rendering: optimizeLegibility;
+	-moz-text-rendering: optimizeLegibility;
+	-ms-text-rendering: optimizeLegibility;
+	-o-text-rendering: optimizeLegibility;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-font-smoothing: antialiased;
+	-ms-font-smoothing: antialiased;
+	-o-font-smoothing: antialiased;
+	font-smoothing: antialiased;
+	text-decoration: none;
+	font-size:130%;
+	margin-right:0.3em;
+}
