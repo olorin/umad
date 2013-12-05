@@ -100,7 +100,7 @@ ul {
 }
 
 ul#hits li {
-	margin: 2em;
+	margin: 1em;
 }
 ul#hits li ul li.metadata {
 	margin: 0.5em;
@@ -109,6 +109,32 @@ ul#hits li ul li.metadata {
 li {
 	margin: 0.5em;
 	padding-left: 0.4em;
+}
+
+.result-card {
+	position: relative;
+	padding: 0.75em 1.5em;
+	background-color: #f8f8ff;
+	border-radius: 0.25em;
+}
+
+.result-card .doc-source-solo {
+	position: absolute;
+	top: 0em;
+	left: -1.7em; /* reduce the left-shift by 0.05em if you want to use the onsen icon */
+	color: silver;
+}
+.result-card .doc-source-mute {
+	position: absolute;
+	top: 1.5em;
+	left: -1.7em;
+	color: silver;
+}
+.result-card .doc-source-solo:hover {
+	color: #559955;
+}
+.result-card .doc-source-mute:hover {
+	color: #995555;
 }
 
 li.highlight-red           { border-left: 3px solid red; }

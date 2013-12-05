@@ -10,6 +10,21 @@
 			box.value = searchterm;
 			box.focus();
 		}
+
+		function refreshHitcount() {
+			var hitcount = $("#hitcount");
+			hitcount.text( $(".result-card").length );
+		}
+
+		function killResultsMatchingClass(resultClass) {
+			var cardSelector = ".result-card." + resultClass;
+			$( cardSelector ).fadeOut(500, function() { $( cardSelector ).remove(); refreshHitcount(); });
+		}
+
+		function killResultsNotMatchingClass(resultClass) {
+			var cardSelector = ".result-card:not(." + resultClass + ")";
+			$( cardSelector ).fadeOut(500, function() { $( cardSelector ).remove(); refreshHitcount(); });
+		}
 	</script>
 	<script src="/static/jquery-1.10.2.min.js"></script>
 </head>
@@ -44,7 +59,7 @@
 		% if searchterm:
 			% if hits:
 				<div id="hitstats">
-					<span style="font-size: larger;">Displaying <strong>{{ len(hits) }} results</strong></span>
+					<span style="font-size: larger;">Displaying <strong><span id="hitcount">{{ len(hits) }}</span> results</strong></span>
 					% if hit_limit > 0 and len(hits) >= hit_limit:
 						<div class="hitstats-explanation">
 							<em>Results may be truncated, hitlimit={{ hit_limit }}</em>
