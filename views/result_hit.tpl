@@ -8,7 +8,7 @@
 				<div class="hitlink">
 					% linktext = other_metadata.get('name', id)
 					% linktext = other_metadata.get('title', linktext)
-					<a href="{{ id }}">{{ linktext }}</a>
+					<a href="{{ id }}">{{ linktext }}</a> <span class="lsf" title="SHARE with #sysadmins" onClick="javascript:shareWithSysadmins('{{ id.encode('base64').replace('\n','').strip() }}', '{{ linktext.encode('base64').replace('\n','').strip() }}');">sns</span>
 				</div>
 
 				% if "name" in other_metadata or "title" in other_metadata:
