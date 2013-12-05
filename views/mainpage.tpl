@@ -11,6 +11,7 @@
 			box.focus();
 		}
 	</script>
+	<script src="/static/jquery-1.10.2.min.js"></script>
 </head>
 
 <body>
