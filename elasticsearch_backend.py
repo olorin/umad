@@ -47,11 +47,24 @@ def delete_from_index(url):
 	doc_type = determine_doc_type(url)
 	index_name = "umad_%s" % doc_type
 
-	es.delete(
-		index = index_name,
-		doc_type = doc_type,
-		id = url
-	)
+	try:
+		es.delete(
+			index = index_name,
+			doc_type = doc_type,
+			id = url
+		)
+	except elasticsearch.exceptions.NotFoundError:
+		pass
+
+	# Get rid of it from the legacy index as well
+	try:
+		es.delete(
+			index = "umad",
+			doc_type = doc_type,
+			id = url
+		)
+	except elasticsearch.exceptions.NotFoundError:
+		pass
 
 	return
 
