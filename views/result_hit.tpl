@@ -2,7 +2,10 @@
 				% other_metadata = dict(other_metadata)
 
 				% # Convert CSS highlighting classes to a semantic description of the document type (always plural)
-				% highlight_classes_to_doctypes = { 'highlight-portal-orange':"provsys servers", 'highlight-luka':"RT tickets", '':"unknown documents" }
+				% highlight_classes_to_doctypes = {}
+				% highlight_classes_to_doctypes['highlight-portal-orange'] = "provsys servers"
+				% highlight_classes_to_doctypes['highlight-luka'] = "RT tickets"
+				% highlight_classes_to_doctypes[''] = "documents of unknown origin"
 
 				<li class="result-card {{ highlight_class }}">
 				<div class="hitlink">
