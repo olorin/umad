@@ -152,6 +152,7 @@ li.highlight-portal-blue   { border-left: 3px solid #34a8f9; }
 /* Documents' other metadata appears in a position:absolute bubble */
 .result-card .metadata-button .other-metadata {
 	position: absolute;
+	width: 20em;
 	border: 1px dotted #f3db92;
 	background-color: #ffeebb;
 	top: 0em;

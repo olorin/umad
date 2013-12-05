@@ -25,7 +25,7 @@
 						Other metadata
 						<ul>
 							% for key in other_metadata:
-							<li class="metadata">{{ key }}: {{ other_metadata[key] }}</li>
+							<li class="metadata"><strong>{{ key.capitalize() }}:</strong> {{ other_metadata[key] }}</li>
 							% end
 						</ul>
 					</div>
