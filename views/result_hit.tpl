@@ -8,14 +8,14 @@
 				<div class="hitlink">
 					% linktext = other_metadata.get('name', id)
 					% linktext = other_metadata.get('title', linktext)
-					<a href="{{ id }}">{{ linktext }}</a> <span class="lsf" title="SHARE with #sysadmins" onClick="javascript:shareWithSysadmins('{{ id.encode('base64').replace('\n','').strip() }}', '{{ linktext.encode('base64').replace('\n','').strip() }}');">sns</span>
+					<a href="{{ id }}">{{ linktext }}</a> <span class="lsf social-button-jabber" title="SHARE with #sysadmins" onClick="javascript:shareWithSysadmins('{{ id.encode('base64').replace('\n','').strip() }}', '{{ linktext.encode('base64').replace('\n','').strip() }}');">sns</span>
 				</div>
 
 				% if "name" in other_metadata or "title" in other_metadata:
 				<div class="hiturl">{{ id }}</div>
 				% end
 
-				<span style="white-space: pre-line;">{{! extract }}</span><br />
+				<span class="excerpt">{{! extract }}</span><br />
 
 				<div class="metadata-button">
 					<span class="lsf">tag</span>

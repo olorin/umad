@@ -113,15 +113,24 @@ li {
 
 .result-card {
 	position: relative;
-	padding: 0.75em 1.5em;
+	padding: 0.75em 3em 0.75em 1.5em;
 	background-color: #f8f8ff;
 	border-radius: 0.25em;
+}
+
+.result-card .excerpt {
+	white-space: pre-line;
+}
+
+.result-card .social-button-jabber {
+	color: #444444;
 }
 
 .result-card .metadata-button {
 	position: absolute;
 	bottom: 0.75em;
 	right: 0.75em;
+	color: #444444;
 }
 .result-card .doc-source-solo {
 	position: absolute;
