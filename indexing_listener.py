@@ -26,7 +26,7 @@ def index():
 	debug("URL to index: %s" % url)
 
 	if not url:
-		abort(400, "Your url is bad, I can't index this: {0}".format(url))
+		abort(400, "Your url is bad, I can't index this: '{0}'".format(url))
 
 	try:
 		# XXX: Hey, hey, do that Redis thing!
@@ -35,7 +35,7 @@ def index():
 		abort(500, "Something went boom: {0}".format(e))
 
 
-	return "Success, enqueued URL for indexing: {0}".format(url)
+	return "Success, enqueued URL for indexing: '{0}'".format(url)
 
 
 
