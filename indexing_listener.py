@@ -5,7 +5,7 @@ from bottle import route, request, default_app, abort
 
 
 # Run with something like:
-# gunicorn -- workers 4 --bind 127.0.0.1:9090 indexer:application
+# gunicorn -- workers 4 --bind 127.0.0.1:9090 indexing_listener:application
 
 
 def debug(msg, force_debug=False):
