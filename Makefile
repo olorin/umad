@@ -7,6 +7,7 @@ pull:
 
 restart:
 	sudo /usr/local/bin/allah restart umad_gunicorn
+	sudo /usr/local/bin/allah restart umad-indexing-listener_gunicorn
 
 
 rollout: push kick_server
