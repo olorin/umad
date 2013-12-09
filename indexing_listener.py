@@ -25,6 +25,8 @@ def index():
 	url = request.query.url or ''
 	debug("URL to index: %s" % url)
 
+	if not url:
+		abort(400, "Your url is bad, I can't index this: {0}".format(url))
 
 	try:
 		# XXX: Hey, hey, do that Redis thing!
