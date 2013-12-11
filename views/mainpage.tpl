@@ -18,12 +18,12 @@
 
 		function killResultsMatchingClass(resultClass) {
 			var cardSelector = ".result-card." + resultClass;
-			$( cardSelector ).fadeOut(500, function() { $( cardSelector ).remove(); refreshHitcount(); });
+			$( cardSelector ).fadeOut(1000, function() { $( cardSelector ).remove(); refreshHitcount(); });
 		}
 
 		function killResultsNotMatchingClass(resultClass) {
 			var cardSelector = ".result-card:not(." + resultClass + ")";
-			$( cardSelector ).fadeOut(500, function() { $( cardSelector ).remove(); refreshHitcount(); });
+			$( cardSelector ).fadeOut(1000, function() { $( cardSelector ).remove(); refreshHitcount(); });
 		}
 
 		function shareWithSysadmins(url, description) {
