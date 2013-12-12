@@ -54,6 +54,7 @@ def main(argv=None):
 
 			debug("The barber is napping")
 			teh_redis.brpop('barber')
+			debug("------------------------")
 			debug("The barber was woken up!")
 		except Exception as e:
 			debug("Something went boom: {0}".format(e))
