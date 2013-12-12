@@ -54,5 +54,10 @@ Requirements
 
 You will need the Redis server running somewhere, ideally the same host that's running the indexing daemons.
 
-You will also need the Redis python bindings (`redis-py`).
+You will also need some Python libraries:
+
+* Redis bindings (`redis-py`)
+* `requests`
+* `lxml`
+* `provisioningclient`
 
