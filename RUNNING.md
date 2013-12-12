@@ -38,3 +38,21 @@ You can also just use bottle's builtin server, something like this:
     python umad.py -b 192.168.0.1 -p 8080
 
 
+
+
+
+UMAD Indexer
+============
+
+The indexer is composed of two components.
+
+1. A listener daemon that receives notifications from systems and stuffs the URL in a Redis database.
+2. A worker daemon that pops URLs from the same database and indexes them.
+
+Requirements
+------------
+
+You will need the Redis server running somewhere, ideally the same host that's running the indexing daemons.
+
+You will also need the Redis python bindings (`redis-py`).
+
