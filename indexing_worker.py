@@ -28,7 +28,7 @@ def index(url):
 		if doc is None:
 			return
 		debug("Adding to index: %(url)s" % doc)
-		print doc['blob'][:400]
+		debug(doc['blob'][:400])
 		add_to_index(doc['url'], doc)
 		debug("Success!")
 		debug("")
