@@ -1,5 +1,8 @@
 .PHONY: pull_deploy pull restart rollout push kick_server
 
+
+# Acts on the server
+
 pull_deploy: pull restart
 
 pull:
@@ -8,7 +11,11 @@ pull:
 restart:
 	sudo /usr/local/bin/allah restart umad_gunicorn
 	sudo /usr/local/bin/allah restart umad-indexing-listener_gunicorn
+	sudo /usr/local/bin/allah restart umad-indexing-worker
 
+
+
+# Acts on your local dev repo
 
 rollout: push kick_server
 
