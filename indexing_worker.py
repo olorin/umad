@@ -4,6 +4,7 @@ import os
 import redis
 
 DEBUG = os.environ.get('UMAD_INDEXING_WORKER_DEBUG')
+DEBUG = True
 PID_PREFIX = '[pid {0}] '.format(os.getpid())
 
 
