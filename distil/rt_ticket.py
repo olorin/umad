@@ -16,7 +16,7 @@ class BadRtUrl(Exception):
 	def __init__(self, msg):
 		self.msg = msg
 
-class MissingAuthToken(Exception):
+class MissingAuth(Exception):
 	def __init__(self, msg):
 		self.msg = msg
 
@@ -57,17 +57,17 @@ def tidy_url(url):
 
 
 def fetch(url):
-	auth_token = os.environ.get('API_AUTH_TOKEN')
-	if not auth_token:
-		raise MissingAuthToken("We need your Anchor API auth token in the environment somewhere, 'API_AUTH_TOKEN'")
+	auth_user = os.environ.get('API_AUTH_USER')
+	auth_pass = os.environ.get('API_AUTH_PASS')
+	if not auth_user or not auth_pass:
+		raise MissingAuth("You need to provide authentication credential for Anchor APIs, please set API_AUTH_USER and API_AUTH_PASS")
 
 	headers = {}
-	headers['Authorization'] = 'AA-Token %s' % auth_token
 	headers['Accept'] = 'application/json'
 
 	ticket_url, messages_url = tidy_url(url)
 
-	ticket_response = requests.get(ticket_url, verify=True, headers=headers)
+	ticket_response = requests.get(ticket_url, auth=(auth_user,auth_pass), verify=True, headers=headers)
 	try:
 		ticket_response.raise_for_status()
 	except:
