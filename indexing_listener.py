@@ -5,11 +5,6 @@ import redis
 
 from bottle import route, request, default_app, abort
 
-DEBUG = os.environ.get('UMAD_INDEXING_LISTENER_DEBUG')
-DEBUG = True
-PID_PREFIX = '[pid {0}] '.format(os.getpid())
-debug("Debug logging is enabled")
-
 
 # Run with something like:
 # gunicorn -- workers 4 --bind 127.0.0.1:9090 indexing_listener:application
@@ -24,6 +19,11 @@ def debug(msg, force_debug=False):
 		sys.stderr.write(PID_PREFIX + str(msg) + '\n')
 		sys.stderr.flush()
 
+
+DEBUG = os.environ.get('UMAD_INDEXING_LISTENER_DEBUG')
+DEBUG = True
+PID_PREFIX = '[pid {0}] '.format(os.getpid())
+debug("Debug logging is enabled")
 
 
 
