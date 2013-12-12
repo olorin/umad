@@ -27,7 +27,7 @@ def index():
 
 	# Sleep for a couple of seconds to produce failures in nginx downstread
 	import time
-	time.sleep(2)
+	time.sleep(1)
 
 	if not url:
 		abort(400, "Y U DO DIS? I can't index this url: '{0}'".format(url))
