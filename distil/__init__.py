@@ -34,8 +34,14 @@ class Distiller(object):
 			#print "Testing for fetcher with url: %s (type is %s)" % (url, type(url))
 			if url.startswith('https://map.engineroom.anchor.net.au/'):
 				self.fetcher = moin_map
+
+			# Dodgy hackery to patch up URLs that aren't in the format we expect
 			elif url.startswith('https://rt.engineroom.anchor.net.au/'):
 				self.fetcher = rt_ticket
+			elif url.startswith('rt://'):
+				self.url = url.replace('rt://', 'https://rt.engineroom.anchor.net.au/Ticket/Display.html?id=')
+				self.fetcher = rt_ticket
+
 			elif url.startswith('https://ticket.api.anchor.com.au/ticket?'):
 				self.fetcher = rt_ticket_query
 			elif url.startswith( ('http://', 'https://') ):
