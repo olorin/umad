@@ -22,11 +22,7 @@ def index(url):
 	debug("URL: %s" % url)
 	debug("-" * len("URL: %s" % url))
 
-	try:
-		d = distil.Distiller(url)
-	except distil.NoUrlHandler:
-		print "Don't know how to handle URL: %s" % url
-		raise
+	d = distil.Distiller(url)
 
 	for doc in d.docs:
 		if doc is None:
