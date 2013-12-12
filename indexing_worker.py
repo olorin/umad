@@ -11,10 +11,17 @@ DEBUG = True
 PID_PREFIX = '[pid {0}] '.format(os.getpid())
 
 
+# XXX: maybe these should be to stdout instead of stderr, I dunno
 def debug(msg, force_debug=False):
 	if DEBUG or force_debug:
 		sys.stderr.write(PID_PREFIX + str(msg) + '\n')
 		sys.stderr.flush()
+
+def mention(msg):
+	sys.stderr.write(PID_PREFIX + str(msg) + '\n')
+	sys.stderr.flush()
+
+
 
 
 def index(url):
@@ -30,7 +37,7 @@ def index(url):
 		debug("Adding to index: %(url)s" % doc)
 		debug(doc['blob'][:400])
 		add_to_index(doc['url'], doc)
-		debug("Success!")
+		mention("Successfully added to index: %(url)s" % doc)
 		debug("")
 
 
