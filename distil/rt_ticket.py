@@ -83,7 +83,7 @@ def fetch(url):
 	ticket_subject = ticket['subject']
 	ticket_status = ticket['status']
 
-	messages_response  = requests.get(messages_url, verify=True, headers=headers)
+	messages_response  = requests.get(messages_url, auth=(auth_user,auth_pass), verify=True, headers=headers)
 	messages_json_blob = messages_response.content # FIXME: add error-checking
 	messages = json.loads(messages_json_blob)
 	messages = [ clean_message(x) for x in messages ]
