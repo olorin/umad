@@ -11,7 +11,7 @@ from bottle import route, request, default_app, abort
 # gunicorn -- workers 4 --bind 127.0.0.1:9090 indexing_listener:application
 
 
-teh_redis = redis.Redis(host='localhost', port=6379, db=0)
+teh_redis = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 
 # XXX: maybe these should be to stdout instead of stderr, I dunno

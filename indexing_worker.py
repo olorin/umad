@@ -47,7 +47,7 @@ def index(url):
 def main(argv=None):
 	debug("Debug logging is enabled")
 
-	teh_redis = redis.Redis(host='localhost', port=6379, db=0)
+	teh_redis = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 	while True:
 		try:
