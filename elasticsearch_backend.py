@@ -97,3 +97,10 @@ def search_index(search_term):
 		} for x in hits ]
 
 	return {'hits':hits, 'hit_limit':MAX_HITS}
+
+def get_from_index(url):
+	doc_type = determine_doc_type(url)
+	index_name = "umad_%s" % doc_type
+
+	args = [index_name, url]
+	return es.get(index=index_name, id=url)
