@@ -62,7 +62,7 @@ def main(argv=None):
 
 				if not urls:
 					break
-				url = url[0]
+				url = urls[0]
 
 				index(url)
 
