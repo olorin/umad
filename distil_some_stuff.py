@@ -14,6 +14,11 @@ def debug(msg):
 		sys.stderr.write(str(msg) + '\n')
 		sys.stderr.flush()
 
+def red(msg):
+	return colored(msg, 'red')
+def green(msg):
+	return colored(msg, 'green')
+
 
 def main(argv=None):
 	init_colorama()
@@ -55,6 +60,13 @@ def main(argv=None):
 			print doc['blob'][:400]
 			add_to_index(doc['url'], doc)
 			debug(colored("Success!", 'green'))
+			debug("")
+
+			debug(red("-------"))
+			document_just_added = get_from_index(doc['url'])['_source']
+			for key in sorted(document_just_added):
+				debug(green(key.capitalize()))
+				debug("\t%s" % document_just_added[key])
 			debug("")
 
 
