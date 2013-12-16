@@ -1,5 +1,6 @@
 import sys
 import os
+import time
 
 import redis
 
@@ -36,12 +37,14 @@ def index():
 
 	try:
 		# Throw URLs into Redis. We're using this idiom to provide what is
-		# effectively a "BSPOP" (blocking pop from a set).
+		# effectively a "BSPOP" (blocking pop from a set), on a sorted set.
 		# cf. Event Notification: http://redis.io/commands/blpop
+		# I-It's not like I wanted the set to be sorted or anything! I'm
+		# keeping input timestamps, just so you know.
 		pipeline = teh_redis.pipeline()
-		pipeline.sadd('umad_indexing_queue', url)
+		pipeline.zadd('umad_indexing_queue', time.time(), url)
 		pipeline.lpush('barber', 'dummy_value')
-		pipeline.execute()
+		pipeline.execute() # will return something like:   [ {0|1}, num_dummies ]
 		debug("Successful insertion of %s" % url)
 	except Exception as e:
 		abort(500, "Something went boom: {0}".format(e))

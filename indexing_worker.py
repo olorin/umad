@@ -51,12 +51,18 @@ def main(argv=None):
 	while True:
 		try:
 			# Get URLs out of Redis. We're using this idiom to provide what is
-			# effectively a "BSPOP" (blocking pop from a set).
+			# effectively a "BSPOP" (blocking pop from a set), on a sorted set.
 			# cf. Event Notification: http://redis.io/commands/blpop
 			while True:
-				url = teh_redis.spop('umad_indexing_queue')
-				if url is None:
+				pipeline = teh_redis.pipeline()
+				pipeline.zrange('umad_indexing_queue', 0, 0)
+				pipeline.zremrangebyrank('umad_indexing_queue', 0, 0)
+				(urls, urlcount) = pipeline.execute() # Should return:  [ [maybe_single_url], {0|1} ]
+
+				if not urls:
 					break
+				url = url[0]
+
 				index(url)
 
 			debug("The barber is napping")
