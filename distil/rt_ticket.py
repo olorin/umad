@@ -166,6 +166,7 @@ def blobify(url):
 	all_message_lines = list(set(chain(*[ message['content'].split('\n') for message in messages ])))
 
 	# XXX: continue work here, use all_message_lines for the content body instead
+	# XXX: also trim the excerpt to a sane size, not all of the first message
 	message_texts = '\n\t'.join([ "%(content)s %(subject)s %(from_realname)s %(from_email)s" % message for message in messages ])
 	blob = '%s %s' % (ticket['subject'], message_texts)
 	ticketblob = {
