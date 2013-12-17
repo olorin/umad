@@ -45,7 +45,7 @@ def clean_message(msg):
 			)
 	clean_msg = dict([ (k,v) for (k,v) in msg.iteritems() if k in fields_we_care_about ])
 
-	# I dunno why we sometimes get this
+	# When we reply on a ticket, we get the ticket-wide subject if we don't specify a different Subject
 	if clean_msg['subject'] == 'No Subject':
 		clean_msg['subject'] = ''
 
