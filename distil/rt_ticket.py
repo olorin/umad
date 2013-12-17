@@ -145,6 +145,9 @@ def blobify(url):
 	messages = json.loads(messages_json_blob)
 	messages = [ clean_message(x) for x in messages ]
 
+	# We see git@bitts rollin', we hatin'
+	messages = [ m for m in messages if not m['from_email'].startswith('git@bitts') ]
+
 	# Pull out the first post, we'll use it for the excerpt
 	# XXX: Blindly assumes the first post has the lowest numerical ID, check with dev team whether this is correct
 	messages.sort(key=itemgetter('_id'))
