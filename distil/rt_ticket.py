@@ -151,6 +151,9 @@ def blobify(url):
 	# Pull out the first post, we'll use it for the excerpt
 	# XXX: Blindly assumes the first post has the lowest numerical ID, check with dev team whether this is correct
 	messages.sort(key=itemgetter('_id'))
+	# Some messages are empty or otherwise useless, so ignore them
+	messages = [ m for m in messages if m['subject'] or m['content'] or m['from_email'] ]
+
 	# XXX: Incurs an explosion if we get a ticket with no messages lol
 	first_post = messages[0]
 	first_post['content'] = '\n'.join( first_post['content'].split('\n')[:4] )
