@@ -26,7 +26,15 @@
 				<div class="metadata-button">
 					<span class="lsf">tag</span>
 
-					% if other_metadata: # only if the list is non-empty
+					% # Only if the list is non-empty
+					% if other_metadata:
+						% # Don't need to print these keys, they're already part of the main display
+						% if 'excerpt' in other_metadata:
+							% del(other_metadata['excerpt'])
+						% end
+						% if 'title' in other_metadata:
+							% del(other_metadata['title'])
+						% end
 					<div class="other-metadata">
 						Other metadata
 						<ul>
