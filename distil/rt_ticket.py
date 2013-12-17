@@ -124,6 +124,7 @@ def blobify(url):
 		raise FailedToRetrieveTicket("Ticket API hates us? %s" % str(ticket) )
 
 	ticket_url         = WEB_TICKET_URL_TEMPLATE % ticket # Canonicalise the ticket URL, as merged tickets could have been accessed by multiple URLs
+	ticket_number      = "{_id}".format(**ticket)
 	ticket_subject     = ticket['subject']
 	ticket_status      = ticket['status']
 	ticket_lastupdated = ticket['lastupdated']
@@ -173,6 +174,7 @@ def blobify(url):
 	ticketblob = {
 		'url':          ticket_url,
 		'blob':         blob,
+		'local_id':     ticket_number,
 		'title':        ticket_subject, # printable as a document title
 		'excerpt':      ticket_excerpt,
 		'subject':      ticket_subject,

@@ -18,6 +18,9 @@ Optional keys
 You may return additional keys in your blob, indeed this is encouraged. Additional keys allow for more nuanced information to be presented to the user, and they are also directly searchable.
 
 * If `title` is present, it will be used when the document is displayed, instead of the raw `url`
+* `local_id` can be provided as a domain-specific identifier for a document. This should be a high-value hit if the user searches for it.
+    * For example, support ticket numbers are a unique identifier for support tickets, and something a user is likely to mash into the search box.
+    * `local_id` is not treated specially, it's just a hack to having a field that's easy to match exactly
 * `last_updated` is used to better rank documents if it's provided, newer documents get boosted higher (not yet implemented)
 
 
