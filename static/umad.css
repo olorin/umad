@@ -105,6 +105,9 @@ ul#hits li {
 ul#hits li ul li.metadata {
 	margin: 0.5em;
 }
+ul#hits li ul li.metadata ul li.metadata-subvalues {
+	margin: 0.25em;
+}
 
 li {
 	margin: 0.5em;

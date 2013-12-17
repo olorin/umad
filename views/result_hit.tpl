@@ -30,9 +30,20 @@
 					<div class="other-metadata">
 						Other metadata
 						<ul>
-							% for key in other_metadata:
-							<li class="metadata"><strong>{{ key.capitalize() }}:</strong> {{ other_metadata[key] }}</li>
+						% for key in other_metadata:
+							% metadata_value = other_metadata[key]
+							% if isinstance(metadata_value, (str, unicode)):
+								<li class="metadata"><strong>{{ key.capitalize() }}:</strong> {{ metadata_value }}</li>
+							% else:
+								<li class="metadata"><strong>{{ key.capitalize() }}:</strong>
+									<ul>
+									% for value in metadata_value:
+										<li class="metadata-subvalues">{{ value }}</li>
+									% end
+									</ul>
+								</li>
 							% end
+						% end
 						</ul>
 					</div>
 					% end
