@@ -1,4 +1,4 @@
-				% # FIXME: Why did I make it a list of 2-element tuples when a dict makes more sense? Will fix soon, but do local convesion for now.
+				% # FIXME: Why did I make it a list of 2-element tuples when a dict makes more sense? Will fix soon, but do local conversion for now.
 				% other_metadata = dict(other_metadata)
 
 				% # Convert CSS highlighting classes to a semantic description of the document type (always plural)
