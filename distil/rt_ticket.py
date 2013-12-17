@@ -42,6 +42,8 @@ def clean_message(msg):
 			'from_realname',
 			'content',
 			'subject',
+			'created',
+			'private',
 			)
 	clean_msg = dict([ (k,v) for (k,v) in msg.iteritems() if k in fields_we_care_about ])
 
@@ -173,6 +175,10 @@ def blobify(url):
 	# This is like running `sort | uniq` over all the messages
 	all_message_lines = list(set(chain(*[ message['content'].split('\n') for message in messages ])))
 
+	# XXX: Incurs an explosion if we get a ticket with no good messages (lol)
+	last_contact = max([ parse(m['created']) for m in messages if not m['private'] ])
+	last_contact = last_contact.astimezone(tzutc())
+
 	# XXX: continue work here, use all_message_lines for the content body instead
 	# XXX: also trim the excerpt to a sane size, not all of the first message
 	message_texts = '\n\t'.join([ "%(content)s %(subject)s %(from_realname)s %(from_email)s" % message for message in messages ])
@@ -189,6 +195,7 @@ def blobify(url):
 		'email':        list(set( [ x['from_email']    for x in messages if x['from_email']    != '' ] )),
 		'last_updated': ticket_lastupdated,
 		'last_indexed': datetime.datetime.now(tzutc()),
+		'last_contact': last_contact,
 		}
 
 	yield ticketblob
