@@ -11,7 +11,7 @@ from elasticsearch_backend import *
 DEBUG = True
 def debug(msg):
 	if DEBUG:
-		sys.stderr.write(str(msg) + '\n')
+		sys.stderr.write(msg.encode('utf8') + '\n')
 		sys.stderr.flush()
 
 def red(msg):
