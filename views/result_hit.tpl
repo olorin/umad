@@ -35,13 +35,7 @@
 							% if isinstance(metadata_value, (str, unicode)):
 								<li class="metadata"><strong>{{ key.capitalize() }}:</strong> {{ metadata_value }}</li>
 							% else:
-								<li class="metadata"><strong>{{ key.capitalize() }}:</strong>
-									<ul>
-									% for value in metadata_value:
-										<li class="metadata-subvalues">{{ value }}</li>
-									% end
-									</ul>
-								</li>
+								<li class="metadata"><strong>{{ key.capitalize() }}:</strong> {{ ', '.join(sorted(metadata_value)) }}</li>
 							% end
 						% end
 						</ul>
