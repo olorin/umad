@@ -66,7 +66,7 @@ def main(argv=None):
 			document_just_added = get_from_index(doc['url'])['_source']
 			for key in sorted(document_just_added):
 				debug(green(key.capitalize()))
-				debug("\t%s" % document_just_added[key])
+				debug("\t%s" % document_just_added[key][:1000])
 			debug("")
 
 

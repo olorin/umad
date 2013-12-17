@@ -149,6 +149,7 @@ def blobify(url):
 	messages.sort(key=itemgetter('_id'))
 	# XXX: Incurs an explosion if we get a ticket with no messages lol
 	first_post = messages[0]
+	first_post['content'] = '\n'.join( first_post['content'].split('\n')[:4] )
 	ticket_excerpt = """{from_realname} <{from_email}> sent a mail with subject "{subject}", saying:\n{content} """.format(**first_post)
 
 	# Don't index deleted tickets
