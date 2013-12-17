@@ -179,8 +179,6 @@ def blobify(url):
 		'excerpt':      ticket_excerpt,
 		'subject':      ticket_subject,
 		'status':       ticket_status,
-		#'realname':     ', '.join(  list(set( [ x['from_realname'] for x in messages if x['from_realname'] != '' ] ))  ),
-		#'email':        ', '.join(  list(set( [ x['from_email']    for x in messages if x['from_email']    != '' ] ))  ),
 		'realname':     list(set( [ x['from_realname'] for x in messages if x['from_realname'] != '' ] )),
 		'email':        list(set( [ x['from_email']    for x in messages if x['from_email']    != '' ] )),
 		'last_updated': ticket_lastupdated,
