@@ -191,7 +191,6 @@ def blobify(url):
 		'realname':     list(set( [ x['from_realname'] for x in messages if x['from_realname'] != '' ] )),
 		'email':        list(set( [ x['from_email']    for x in messages if x['from_email']    != '' ] )),
 		'last_updated': ticket_lastupdated,
-		'last_contact': last_contact,
 		}
 
 	# Only set last_contact if it has meaning
