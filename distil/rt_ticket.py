@@ -5,7 +5,6 @@ from urllib import urlencode
 from operator import itemgetter
 from itertools import chain
 import json
-import datetime
 # dateutil is a useful helper library, you may need to install the
 # `python-dateutil` package especially
 from dateutil.parser import *
@@ -194,7 +193,6 @@ def blobify(url):
 		'realname':     list(set( [ x['from_realname'] for x in messages if x['from_realname'] != '' ] )),
 		'email':        list(set( [ x['from_email']    for x in messages if x['from_email']    != '' ] )),
 		'last_updated': ticket_lastupdated,
-		'last_indexed': datetime.datetime.now(tzutc()),
 		'last_contact': last_contact,
 		}
 
