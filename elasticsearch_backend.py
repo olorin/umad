@@ -9,17 +9,6 @@ from localconfig import *
 es = elasticsearch.Elasticsearch(ELASTICSEARCH_NODES)
 
 
-def determine_doc_type(url):
-	if url.startswith('https://map.engineroom.anchor.net.au/'):
-		return "map"
-	if url.startswith('https://rt.engineroom.anchor.net.au/'):
-		return "rt"
-        if url.startswith('https://resources.engineroom.anchor.net.au/'):
-		return "provsys"
-
-	return "UNTYPED"
-
-
 def add_to_index(key, value):
 	doc_type = determine_doc_type(key)
 	index_name = "umad_%s" % doc_type
