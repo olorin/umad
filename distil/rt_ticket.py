@@ -129,6 +129,8 @@ def blobify(url):
 	ticket_subject     = ticket['subject']
 	ticket_status      = ticket['status']
 	ticket_lastupdated = ticket['lastupdated']
+	# This may be None if there's no Related Customer set
+	customer_url       = ticket['customer_url']
 
 	# Get a real datetime object, let ElasticSearch figure out the rest
 	ticket_lastupdated = parse(ticket_lastupdated)
@@ -207,6 +209,10 @@ def blobify(url):
 	# Only set last_contact if it has meaning
 	if contact_timestamps:
 		ticketblob['last_contact'] = max(contact_timestamps).astimezone(tzutc())
+
+	# Only set customer_url if the ticket has that metadata
+	if customer_url:
+		ticketblob['customer_url'] = customer_url
 
 	yield ticketblob
 
