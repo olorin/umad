@@ -157,8 +157,12 @@ def blobify(url):
 
 	# XXX: Incurs an explosion if we get a ticket with no messages lol
 	first_post = messages[0]
+	# For some reason, the subject line sometimes appears to be empty. Not
+	# sure if this is a problem with the ticket API.
+	if not first_post['subject']:
+		first_post['subject'] = ticket_subject
 	first_post['content'] = '\n'.join( first_post['content'].split('\n')[:4] )
-	ticket_excerpt = """{from_realname} <{from_email}> sent a mail with subject "{subject}", saying:\n{content} """.format(**first_post)
+	ticket_excerpt = u"""{from_realname} <{from_email}> sent a mail with subject "{subject}", saying:\n{content} """.format(**first_post).encode('utf8')
 
 	# Don't index deleted tickets
 	if ticket_status == 'deleted':
@@ -174,12 +178,19 @@ def blobify(url):
 	# - ticket_status (string)
 	# - messages (iterable of dicts)
 
-	# This is like running `sort | uniq` over all the messages
+	# This is like running `sort | uniq` over all the message bodies
 	all_message_lines = list(set(chain(*[ message['content'].split('\n') for message in messages ])))
+	realnames         = list(set( [ x['from_realname'] for x in messages if x['from_realname'] != '' ] ))
+	emails            = list(set( [ x['from_email']    for x in messages if x['from_email']    != '' ] ))
 
-	# XXX: continue work here, use all_message_lines for the content body instead
-	message_texts = '\n\t'.join([ "%(content)s %(subject)s %(from_realname)s %(from_email)s" % message for message in messages ])
-	blob = '%s %s' % (ticket['subject'], message_texts)
+	blob = " ".join([
+			ticket_number.encode('utf8'),
+			ticket_subject.encode('utf8'),
+			' '.join(realnames).encode('utf8'),
+			' '.join(emails).encode('utf8'),
+			' '.join(all_message_lines).encode('utf8'),
+			])
+
 	ticketblob = {
 		'url':          ticket_url,
 		'blob':         blob,
@@ -188,8 +199,8 @@ def blobify(url):
 		'excerpt':      ticket_excerpt,
 		'subject':      ticket_subject,
 		'status':       ticket_status,
-		'realname':     list(set( [ x['from_realname'] for x in messages if x['from_realname'] != '' ] )),
-		'email':        list(set( [ x['from_email']    for x in messages if x['from_email']    != '' ] )),
+		'realname':     realnames,
+		'email':        emails,
 		'last_updated': ticket_lastupdated,
 		}
 
