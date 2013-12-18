@@ -15,6 +15,14 @@ def add_to_index(key, value):
 
 	# Jam it into a data structure if we're dealing with a bare string
 	if type(value) == type('foo'):
+		# I'd like to kill this code, log to stderr if we hit this code
+		# path and see if we ever hit it. Nuke when it looks safe.
+		# -BD@2013-12-18
+		import sys
+		sys.stderr.write("We got a document that's a string instead "\
+				"of a data structure, make it go away.\nThe "\
+				"URL is: {0}\n".format(key).encode('utf8') )
+		sys.stderr.flush()
 		document = { "blob": value }
 	else:
 		document = value
