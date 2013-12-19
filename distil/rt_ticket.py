@@ -12,6 +12,8 @@ from dateutil.tz import *
 # Fuck urllib2, that's effort. You may need to `pip install requests`.
 # http://docs.python-requests.org/en/latest/index.html
 import requests
+# Cache customer name lookups
+import redis
 
 
 class FailedToRetrieveTicket(Exception):
@@ -32,6 +34,8 @@ TICKET_MESSAGE_URL_TEMPLATE = 'https://ticket.api.anchor.com.au/ticket_message?%
 WEB_TICKET_URL_TEMPLATE = 'https://rt.engineroom.anchor.net.au/Ticket/Display.html?id=%(_id)s'
 
 TICKET_UNSTALL_RE = re.compile(r'The ticket \d+ has not received a reply from the requestor for.*Get on the phone with the client right now', re.I)
+
+CUSTOMER_NAME_CACHE_TTL = 7 * 24 * 60 * 60 # 1 week, in seconds
 
 
 def clean_message(msg):
@@ -100,6 +104,12 @@ def blobify(url):
 	# Note to self: yield'ing is cool. Either yield, return None, or raise
 	# an exception. The latter is some other poor schmuck's problem.
 
+	# Customer Name cache
+	cn_cache = redis.StrictRedis(host='localhost', port=6379, db=0)
+	cn_key   = "customer_id:{0}".format
+	cn_get   = lambda x: None if x is None else cn_cache.get(cn_key(x))  # Being a jackass, I <3 curry
+
+
 	# Prepare auth
 	auth_user = os.environ.get('API_AUTH_USER')
 	auth_pass = os.environ.get('API_AUTH_PASS')
@@ -129,9 +139,33 @@ def blobify(url):
 	ticket_subject     = ticket['subject']
 	ticket_status      = ticket['status']
 	ticket_lastupdated = ticket['lastupdated']
-	# This may be None if there's no Related Customer set
-	customer_url       = ticket['customer_url']
 	customer_visible   = True if not ticket['private'] else False
+
+	# This may be None if there's no Related Customer set
+	customer_url = ticket['customer_url']
+	customer_id  = customer_url.rpartition('/')[-1] if customer_url else None
+
+	customer_name = None
+	if customer_id:
+		if cn_get(customer_id) is None:
+			# We need to retrieve it from the customer API
+			customer_response = requests.get(customer_url, auth=(auth_user,auth_pass), verify=True, headers=headers)
+			if customer_response.status_code != 200:
+				retrieved_name = '__NOT_FOUND__'
+			else:
+				customer_json_blob = customer_response.content # FIXME: add error-checking
+				customer = json.loads(customer_json_blob)
+				retrieved_name = customer.get('description', '__NOT_FOUND__') # more paranoia against the unexpected
+
+			# Now stash it
+			cn_cache.setex( cn_key(customer_id), CUSTOMER_NAME_CACHE_TTL, retrieved_name ) # Assume success, should only fail if TTL is invalid
+
+		# Now make use of it
+		maybe_customer_name = cn_get(customer_id)
+		if maybe_customer_name != "__NOT_FOUND__":
+			# Even if everything goes wrong and cn_key() gives us
+			# None after hitting that customer API, it's okay.
+			customer_name = maybe_customer_name
 
 	# Get a real datetime object, let ElasticSearch figure out the rest
 	ticket_lastupdated = parse(ticket_lastupdated)
@@ -215,6 +249,10 @@ def blobify(url):
 	# Only set customer_url if the ticket has that metadata
 	if customer_url:
 		ticketblob['customer_url'] = customer_url
+
+	# Only set customer_name if we know it
+	if customer_name:
+		ticketblob['customer_name'] = customer_name
 
 	yield ticketblob
 
