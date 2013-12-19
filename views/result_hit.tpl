@@ -40,7 +40,8 @@
 						<ul>
 						% for key in other_metadata:
 							% metadata_value = other_metadata[key]
-							% if isinstance(metadata_value, (str, unicode)):
+							% # Not quite ideal, we should really be catching any "real" iterable (list/dict/tuple), and falling back to default for anything else
+							% if isinstance(metadata_value, (str, unicode, bool)):
 								<li class="metadata"><strong>{{ key.capitalize() }}:</strong> {{ metadata_value }}</li>
 							% else:
 								<li class="metadata"><strong>{{ key.capitalize() }}:</strong> {{ ', '.join(sorted(metadata_value)) }}</li>
