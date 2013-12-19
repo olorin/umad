@@ -88,6 +88,11 @@ a {
 	font-size: larger;
 }
 
+.hitlink .customer-name {
+	font-style: italic;
+	color: green;
+}
+
 .hiturl {
 	font-size: smaller;
 	font-style: italic;

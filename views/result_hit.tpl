@@ -11,7 +11,11 @@
 				<div class="hitlink">
 					% linktext = other_metadata.get('name', id)
 					% linktext = other_metadata.get('title', linktext)
-					<a href="{{ id }}">{{ linktext }}</a> <span class="lsf social-button-jabber" title="SHARE with #robots" onClick="javascript:shareWithSysadmins('{{ id.encode('base64').replace('\n','').strip() }}', '{{ linktext.encode('base64').replace('\n','').strip() }}');">sns</span>
+					% customer_name = other_metadata.get('customer_name', '')
+					% if customer_name:
+						% customer_name = '↜ ' + customer_name.encode('utf8')
+					% end
+					<a href="{{ id }}">{{ linktext }}</a> <span class="customer-name">{{ customer_name }}</span> <span class="lsf social-button-jabber" title="SHARE with #robots" onClick="javascript:shareWithSysadmins('{{ id.encode('base64').replace('\n','').strip() }}', '{{ linktext.encode('base64').replace('\n','').strip() }}');">sns</span>
 					<!-- OPTIONAL FOR NOW
 					<a href="https://twitter.com/share" class="twitter-share-button" data-url="{{ id }}" data-text="{{ linktext }}" data-dnt="true">Tweet that shiz</a>
 					-->
