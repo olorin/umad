@@ -65,8 +65,10 @@ def main(argv=None):
 			debug(red("-------"))
 			document_just_added = get_from_index(doc['url'])['_source']
 			for key in sorted(document_just_added):
+				if not isinstance(document_just_added[key], (str,unicode)):
+					document_just_added[key] = str(document_just_added[key])
 				debug(green(key.capitalize()))
-				debug("\t%s" % document_just_added[key][:1000])
+				debug("\t%s" % document_just_added[key][:1000].encode('utf8'))
 			debug("")
 
 
