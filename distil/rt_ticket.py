@@ -131,6 +131,7 @@ def blobify(url):
 	ticket_lastupdated = ticket['lastupdated']
 	# This may be None if there's no Related Customer set
 	customer_url       = ticket['customer_url']
+	customer_visible   = True if not ticket['private'] else False
 
 	# Get a real datetime object, let ElasticSearch figure out the rest
 	ticket_lastupdated = parse(ticket_lastupdated)
@@ -194,16 +195,17 @@ def blobify(url):
 			])
 
 	ticketblob = {
-		'url':          ticket_url,
-		'blob':         blob,
-		'local_id':     ticket_number,
-		'title':        ticket_subject, # printable as a document title
-		'excerpt':      ticket_excerpt,
-		'subject':      ticket_subject,
-		'status':       ticket_status,
-		'realname':     realnames,
-		'email':        emails,
-		'last_updated': ticket_lastupdated,
+		'url':              ticket_url,
+		'blob':             blob,
+		'local_id':         ticket_number,
+		'title':            ticket_subject, # printable as a document title
+		'excerpt':          ticket_excerpt,
+		'subject':          ticket_subject,
+		'status':           ticket_status,
+		'realname':         realnames,
+		'email':            emails,
+		'last_updated':     ticket_lastupdated,
+		'customer_visible': customer_visible,
 		}
 
 	# Only set last_contact if it has meaning
