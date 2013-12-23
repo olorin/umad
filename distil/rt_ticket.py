@@ -141,6 +141,10 @@ def blobify(url):
 	ticket_lastupdated = ticket['lastupdated']
 	customer_visible   = True if not ticket['private'] else False
 
+	# Don't index deleted tickets
+	if ticket_status == 'deleted':
+		return
+
 	# This may be None if there's no Related Customer set
 	customer_url = ticket['customer_url']
 	customer_id  = customer_url.rpartition('/')[-1] if customer_url else None
@@ -200,10 +204,6 @@ def blobify(url):
 		first_post['subject'] = ticket_subject
 	first_post['content'] = '\n'.join( first_post['content'].split('\n')[:4] )
 	ticket_excerpt = u"""{from_realname} <{from_email}> sent a mail with subject "{subject}", saying:\n{content} """.format(**first_post).encode('utf8')
-
-	# Don't index deleted tickets
-	if ticket_status == 'deleted':
-		return
 
 	# This is an empty list if the ticket has seen no actual communication (eg. internal-only tickets)
 	contact_timestamps = [ parse(m['created']) for m in messages if not m['private'] ]
