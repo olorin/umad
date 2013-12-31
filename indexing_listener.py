@@ -17,7 +17,8 @@ teh_redis = redis.StrictRedis(host='localhost', port=6379, db=0)
 # XXX: maybe these should be to stdout instead of stderr, I dunno
 def debug(msg, force_debug=False):
 	if DEBUG or force_debug:
-		sys.stderr.write(PID_PREFIX + str(msg) + '\n')
+		msg_output = u"{0}{1}\n".format(PID_PREFIX, msg)
+		sys.stderr.write(msg_output.encode('utf8'))
 		sys.stderr.flush()
 
 
@@ -31,7 +32,7 @@ debug("Debug logging is enabled")
 @route('/')
 def index():
 	url = request.query.url or ''
-	debug("URL to index: %s" % url)
+	debug(u"URL to index: %s" % url)
 
 	if not url:
 		abort(400, "Y U DO DIS? I can't index this url: '{0}'".format(url))
@@ -46,12 +47,12 @@ def index():
 		pipeline.zadd('umad_indexing_queue', time.time(), url)
 		pipeline.lpush('barber', 'dummy_value')
 		pipeline.execute() # will return something like:   [ {0|1}, num_dummies ]
-		debug("Successful insertion of %s" % url)
+		debug(u"Successful insertion of %s" % url)
 	except Exception as e:
 		abort(500, "Something went boom: {0}".format(e))
 
 
-	return "Success, enqueued URL for indexing: '{0}'".format(url)
+	return u"Success, enqueued URL for indexing: '{0}'".format(url)
 
 
 
