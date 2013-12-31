@@ -15,11 +15,12 @@ def tidy_url(url):
 		return urlparts[0]+'?action=raw'
 
 def blobify(url):
-	RAGEWIKI_USER = os.environ.get('RAGEWIKI_USER', '')
-	RAGEWIKI_PASS = os.environ.get('RAGEWIKI_PASS', '')
+	MAPWIKI_USER = os.environ.get('MAPWIKI_USER', '')
+	MAPWIKI_PASS = os.environ.get('MAPWIKI_PASS', '')
 
-	url = tidy_url(url)
-	response = requests.get(url, auth=(RAGEWIKI_USER, RAGEWIKI_PASS), verify='AnchorCA.pem')
+	print "Going to get URL: {0}".format(url)
+	response = requests.get(url, auth=(MAPWIKI_USER, MAPWIKI_PASS), verify='AnchorCA.pem')
+	print dir(response)
 
 	return [{ 'url':url, 'blob':response.content }]
 
