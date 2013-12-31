@@ -83,12 +83,16 @@ def blobify(url):
 
 	excerpt = '\n'.join(page_lines[start+1:end]) # fencepost, not interested in the header line
 
+	# Allow for title keyword searching
+	map_rough_title_chunks  = set(page_name.split('/'))
+	map_rough_title_chunks |= set([ WIKIWORD_RE.sub(r'\1 \2', x) for x in s1 ])
+
 
 	document = {}
 	document['url']  = url
 	document['blob'] = blob
 	document['local_id'] = page_name
-	document['map']      = page_name
+	document['map']      = ' '.join(map_rough_title_chunks)
 	document['title']    = title
 	document['excerpt']  = excerpt
 
