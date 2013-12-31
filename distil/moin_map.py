@@ -93,7 +93,7 @@ def blobify(url):
 	document['url']  = url
 	document['blob'] = blob
 	document['local_id'] = page_name
-	document['map']      = ' '.join(map_rough_title_chunks)
+	#document['map']      = ' '.join(map_rough_title_chunks)
 	document['title']    = title
 	document['excerpt']  = excerpt
 
