@@ -4,10 +4,7 @@
 # Make sure to add your new doc_types to this list as well as to
 # `determine_doc_type` below.
 KNOWN_DOC_TYPES = [ 'map', 'rt', 'provsys' ]
-KNOWN_DOC_TYPES.append('UNTYPED')
-
-# temp hack because map isn't indexed yet
-#KNOWN_DOC_TYPES = [ 'rt', 'provsys' ]
+#KNOWN_DOC_TYPES.append('UNTYPED')
 
 
 # Define this function yourself, remember to add doc_types to the list above.
