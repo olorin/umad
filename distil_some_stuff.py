@@ -11,8 +11,10 @@ from elasticsearch_backend import *
 DEBUG = True
 def debug(msg):
 	if DEBUG:
-		sys.stderr.write(msg.encode('utf8') + '\n')
-		sys.stderr.flush()
+		print msg
+		#sys.stderr.write(msg.encode('utf8'))
+		#sys.stderr.write('\n')
+		#sys.stderr.flush()
 
 def red(msg):
 	return colored(msg, 'red')
@@ -68,7 +70,7 @@ def main(argv=None):
 				if not isinstance(document_just_added[key], (str,unicode)):
 					document_just_added[key] = str(document_just_added[key])
 				debug(green(key.capitalize()))
-				debug("\t%s" % document_just_added[key][:1000].encode('utf8'))
+				debug(u"\t{0}".format(document_just_added[key][:1000]).encode('utf8'))
 			debug("")
 
 
