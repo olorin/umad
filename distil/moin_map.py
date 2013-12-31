@@ -85,7 +85,7 @@ def blobify(url):
 
 	# Allow for title keyword searching
 	map_rough_title_chunks  = set(page_name.split('/'))
-	map_rough_title_chunks |= set([ WIKIWORD_RE.sub(r'\1 \2', x) for x in s1 ])
+	map_rough_title_chunks |= set([ WIKIWORD_RE.sub(r'\1 \2', x) for x in map_rough_title_chunks ])
 
 
 	document = {}
