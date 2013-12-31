@@ -18,9 +18,10 @@ def blobify(url):
 	MAPWIKI_USER = os.environ.get('MAPWIKI_USER', '')
 	MAPWIKI_PASS = os.environ.get('MAPWIKI_PASS', '')
 
+	url = tidy_url(url)
+
 	print "Going to get URL: {0}".format(url)
 	response = requests.get(url, auth=(MAPWIKI_USER, MAPWIKI_PASS), verify='AnchorCA.pem')
-	print dir(response)
 
 	return [{ 'url':url, 'blob':response.content }]
 
