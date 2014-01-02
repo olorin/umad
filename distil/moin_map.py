@@ -70,6 +70,7 @@ def blobify(url):
 		path_components = page_name.split('/')
 		title = ' '.join([ WIKIWORD_RE.sub(r'\1 \2', x) for x in path_components ])
 
+
 	# Try and find an exciting excerpt, this is complete and utter guesswork
 	indices_of_lines_beginning_with_equals_sign = [ i for i,x in enumerate(page_lines) if x.startswith('=') ]
 
@@ -82,6 +83,8 @@ def blobify(url):
 		start,end = 0,-1
 
 	excerpt = '\n'.join(page_lines[start+1:end]) # fencepost, not interested in the header line
+	excerpt = excerpt[:1000] # Not too much, guards against pathologically weird articles in particular
+
 
 	# Allow for title keyword searching
 	map_rough_title_chunks  = set(page_name.split('/'))
