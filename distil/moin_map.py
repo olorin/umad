@@ -83,7 +83,7 @@ def blobify(url):
 		start,end = 0,-1
 
 	excerpt = '\n'.join(page_lines[start+1:end]) # fencepost, not interested in the header line
-	excerpt = excerpt[:1000] # Not too much, guards against pathologically weird articles in particular
+	excerpt = excerpt[:500] # Not too much, guards against pathologically weird articles in particular
 
 
 	# Allow for title keyword searching
