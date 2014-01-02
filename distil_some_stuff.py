@@ -59,12 +59,13 @@ def main(argv=None):
 			if doc is None:
 				continue
 			debug(colored("Adding to index: %(url)s" % doc, 'green'))
-			print doc['blob'][:400]
+			debug(colored("400 chars of blob: {0}".format(doc['blob'][:400]), 'blue'))
 			add_to_index(doc['url'], doc)
 			debug(colored("Success!", 'green'))
 			debug("")
 
 			debug(red("-------"))
+			debug(red("Now reprinting the document we just indexed"))
 			document_just_added = get_from_index(doc['url'])['_source']
 			for key in sorted(document_just_added):
 				if not isinstance(document_just_added[key], (str,unicode)):
