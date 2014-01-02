@@ -19,6 +19,7 @@ def determine_doc_type(url):
 		return "provsys"
 
 	# This must return UNTYPED if everything else fails
+	# XXX: actually, index names must apparently be lowercase, so this is invalid
 	return 'UNTYPED'
 
 
