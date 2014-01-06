@@ -61,8 +61,11 @@ def blobify(url):
 	title_list = doc_tree.xpath('//title/text()')
 	if title_list:
 		title = title_list[0]
+		# If we have a real document title, roll it into the local_id for searchability goodness
+		local_id += " " + ' '.join(title.split())
 	else:
 		title = local_id
+
 
 	# The homepage of each repo is called Home, let's have something slightly more useful
 	if title == 'Home':
