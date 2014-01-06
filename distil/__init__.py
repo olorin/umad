@@ -1,4 +1,5 @@
 import moin_map
+import gollum_docs
 import local_file
 import http_generic
 import rt_ticket
@@ -41,6 +42,9 @@ class Distiller(object):
 			elif url.startswith('rt://'):
 				self.url = url.replace('rt://', 'https://rt.engineroom.anchor.net.au/Ticket/Display.html?id=')
 				self.fetcher = rt_ticket
+
+			elif url.startswith('https://docs.anchor.net.au/'):
+				self.fetcher = gollum_docs
 
 			elif url.startswith('https://ticket.api.anchor.com.au/ticket?'):
 				self.fetcher = rt_ticket_query

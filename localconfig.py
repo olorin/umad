@@ -3,7 +3,7 @@
 
 # Make sure to add your new doc_types to this list as well as to
 # `determine_doc_type` below.
-KNOWN_DOC_TYPES = [ 'map', 'rt', 'provsys' ]
+KNOWN_DOC_TYPES = [ 'map', 'rt', 'provsys', 'docs' ]
 #KNOWN_DOC_TYPES.append('UNTYPED')
 
 
@@ -17,6 +17,9 @@ def determine_doc_type(url):
 
 	if url.startswith('https://resources.engineroom.anchor.net.au/'):
 		return "provsys"
+
+	if url.startswith('https://docs.anchor.net.au/'):
+		return "docs"
 
 	# This must return UNTYPED if everything else fails
 	# XXX: actually, index names must apparently be lowercase, so this is invalid
