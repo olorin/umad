@@ -44,6 +44,7 @@ def blobify(url):
 	content = html2text.html2text(response.text)
 	# We could probably do this with lxml and some XPath, but meh
 	content = content.replace('\n\n  * Search\n\n  * Home\n  * All\n  * Files\n  * New\n  * Upload\n  * Rename\n  * Edit\n  * History', '')
+	content = content.replace('\n\n  * Search\n\n  * Home\n  * All\n  * New\n  * Upload\n  * Rename\n  * Edit\n  * History', '') # why is Files not always there?
 
 	# XXX: We're assuming here that all pages across all wikis are in a single index and namespace
 	# XXX: What if the page is empty? Might break a whole bunch of assumptions below this point.
@@ -53,6 +54,11 @@ def blobify(url):
 
 	# Get the content
 	page_lines = [ line.strip() for line in content.split('\n') ]
+
+	# Kill empty lines and clean out footer
+	page_lines = [ line for line in page_lines if line ]
+	if page_lines[-1] == 'Delete this Page': del(page_lines[-1])
+	if page_lines[-1].startswith('Last edited by '): del(page_lines[-1])
 
 	# Local identifier will be the URL path components
 	local_id = ' '.join( page_name.split('/') )
