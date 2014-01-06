@@ -4,6 +4,7 @@
 				% # Convert CSS highlighting classes to a semantic description of the document type (always plural)
 				% highlight_classes_to_doctypes = {}
 				% highlight_classes_to_doctypes['highlight-portal-orange'] = "provsys servers"
+				% highlight_classes_to_doctypes['highlight-portal-blue'] = "gollum docs"
 				% highlight_classes_to_doctypes['highlight-luka'] = "RT tickets"
 				% highlight_classes_to_doctypes['highlight-miku'] = "Map wiki pages"
 				% highlight_classes_to_doctypes[''] = "documents of unknown origin"

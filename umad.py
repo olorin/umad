@@ -29,6 +29,8 @@ def highlight_document_source(url):
 		return 'highlight-luka'
 	if url.startswith('https://resources.engineroom.anchor.net.au/'):
 		return 'highlight-portal-orange'
+	if url.startswith('https://docs.anchor.net.au/'):
+		return 'highlight-portal-blue'
 
 	return ''
 
