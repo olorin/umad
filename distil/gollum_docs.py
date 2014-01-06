@@ -73,6 +73,11 @@ def blobify(url):
 		title = local_id
 
 
+	# If we get this title, it means that the page doesn't exist, it was probably deleted.
+	# XXX: Just bail out for now, but the correct action is to probably nuke the index entry.
+	if title == 'Create a new page':
+		return
+
 	# The homepage of each repo is called Home, let's have something slightly more useful
 	if title == 'Home':
 		title = local_id
