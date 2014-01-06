@@ -18,9 +18,7 @@
 					% end
 					<a href="{{ id }}">{{ linktext }}</a> <span class="customer-name">{{ customer_name }}</span> <span class="lsf social-button-jabber" title="SHARE with #robots" onClick="javascript:shareWithSysadmins('{{ id.encode('base64').replace('\n','').strip() }}', '{{ linktext.encode('base64').replace('\n','').strip() }}');">sns</span>
 					<!-- OPTIONAL FOR NOW
-					-->
 					<a href="https://twitter.com/share" class="twitter-share-button" data-url="{{ id }}" data-text="{{ linktext }}" data-dnt="true">Tweet that shiz</a>
-					<!-- OPTIONAL FOR NOW
 					-->
 				</div>
 
