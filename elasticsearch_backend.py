@@ -52,6 +52,7 @@ def add_to_index(key, value):
 def delete_from_index(url):
 	doc_type = determine_doc_type(url)
 	index_name = "umad_%s" % doc_type
+	#print "Index type is {0}".format(index_name)
 
 	try:
 		es.delete(
@@ -59,7 +60,7 @@ def delete_from_index(url):
 			doc_type = doc_type,
 			id = url
 		)
-	except elasticsearch.exceptions.NotFoundError:
+	except elasticsearch.exceptions.NotFoundError as e:
 		pass
 
 	# Get rid of it from the legacy index as well
@@ -69,7 +70,7 @@ def delete_from_index(url):
 			doc_type = doc_type,
 			id = url
 		)
-	except elasticsearch.exceptions.NotFoundError:
+	except elasticsearch.exceptions.NotFoundError as e:
 		pass
 
 	return
