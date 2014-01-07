@@ -120,7 +120,7 @@ def blobify(url):
 	try:
 		ticket_response.raise_for_status()
 	except:
-		raise FailedToRetrieveTicket("Error getting Ticket from API, got HTTP response %s" % ticket_response.status_code)
+		raise FailedToRetrieveTicket("Couldn't get ticket from API, HTTP error %s, probably not allowed to view ticket" % ticket_response.status_code)
 
 	# Mangle ticket until no good
 	ticket_json_blob = ticket_response.content # FIXME: add error-checking
