@@ -26,9 +26,9 @@ debug("Debug logging is enabled")
 
 
 def index(url):
-	debug("-" * len("URL: %s" % url))
+	#debug("-" * len("URL: %s" % url))
 	debug("URL: %s" % url)
-	debug("-" * len("URL: %s" % url))
+	#debug("-" * len("URL: %s" % url))
 
 	d = distil.Distiller(url)
 
