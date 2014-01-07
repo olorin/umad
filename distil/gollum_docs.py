@@ -111,7 +111,7 @@ def blobify(url):
 	document['excerpt']  = excerpt
 
 	for key in document:
-		print "{0}\n\t{1}\n".format(key, document[key][:400])
+		print u"{0}\n\t{1}\n".format(key, document[key][:400])
 
 
 	yield document
