@@ -11,9 +11,7 @@ import html2text
 
 # XXX: constants go here
 
-class FailedToRetrievePage(Exception):
-	def __init__(self, msg):
-		self.msg = msg
+class FailedToRetrievePage(Exception): pass
 
 def tidy_url(url):
 	"XXX: what's this for?"

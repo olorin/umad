@@ -8,9 +8,7 @@ import json
 import requests
 
 
-class MissingAuthToken(Exception):
-	def __init__(self, msg):
-		self.msg = msg
+class MissingAuthToken(Exception): pass
 
 
 WEB_TICKET_URL_TEMPLATE = 'https://rt.engineroom.anchor.net.au/Ticket/Display.html?id=%(_id)s'

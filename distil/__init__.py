@@ -8,13 +8,9 @@ import provsys
 import provsysservers
 
 
-class BadUrl(Exception):
-	def __init__(self, msg):
-		self.msg = msg
+class BadUrl(Exception): pass
 
-class NoUrlHandler(Exception):
-	def __init__(self, msg):
-		self.msg = msg
+class NoUrlHandler(Exception): pass
 
 class Distiller(object):
 	def __init__(self, url):

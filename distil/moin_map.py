@@ -10,9 +10,7 @@ NON_TITLE_MACRO_RE = re.compile(r'<<(?!Title[(>])')
 WIKIWORD_RE        = re.compile(r'([a-z]+)([A-Z])')
 REDIRECT_RE        = re.compile(r'#redirect\b', re.I)
 
-class FailedToRetrievePage(Exception):
-	def __init__(self, msg):
-		self.msg = msg
+class FailedToRetrievePage(Exception): pass
 
 def tidy_url(url):
 	"This is a hack that destroys query parameters"

@@ -16,17 +16,11 @@ import requests
 import redis
 
 
-class FailedToRetrieveTicket(Exception):
-	def __init__(self, msg):
-		self.msg = msg
+class FailedToRetrieveTicket(Exception): pass
 
-class BadRtUrl(Exception):
-	def __init__(self, msg):
-		self.msg = msg
+class BadRtUrl(Exception): pass
 
-class MissingAuth(Exception):
-	def __init__(self, msg):
-		self.msg = msg
+class MissingAuth(Exception): pass
 
 
 TICKET_URL_TEMPLATE = 'https://ticket.api.anchor.com.au/ticket/%s'
