@@ -4,8 +4,9 @@ import local_file
 import http_generic
 import rt_ticket
 import rt_ticket_query
-import provsys
 import provsysservers
+import provsysresource
+import provsys
 
 
 class BadUrl(Exception): pass
@@ -44,12 +45,14 @@ class Distiller(object):
 
 			elif url.startswith('https://ticket.api.anchor.com.au/ticket?'):
 				self.fetcher = rt_ticket_query
-			elif url.startswith( ('http://', 'https://') ):
-				self.fetcher = http_generic
 			elif url.startswith('provsysservers://'):
 				self.fetcher = provsysservers
+			elif url.startswith('https://resources.engineroom.anchor.net.au/resources/'):
+				self.fetcher = provsysresource
 			elif url.startswith('provsys://'):
 				self.fetcher = provsys
+			elif url.startswith( ('http://', 'https://') ):
+				self.fetcher = http_generic
 			elif url.startswith('file:///'):
 				self.fetcher = local_file
 			elif url.startswith('example://your.url.here/'):
