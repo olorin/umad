@@ -87,24 +87,13 @@ def blobify(url):
 	blob = '\n'.join(page_lines)
 
 	# Try and find an exciting excerpt, this is complete and utter guesswork
-	indices_of_lines_beginning_with_equals_sign = [ i for i,x in enumerate(page_lines) if x.startswith('=') or x.startswith('<<Title') ]
-
-	if len(indices_of_lines_beginning_with_equals_sign) >= 2:
-		start,end = indices_of_lines_beginning_with_equals_sign[0:2]
-	elif len(indices_of_lines_beginning_with_equals_sign) == 1:
-		start = indices_of_lines_beginning_with_equals_sign[0]
-		end   = start + 5 # magic number
-	else:
-		start,end = 0,-1
-
-	excerpt = '\n'.join(page_lines[start+1:end]) # fencepost, not interested in the header line
-	excerpt = excerpt[:500] # Not too much, guards against pathologically weird articles in particular
-
+	excerpt = '\n'.join(page_lines[:10])
 
 	# Allow for title keyword searching
 	map_rough_title_chunks  = set(page_name.split('/'))
 	map_rough_title_chunks |= set([ WIKIWORD_RE.sub(r'\1 \2', x) for x in map_rough_title_chunks ])
 
+	# Good to go now
 	document = {}
 	document['url']  = url
 	document['blob'] = blob
@@ -113,4 +102,3 @@ def blobify(url):
 	document['excerpt']  = excerpt
 
 	yield document
-
