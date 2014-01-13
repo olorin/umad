@@ -57,6 +57,8 @@ def blobify(url):
 	page_lines = [ line for line in page_lines if line ]
 	if page_lines[-1] == 'Delete this Page': del(page_lines[-1])
 	if page_lines[-1].startswith('Last edited by '): del(page_lines[-1])
+	# Kill residue from conversion
+	page_lines = [ line for line in page_lines if line != '!toc' ]
 
 	# Local identifier will be the URL path components
 	local_id = ' '.join( page_name.split('/') )
@@ -83,22 +85,8 @@ def blobify(url):
 	# Content is now considered tidy
 	blob = '\n'.join(page_lines)
 
-
-
 	# Try and find an exciting excerpt, this is complete and utter guesswork
-	indices_of_header_lines = [ i for i,x in enumerate(page_lines) if x.startswith('#') ]
-
-	if len(indices_of_header_lines) >= 2:
-		start,end = indices_of_header_lines[0:2]
-	elif len(indices_of_header_lines) == 1:
-		start = indices_of_header_lines[0]
-		end   = start + 5 # magic number
-	else:
-		start,end = 0,-1
-
-	excerpt = '\n'.join(page_lines[start+1:end]) # fencepost, not interested in the header line
-	excerpt = excerpt[:500] # Not too much, guards against pathologically weird articles in particular
-
+	excerpt = '\n'.join(page_lines[:10])
 
 	# Good to go now
 	document = {}
@@ -113,4 +101,3 @@ def blobify(url):
 
 
 	yield document
-
