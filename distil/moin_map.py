@@ -59,8 +59,8 @@ def blobify(url):
 
 
 	# Try to find a suitable title
-	lines_starting_with_title_macro = [ line for line in page_lines if line.startswith('<<Title') ]
-	lines_starting_with_equals_sign = [ line for line in page_lines if line.startswith('=') ]
+	lines_starting_with_title_macro = [ line for line in page_lines[:3] if line.startswith('<<Title') ]
+	lines_starting_with_equals_sign = [ line for line in page_lines[:3] if line.startswith('=') ]
 
 	title = None
 	if lines_starting_with_title_macro:
@@ -73,6 +73,7 @@ def blobify(url):
 	elif lines_starting_with_equals_sign:
 		title_line = lines_starting_with_equals_sign[0]
 		title = title_line.strip('= ')
+		page_lines.remove(title_line)
 
 	if not title: # Either got left with an empty string, or still None
 		path_components = page_name.split('/')
