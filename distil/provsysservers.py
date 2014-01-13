@@ -83,7 +83,7 @@ def blobify(UNUSED):
 
 		excerpt = "{name} is a {support} {machinetype} in {container}, running {distro} {version}. ".format(**server_yieldable)
 		if collection:
-			excerpt += "It belongs to {customer} (taskid {taskid}). ".format(**server_yieldable)
+			excerpt += "It belongs to {customer} (customer_id: {taskid}). ".format(**server_yieldable)
 
 		server_yieldable['blob'] = digest.strip()
 		server_yieldable['excerpt'] = excerpt.strip()
