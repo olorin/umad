@@ -44,6 +44,7 @@ def blobify(url):
 
 	# Get the content
 	page_lines = [ line.strip() for line in response.content.split('\n') ]
+	page_lines = [ line for line in page_lines if line ]
 
 	# XXX: what if the page is empty? Might break a whole bunch of assumptions below this point.
 
