@@ -6,6 +6,99 @@ import json
 
 from provisioningclient import *
 
+def debug(msg=''):
+	pass # uncomment the following line to enable debug output
+	print msg
+
+
+def os_to_document(os_resource):
+	"Take an OS provsys resource, return a document to give to UMAD"
+
+	os_name      = os_resource.name
+	supportlevel = os_resource.details['supportlevel']
+	version      = os_resource.details['version']
+	release      = os_resource.details['release']
+	distro       = os_resource.details['distro']
+	collection   = os_resource.collection
+
+	# Determine chassis and location
+	chassis = os_resource.container
+	chassistype = 'NOT_A_CHASSIS'
+	locationtype = 'NOT_A_LOCATION'
+
+	if chassis is not None:
+		# Some resources aren't "sane", we can't rely on them being in
+		# a meaningful chassis and location.
+		chassis.load(with_fields=['name', 'type','container']) # override lazy loading
+		# "Virtual Machine" or "Rackmount Chassis"
+		chassistype = chassis.type.name
+
+		location = chassis.container
+		if location is not None:
+			location.load(with_fields=['name','type','container']) # override lazy loading
+			# XXX: "something hypervisor something" or "Y" or "Z"
+			locationtype = location.type.name
+
+	# Get the type of container, either gets "Virtual Machine" or "Rackmount Chassis" I think
+	if 'hypervisor' in locationtype.lower():
+		hypervisor_os = location.container
+		hypervisor_os.load(with_fields='name') # override lazy loading
+		containedin = hypervisor_os.name
+	else:
+		containedin = location.name
+		if chassis.type.name == "Rackmount Chassis" and chassis.name != os_name:
+			chassistype = "Rackmount Chassis (%s)" % chassis.name
+
+	# Debian is special
+	if distro == 'Debian':
+		pretty_name = release
+	else:
+		pretty_name = version
+
+	# The uri seems to have auth credentials in it, which we want to strip
+	uri = re.sub(r'(https?://)([^@]+@)?(.*)', r'\1\3', os_resource._uri)
+
+	# Put it all together
+	server_yieldable = {}
+	digest = ''
+
+	server_yieldable['url']   = uri
+
+	server_yieldable['name']  = os_name
+	server_yieldable['title'] = os_name
+	digest += ' '+os_name
+
+	if collection:
+		server_yieldable['customer'] = collection.name
+		server_yieldable['taskid']   = collection.ourclientref
+		digest += ' {0} {1}'.format(collection.name, collection.ourclientref)
+
+	server_yieldable['distro'] = distro
+	digest += ' '+distro
+
+	server_yieldable['version'] = pretty_name
+	digest += ' '+pretty_name
+
+	server_yieldable['container'] = containedin
+	digest += ' '+containedin
+
+	server_yieldable['machinetype'] = chassistype
+	digest += ' '+chassistype
+
+	server_yieldable['support'] = supportlevel
+	digest += ' '+supportlevel
+
+	excerpt = "{name} is a {support} {machinetype} in {container}, running {distro} {version}. ".format(**server_yieldable)
+	if collection:
+		excerpt += "It belongs to {customer} (customer_id: {taskid}). ".format(**server_yieldable)
+
+	server_yieldable['blob'] = digest.strip()
+	server_yieldable['excerpt'] = excerpt.strip()
+
+	return server_yieldable
+
+
+
 def blobify(url):
 	'''Example URL: https://resources.engineroom.anchor.net.au/resources/10150 '''
 
@@ -18,61 +111,46 @@ def blobify(url):
 
 	# Get the resource
 	resource_id = url.replace('https://resources.engineroom.anchor.net.au/resources/', '')
-	resource = Resource.get(resource_id)
+	result = Resource.get(resource_id)
 	try:
-		resource.load()
+		result.load()
 	except lib.provisioningobject.HTTPError as e:
 		print "Resource {0} doesn't exist :(".format(resource_id)
 		return
 
-	# Check that the supertype is "Generic OS install" or <something chassis>
-	result = resource
-	print result
+	resource = result
+	oses_to_index = []
+
+	# XXX: Performance! \o/
+	#os_type_ids = [ x.id for x in Type.search(parent='Generic OS install') ]
+	#   Linux&
+	#   Windows&
+	#   BSD&
+	#   Other OS
+	os_type_ids = [27, 28, 29, 36]
+
+	# A bit more specialised, we're not using supertype='Generic Chassis'
+	# because only certain chassis types are likely to be renamed.
+	# 8/9/51 = Rackmount/Desktop/Colocated
+	chassis_type_ids = [8, 9, 51]
 
 
-	return
+	# Check if we're dealing with a chassis (a physical one that might be
+	# renamed) and find all the OSes inside.
+	if resource.type.id in chassis_type_ids:
+		debug("Resource {0} is a chassis, will find OSes contained within".format(resource_id))
+		this_chassis = resource
+		child_oses = Resource.search(supertype="Generic OS install", container=this_chassis)
+		for child_os in child_oses:
+			debug("Enqueueing resource {0} for indexing".format(child_os.id))
+			oses_to_index.append(child_os)
 
-	supportlevel = result.details['supportlevel']
-	version      = result.details['version']
-	release      = result.details['release']
-	distro       = result.details['distro']
-	collection   = result.collection
+	# Or check if we've got an OS (supertype is "Generic OS install")
+	elif resource.type.id in os_type_ids:
+		debug("Resource {0} is an OS, will enqueue".format(resource_id))
+		oses_to_index.append(resource)
 
-	# Determine chassis here - with some special hacks for performance increases.
-	machinechassis = result.container
-	machinechassis.load(with_fields=['name', 'type','container']) # override lazy loading
-	chassiscontainer = machinechassis.container
-	chassiscontainer.load(with_fields=['name','type','container']) # override lazy loading
-	typeofcontainer = chassiscontainer.type.name
-	typeofmachine = machinechassis.type.name
-
-	# Get the type of container, either gets "Virtual Machine" or "Rackmount Chassis" I think
-	if re.search("hypervisor", typeofcontainer, flags=re.IGNORECASE):
-		hypervisor_os = chassiscontainer.container
-		hypervisor_os.load(with_fields='name') # override lazy loading
-		containedin = hypervisor_os.name
-	else:
-		containedin = chassiscontainer.name
-		if machinechassis.type.name == "Rackmount Chassis" and  machinechassis.name != result.name:
-			typeofmachine = "Rackmount Chassis (%s)" % machinechassis.name
-
-	# Debian is special
-	if distro == 'Debian':
-		pretty_name = release
-	else:
-		pretty_name = version
-
-	# The uri seems to have auth credentials in it, which we want to strip
-	uri = re.sub(r'(https?://)([^@]+@)?(.*)', r'\1\3', result._uri)
-
-	server_data = {}
-	server_data['name'] = result.name
-	server_data['distro'] = distro
-	server_data['pretty_name'] = pretty_name
-	server_data['customer_name'] = ''
-	if collection:
-		server_data['customer_name'] = "%s %s" % (collection.name, collection.ourclientref)
-	server_data['container'] = "%s %s" % (typeofmachine, containedin)
-	server_data['supportlevel'] = supportlevel
-
-	yield { 'url':uri, 'server_data':server_data }
+	debug("Ready to index OSes")
+	for os in oses_to_index:
+		debug("Document'ing OS {0}".format(os.name))
+		yield os_to_document(os)
