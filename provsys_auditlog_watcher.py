@@ -26,16 +26,18 @@
 
 
 import sys
+import os
 import json
 import requests
 from urllib import urlencode
 import redis
+import time
 
 class FailedToRetrieveAuditlogEntry(Exception): pass
 
 def debug(msg=''):
 	pass # uncomment the following line to enable debug output
-	#print msg
+	print msg
 
 
 AUDITLOG_ENTRY_URL_TEMPLATE = 'https://resources.engineroom.anchor.net.au/logs/{0}'.format
@@ -56,6 +58,9 @@ def main(argv=None):
 	# Find our feet
 	auditlog_scratchpad = redis.StrictRedis(host='localhost', port=6379, db=0)
 	auditlog_position = auditlog_scratchpad.get('auditlog_position')
+	if not auditlog_position:
+		print "Couldn't fetch current auditlog position from Redis, have you primed it yet?"
+		return 2
 	debug("Will look for next auditlog entry with ID {0}".format(auditlog_position))
 
 	# Keep fetching and incrementing until you get a 404
@@ -112,4 +117,9 @@ def main(argv=None):
 
 
 if __name__ == "__main__":
-	sys.exit(main())
+	SLEEP_5MIN_BEFORE_EXITING = os.environ.get('SLEEP_5MIN_BEFORE_EXITING')
+	rc = main()
+	if SLEEP_5MIN_BEFORE_EXITING:
+		debug("Running in ghetto-cron mode, sleeping for 300 seconds before exiting...")
+		time.sleep(5*60)
+	sys.exit(rc)
