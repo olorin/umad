@@ -25,6 +25,7 @@ def os_to_document(os_resource):
 	chassis = os_resource.container
 	chassistype = 'NOT_A_CHASSIS'
 	locationtype = 'NOT_A_LOCATION'
+	containedin = 'NOT_AN_OS_CONTAINER'
 
 	if chassis is not None:
 		# Some resources aren't "sane", we can't rely on them being in
@@ -45,9 +46,12 @@ def os_to_document(os_resource):
 		hypervisor_os.load(with_fields='name') # override lazy loading
 		containedin = hypervisor_os.name
 	else:
-		containedin = location.name
-		if chassis.type.name == "Rackmount Chassis" and chassis.name != os_name:
-			chassistype = "Rackmount Chassis (%s)" % chassis.name
+		# Probably a physical machine
+		if location is not None:
+			containedin = location.name
+		if chassis is not None:
+			if chassistype == "Rackmount Chassis" and chassis.name != os_name:
+				chassistype = "Rackmount Chassis (%s)" % chassis.name
 
 	# Debian is special
 	if distro == 'Debian':
