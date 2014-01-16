@@ -61,12 +61,15 @@ def blobify(url):
 	page_lines = [ line for line in page_lines if line != '!toc' ]
 
 	# Local identifier will be the URL path components
-	local_id = ' '.join( page_name.split('/') )
+	# Foo/Bar/Baz-is-da-best  =>  Foo Bar Baz is da best
+	local_id = page_name.replace('/', ' ').replace('-', ' ')
 
 	# Pull the title from the HTML
 	title_list = doc_tree.xpath('//title/text()')
 	if title_list:
 		title = title_list[0]
+		# Slashes in titles aren't very useful, we'll break on spaces instead later
+		title = title.replace('/', ' ')
 		# If we have a real document title, roll it into the local_id for searchability goodness
 		local_id += " " + ' '.join(title.split())
 	else:
