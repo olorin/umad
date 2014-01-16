@@ -69,7 +69,7 @@ def blobify(url):
 	if title_list:
 		title = title_list[0]
 		# Slashes in titles aren't very useful, we'll break on spaces instead later
-		title = title.replace('/', ' ')
+		title = title.replace('/', ' / ')
 		# If we have a real document title, roll it into the local_id for searchability goodness
 		local_id += " " + ' '.join(title.split())
 	else:
