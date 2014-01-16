@@ -86,7 +86,7 @@ def blobify(url):
 		title = local_id
 
 	# Content is now considered tidy
-	blob = '\n'.join(page_lines)
+	blob = '\n'.join([title]+page_lines)
 
 	# Try and find an exciting excerpt, this is complete and utter guesswork
 	excerpt = '\n'.join(page_lines[:10])
