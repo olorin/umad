@@ -14,6 +14,7 @@ def debug(msg=''):
 def os_to_document(os_resource):
 	"Take an OS provsys resource, return a document to give to UMAD"
 
+	resource_id  = os_resource._id
 	os_name      = os_resource.name
 	supportlevel = os_resource.details['supportlevel']
 	version      = os_resource.details['version']
@@ -66,7 +67,8 @@ def os_to_document(os_resource):
 	server_yieldable = {}
 	digest = ''
 
-	server_yieldable['url']   = uri
+	server_yieldable['url']      = uri
+	server_yieldable['local_id'] = resource_id
 
 	server_yieldable['name']  = os_name
 	server_yieldable['title'] = os_name
