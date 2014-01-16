@@ -41,8 +41,8 @@ def blobify(url):
 	doc_tree = html.fromstring(response.text)
 	content = html2text.html2text(response.text)
 	# We could probably do this with lxml and some XPath, but meh
-	content = content.replace('\n\n  * Search\n\n  * Home\n  * All\n  * Files\n  * New\n  * Upload\n  * Rename\n  * Edit\n  * History', '')
-	content = content.replace('\n\n  * Search\n\n  * Home\n  * All\n  * New\n  * Upload\n  * Rename\n  * Edit\n  * History', '') # why is Files not always there?
+	content = content.replace('  * Search\n\n  * Home\n  * All\n  * Files\n  * New\n  * Upload\n  * Rename\n  * Edit\n  * History', '')
+	content = content.replace('  * Search\n\n  * Home\n  * All\n  * New\n  * Upload\n  * Rename\n  * Edit\n  * History', '') # womble stole the precious thing (Files)
 
 	# XXX: We're assuming here that all pages across all wikis are in a single index and namespace
 	# XXX: What if the page is empty? Might break a whole bunch of assumptions below this point.
