@@ -53,6 +53,10 @@ def clean_message(msg):
 	body_lines = [ line.strip() for line in body_lines ]                     # Remove leading and trailing whitespace for later compaction
 	body_lines = [ line for line in body_lines if not line.startswith('>') ] # Quoted lines
 	body_lines = [ line for line in body_lines if not line == '' ]           # Empty lines
+	body_lines = [ line for line in body_lines if line not in ('Hi,', 'Hello,') or len(line) > 20 ] # Greetings
+	lines_beginning_with_thanks = [ line for line in body_lines if line.startswith('Thanks') and len(line) < 10 ] # Kill trailing platitudes
+	if lines_beginning_with_thanks:
+		body_lines = body_lines[:body_lines.index(lines_beginning_with_thanks[0])]
 	if 'Regards,' in body_lines:                                             # Kill trailing platitudes
 		body_lines = body_lines[:body_lines.index('Regards,')]
 	if '--' in body_lines:                                                   # Kill signatures
@@ -132,6 +136,8 @@ def blobify(url):
 	ticket_number      = "{_id}".format(**ticket)
 	ticket_subject     = ticket['subject']
 	ticket_status      = ticket['status']
+	ticket_queue       = ticket['queue']
+	ticket_priority    = ticket['priority']
 	ticket_lastupdated = ticket['lastupdated']
 	customer_visible   = True if not ticket['private'] else False
 
@@ -196,8 +202,20 @@ def blobify(url):
 	# sure if this is a problem with the ticket API.
 	if not first_post['subject']:
 		first_post['subject'] = ticket_subject
-	first_post['content'] = '\n'.join( first_post['content'].split('\n')[:4] )
-	ticket_excerpt = u"""{from_realname} <{from_email}> sent a mail with subject "{subject}", saying:\n{content} """.format(**first_post).encode('utf8')
+	first_post['content'] = '\n'.join( first_post['content'].split('\n')[:6] )
+	ticket_excerpt = first_post['content'].encode('utf8')
+
+	# Grab customer-presentable messages
+	if customer_visible:
+		public_messages = [ m for m in messages if not m['private'] ]
+
+		# XXX: Incurs an explosion if we get a ticket with no messages lol
+		public_first_post = public_messages[0]
+		# For some reason, the subject line sometimes appears to be empty. Not
+		# sure if this is a problem with the ticket API.
+		if not public_first_post['subject']:
+			public_first_post['subject'] = ticket_subject
+		public_ticket_excerpt = public_first_post['content'].encode('utf8')
 
 	# This is an empty list if the ticket has seen no actual communication (eg. internal-only tickets)
 	contact_timestamps = [ parse(m['created']) for m in messages if not m['private'] ]
@@ -207,10 +225,15 @@ def blobify(url):
 	# - ticket_url (string)
 	# - ticket_subject (string)
 	# - ticket_status (string)
+	# - ticket_queue (string)
+	# - ticket_priority (int)
 	# - messages (iterable of dicts)
+	# - public_messages (iterable of dicts)
+	# - public_ticket_excerpt (string)
 
-	# This is like running `sort | uniq` over all the message bodies
-	all_message_lines = list(set(chain(*[ message['content'].split('\n') for message in messages ])))
+	all_message_lines = chain(*[ message['content'].split('\n') for message in messages ])
+	if customer_visible:
+		public_all_message_lines = chain(*[ message['content'].split('\n') for message in public_messages ])
 	realnames         = list(set( [ x['from_realname'] for x in messages if x['from_realname'] != '' ] ))
 	emails            = list(set( [ x['from_email']    for x in messages if x['from_email']    != '' ] ))
 
@@ -222,6 +245,16 @@ def blobify(url):
 			' '.join(all_message_lines).encode('utf8'),
 			])
 
+	public_blob = None
+	if customer_visible:
+		public_blob = " ".join([
+				ticket_number.encode('utf8'),
+				ticket_subject.encode('utf8'),
+				' '.join(realnames).encode('utf8'),
+				' '.join(emails).encode('utf8'),
+				' '.join(public_all_message_lines).encode('utf8'),
+				])
+
 	ticketblob = {
 		'url':              ticket_url,
 		'blob':             blob,
@@ -230,11 +263,17 @@ def blobify(url):
 		'excerpt':          ticket_excerpt,
 		'subject':          ticket_subject,
 		'status':           ticket_status,
+		'queue':            ticket_queue,
+		'priority':         ticket_priority,
 		'realname':         realnames,
 		'email':            emails,
 		'last_updated':     ticket_lastupdated,
 		'customer_visible': customer_visible,
 		}
+
+	# Only set public_blob if we've got it
+	if public_blob:
+		ticketblob['public_blob'] = public_blob
 
 	# Only set last_contact if it has meaning
 	if contact_timestamps:
@@ -249,4 +288,3 @@ def blobify(url):
 		ticketblob['customer_name'] = customer_name
 
 	yield ticketblob
-
