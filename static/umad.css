@@ -128,6 +128,7 @@ li {
 
 .result-card .excerpt {
 	white-space: pre-line;
+	line-height: 1.4;
 }
 
 .result-card .social-button-jabber {
