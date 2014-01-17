@@ -68,7 +68,7 @@ def os_to_document(os_resource):
 	digest = ''
 
 	server_yieldable['url']      = uri
-	server_yieldable['local_id'] = resource_id
+	server_yieldable['local_id'] = str(resource_id)
 
 	server_yieldable['name']  = os_name
 	server_yieldable['title'] = os_name
