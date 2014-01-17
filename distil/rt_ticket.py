@@ -209,13 +209,16 @@ def blobify(url):
 	if customer_visible:
 		public_messages = [ m for m in messages if not m['private'] ]
 
-		# XXX: Incurs an explosion if we get a ticket with no messages lol
-		public_first_post = public_messages[0]
-		# For some reason, the subject line sometimes appears to be empty. Not
-		# sure if this is a problem with the ticket API.
-		if not public_first_post['subject']:
-			public_first_post['subject'] = ticket_subject
-		public_ticket_excerpt = public_first_post['content'].encode('utf8')
+		# XXX: We have found non-private tickets without any customer-visible messages, like rt://8785
+		if public_messages:
+			public_first_post = public_messages[0]
+			# For some reason, the subject line sometimes appears to be empty. Not
+			# sure if this is a problem with the ticket API.
+			if not public_first_post['subject']:
+				public_first_post['subject'] = ticket_subject
+			public_ticket_excerpt = public_first_post['content'].encode('utf8')
+		else:
+			public_ticket_excerpt = "No excerpt could be found for this ticket, please contact Anchor Support for assistance"
 
 	# This is an empty list if the ticket has seen no actual communication (eg. internal-only tickets)
 	contact_timestamps = [ parse(m['created']) for m in messages if not m['private'] ]
@@ -246,7 +249,7 @@ def blobify(url):
 			])
 
 	public_blob = None
-	if customer_visible:
+	if customer_visible and [ x for x in public_all_message_lines ]: # Double-check for existence of real content
 		public_blob = " ".join([
 				ticket_number.encode('utf8'),
 				ticket_subject.encode('utf8'),
