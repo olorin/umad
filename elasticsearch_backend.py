@@ -7,6 +7,7 @@ from localconfig import *
 
 
 es = elasticsearch.Elasticsearch(ELASTICSEARCH_NODES)
+indices = elasticsearch.client.IndicesClient(es)
 
 class InvalidDocument(Exception): pass
 
@@ -74,6 +75,11 @@ def delete_from_index(url):
 
 	return
 
+
+def valid_search_query(search_term):
+	"Return True/False as to whether the query is valid"
+	test_results = indices.validate_query(index=ELASTICSEARCH_SEARCH_INDEXES, q=search_term)
+	return test_results[u'valid']
 
 def search_index(search_term):
 	results = es.search(index = ELASTICSEARCH_SEARCH_INDEXES, q = search_term, size=MAX_HITS, df="blob", default_operator="AND")
