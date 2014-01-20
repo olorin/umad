@@ -130,7 +130,7 @@ def main(argv=None):
 	global DEBUG
 	DEBUG = options.debug
 
-	run(host=options.bind_host, port=options.bind_port, debug=True, reloader=True)
+	run(host=options.bind_host, port=options.bind_port, debug=True)
 
 	return 0
 
