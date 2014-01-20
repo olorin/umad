@@ -9,6 +9,10 @@ from localconfig import *
 es = elasticsearch.Elasticsearch(ELASTICSEARCH_NODES)
 
 
+# XXX: This should be cleaned up to take a single argument, the 'value'.
+# In all cases, we're called as:
+#     add_to_index(doc['url'], doc)
+# We should pull out the URL ourselves.
 def add_to_index(key, value):
 	doc_type = determine_doc_type(key)
 	index_name = "umad_%s" % doc_type
