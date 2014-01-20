@@ -52,10 +52,18 @@ def search():
 	template_dict['searchterm'] = q
 	template_dict['hits'] = []
 	template_dict['hit_limit'] = 0
+	template_dict['valid_search_query'] = True
 
 
 	if q:
+		search_term = q
 		query_re = re.compile('('+search_term+')', re.IGNORECASE) # turn the search_term into a regex-group for later
+
+		# Pre-query validity check
+		template_dict['valid_search_query'] = valid_search_query(search_term)
+		if not template_dict['valid_search_query']:
+			# Bail out early
+			return template_dict
 
 		# Search nao
 		results = search_index(search_term)
@@ -122,7 +130,7 @@ def main(argv=None):
 	global DEBUG
 	DEBUG = options.debug
 
-	run(host=options.bind_host, port=options.bind_port, debug=True)
+	run(host=options.bind_host, port=options.bind_port, debug=True, reloader=True)
 
 	return 0
 

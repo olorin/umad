@@ -47,6 +47,15 @@ body {
 	visibility: visible;
 }
 
+.inline-query-display {
+	background-color: #e4edf7;
+	padding: 0.25em;
+	margin: 0.25em;
+	border: 1px dotted black;
+	font-family: monospace;
+	font-size: 1.5em;
+}
+
 
 
 #motd {
