@@ -81,8 +81,8 @@ def valid_search_query(search_term):
 	test_results = indices.validate_query(index=ELASTICSEARCH_SEARCH_INDEXES, q=search_term)
 	return test_results[u'valid']
 
-def search_index(search_term):
-	results = es.search(index = ELASTICSEARCH_SEARCH_INDEXES, q = search_term, size=MAX_HITS, df="blob", default_operator="AND")
+def search_index(search_term, max_hits=MAX_HITS):
+	results = es.search(index = ELASTICSEARCH_SEARCH_INDEXES, q = search_term, size=max_hits, df="blob", default_operator="AND")
 	hits = results['hits']['hits']
 
 	# XXX: Do sorting and ranking here? Roll it into the search() call
