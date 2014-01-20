@@ -108,6 +108,11 @@ def search():
 			# extract:         Arbitrary text, used as HTML; we escape it
 			# other_metadata:  Arbitrary text, let the renderer escape it
 
+			# Don't display the result if it's a deleted RT ticket.
+			sane_meta = dict(hit['other_metadata'])
+			if 'rt' in sane_meta and sane_meta.get('status') == 'deleted':
+				continue
+
 			template_dict['hits'].append(hit)
 
 	return template_dict

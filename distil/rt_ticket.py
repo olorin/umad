@@ -143,7 +143,9 @@ def blobify(url):
 
 	# Don't index deleted tickets
 	if ticket_status == 'deleted':
-		return
+		# Actually, do index them for now, we'll hide them in results later
+		pass
+		#return
 
 	# This may be None if there's no Related Customer set
 	customer_url = ticket['customer_url']
