@@ -35,8 +35,8 @@ def index(url):
 	for doc in d.docs:
 		if doc is None:
 			return
-		debug("Adding to index: %(url)s" % doc)
-		debug(u'{0}'.format(doc['blob'][:400]).encode('utf8')) # This can cause codec errors when outputted -_-
+		debug("Adding to index: {0} (type of the blob is {1})".format(doc['url'], type(doc['blob'])))
+		debug(doc['blob'][:400])
 		add_to_index(doc['url'], doc)
 		mention("Successfully added to index: %(url)s" % doc)
 		debug("")

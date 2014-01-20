@@ -59,7 +59,7 @@ def main(argv=None):
 			if doc is None:
 				continue
 			debug(colored("Adding to index: %(url)s" % doc, 'green'))
-			debug(colored(u"400 chars of blob: {0}".format(doc['blob'][:400]), 'blue'))
+			debug(colored("400 chars of blob: {0}".format(doc['blob'][:400]), 'blue'))
 			add_to_index(doc['url'], doc)
 			debug(colored("Success!", 'green'))
 			debug("")
