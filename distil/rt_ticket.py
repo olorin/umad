@@ -238,7 +238,7 @@ def blobify(url):
 
 	all_message_lines = chain(*[ message['content'].split('\n') for message in messages ])
 	if customer_visible:
-		public_all_message_lines = chain(*[ message['content'].split('\n') for message in public_messages ])
+		public_all_message_lines = [ x for x in chain(*[ message['content'].split('\n') for message in public_messages ]) ]
 	realnames         = list(set( [ x['from_realname'] for x in messages if x['from_realname'] != '' ] ))
 	emails            = list(set( [ x['from_email']    for x in messages if x['from_email']    != '' ] ))
 
@@ -251,7 +251,7 @@ def blobify(url):
 			])
 
 	public_blob = None
-	if customer_visible and [ x for x in public_all_message_lines ]: # Double-check for existence of real content
+	if customer_visible and public_all_message_lines: # Double-check for existence of real content
 		public_blob = " ".join([
 				ticket_number.encode('utf8'),
 				ticket_subject.encode('utf8'),
