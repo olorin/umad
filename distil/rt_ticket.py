@@ -199,7 +199,7 @@ def blobify(url):
 	messages = [ m for m in messages if m['subject'] or m['content'] or m['from_email'] ]
 
 	# XXX: Incurs an explosion if we get a ticket with no messages lol
-	first_post = messages[0]
+	first_post = messages[0].copy()
 	# For some reason, the subject line sometimes appears to be empty. Not
 	# sure if this is a problem with the ticket API.
 	if not first_post['subject']:
@@ -236,7 +236,7 @@ def blobify(url):
 	# - public_messages (iterable of dicts)
 	# - public_ticket_excerpt (string)
 
-	all_message_lines = chain(*[ message['content'].split('\n') for message in messages ])
+	all_message_lines = [ x for x in chain(*[ message['content'].split('\n') for message in messages ]) ]
 	if customer_visible:
 		public_all_message_lines = [ x for x in chain(*[ message['content'].split('\n') for message in public_messages ]) ]
 	realnames         = list(set( [ x['from_realname'] for x in messages if x['from_realname'] != '' ] ))
