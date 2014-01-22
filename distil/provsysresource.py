@@ -48,9 +48,11 @@ def vlan_to_document(vlan_resource):
 	digest += ' '+location_name
 
 	vlan_yieldable['lifecycle_status'] = lifecycle_status
-	vlan_yieldable['description']      = description
+	if description:
+		vlan_yieldable['description']      = description
 	vlan_yieldable['vlan_id']          = vlan_id
-	vlan_yieldable['vlan_longname']    = vlan_longname
+	if vlan_longname:
+		vlan_yieldable['vlan_longname'] = vlan_longname
 
 	if lifecycle_status != 'Disposed':
 		excerpt = "VLAN {vlan_id} ({vlan_shortname}) is a VLAN at {location}. ".format(**vlan_yieldable)
