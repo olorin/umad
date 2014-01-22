@@ -28,6 +28,7 @@ def os_to_document(os_resource):
 	locationtype = 'NOT_A_LOCATION'
 	containedin = 'NOT_AN_OS_CONTAINER'
 
+	location = None
 	if chassis is not None:
 		# Some resources aren't "sane", we can't rely on them being in
 		# a meaningful chassis and location.
