@@ -49,10 +49,13 @@
 						% if 'doc_type' in other_metadata:
 							% del(other_metadata['doc_type'])
 						% end
+						% if 'public_blob' in other_metadata:
+							% del(other_metadata['public_blob'])
+						% end
 					<div class="other-metadata">
 						Other metadata
 						<ul>
-						% for key in other_metadata:
+						% for key in sorted(other_metadata):
 							% metadata_value = other_metadata[key]
 							% # Not quite ideal, we should really be catching any "real" iterable (list/dict/tuple), and falling back to default for anything else
 							% if isinstance(metadata_value, (str, unicode)):
