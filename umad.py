@@ -6,6 +6,9 @@ import cgi
 from optparse import OptionParser
 from bottle import route, request, template, static_file, run, view, default_app
 
+from dateutil.parser import *
+from dateutil.tz import *
+
 from elasticsearch_backend import *
 
 
@@ -95,6 +98,9 @@ def search():
 				other_metadata = dict(doc['other_metadata'])
 				if 'excerpt' in other_metadata:
 					hit['extract'] = query_re.sub(r'<strong>\1</strong>', cgi.escape(  other_metadata['excerpt']  )  )
+				if 'last_updated' in other_metadata:
+					pretty_last_updated = parse(other_metadata['last_updated']).astimezone(tzlocal()).strftime('%Y-%m-%d %H:%M')
+					doc['other_metadata'].append( ('last_updated_sydney',pretty_last_updated)  )
 			hit['highlight_class'] = highlight_document_source(doc['id'])
 			if 'other_metadata' in doc:
 				hit['other_metadata'] = doc['other_metadata'] # any other keys that the backend might provide
