@@ -33,6 +33,10 @@ def add_to_index(key, document):
 	if "local_id" in document and doc_type != "UNTYPED":
 		document[doc_type] = document['blob']
 
+	# Pass the document's type along as extra metadata, for the renderer's
+	# benefit.
+	document['doc_type'] = doc_type
+
 	# Get the current time in UTC and set `last_indexed` on the document
 	document['last_indexed'] = datetime.datetime.now(tzutc())
 
