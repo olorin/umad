@@ -1,6 +1,6 @@
 % include TOP.tpl
 
-% include searchbox.tpl searchterm=searchterm
+% include searchbox.tpl searchterm=searchterm, hits=hits, doc_types_present=doc_types_present
 
 % include motd.tpl searchterm=searchterm
 

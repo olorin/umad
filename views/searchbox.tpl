@@ -8,4 +8,9 @@
 				</p>
 			</form>
 
+			<div id="search-toggles">
+				% for doc_type in doc_types_present:
+				<div class="doc-type {{ doc_type[1] }}" title="Dismiss all {{ doc_type[0] }}" onClick="javascript:killResultsMatchingClass('{{ doc_type[1] }}');"> {{ doc_type[0] }} <span class="right">✘</span> </div>
+				% end
+			</div>
 		</div> <!-- END searchbox -->

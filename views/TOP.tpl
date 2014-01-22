@@ -19,6 +19,9 @@
 		function killResultsMatchingClass(resultClass) {
 			var cardSelector = ".result-card." + resultClass;
 			$( cardSelector ).fadeOut(1000, function() { $( cardSelector ).remove(); refreshHitcount(); });
+
+			var doctypeSelector = ".doc-type." + resultClass;
+			$( doctypeSelector ).fadeOut(1000, function() { $( doctypeSelector ).remove(); });
 		}
 
 		function killResultsNotMatchingClass(resultClass) {

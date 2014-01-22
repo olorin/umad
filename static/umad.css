@@ -16,6 +16,7 @@ body {
 	background: #eeeeee;
 	padding: 2em;
 	border-radius: 10px;
+	position: relative;
 }
 
 #searchinput {
@@ -169,11 +170,29 @@ li {
 	color: #995555;
 }
 
-li.highlight-red           { border-left: 3px solid red; }
-li.highlight-miku          { border-left: 3px solid #3bb0b5; }
-li.highlight-luka          { border-left: 3px solid #fb7fe2; }
-li.highlight-portal-orange { border-left: 3px solid #f8b134; }
-li.highlight-portal-blue   { border-left: 3px solid #34a8f9; }
+#search-toggles {
+	position: absolute;
+	top: 0em;
+	left: -8.5em;
+	padding: 0;
+	text-align: left;
+}
+#search-toggles .doc-type {
+	width: 6em;
+	background-color: #abcdef;
+	border-radius: 0.5em;
+	padding: 0.5em 0.75em;
+	margin: 0.5em 0;
+}
+#search-toggles .doc-type span.right {
+	float: right;
+}
+
+.highlight-red           { border-left: 3px solid red; }
+.highlight-miku          { border-left: 3px solid #3bb0b5; }
+.highlight-luka          { border-left: 3px solid #fb7fe2; }
+.highlight-portal-orange { border-left: 3px solid #f8b134; }
+.highlight-portal-blue   { border-left: 3px solid #34a8f9; }
 
 
 /* Documents' other metadata appears in a position:absolute bubble */

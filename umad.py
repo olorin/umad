@@ -26,16 +26,18 @@ def highlight_document_source(url):
 	# - highlight-portal-orange
 	# - highlight-portal-blue
 	# - highlight-red
+	#
+	# We return a 2-element dict containing a pretty_name and css_class
 	if url.startswith('https://map.engineroom.anchor.net.au/'):
-		return 'highlight-miku'
+		return ('Map',     'highlight-miku')
 	if url.startswith('https://rt.engineroom.anchor.net.au/'):
-		return 'highlight-luka'
+		return ('RT',      'highlight-luka')
 	if url.startswith('https://resources.engineroom.anchor.net.au/'):
-		return 'highlight-portal-orange'
+		return ('Provsys', 'highlight-portal-orange')
 	if url.startswith('https://docs.anchor.net.au/'):
-		return 'highlight-portal-blue'
+		return ('Gollum',  'highlight-portal-blue')
 
-	return ''
+	return ('DEFAULT', '')
 
 
 
@@ -56,6 +58,7 @@ def search():
 	template_dict['hits'] = []
 	template_dict['hit_limit'] = 0
 	template_dict['valid_search_query'] = True
+	template_dict['doc_types_present'] = set()
 
 
 	if q:
@@ -101,7 +104,9 @@ def search():
 				if 'last_updated' in other_metadata:
 					pretty_last_updated = parse(other_metadata['last_updated']).astimezone(tzlocal()).strftime('%Y-%m-%d %H:%M')
 					doc['other_metadata'].append( ('last_updated_sydney',pretty_last_updated)  )
-			hit['highlight_class'] = highlight_document_source(doc['id'])
+			hit['highlight_class'] = highlight_document_source(doc['id'])[1]
+			if hit['highlight_class']: # test if not-empty
+				template_dict['doc_types_present'].add(highlight_document_source(doc['id']))
 			if 'other_metadata' in doc:
 				hit['other_metadata'] = doc['other_metadata'] # any other keys that the backend might provide
 			else:
