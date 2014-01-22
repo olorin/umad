@@ -70,13 +70,5 @@
 					</div>
 					% end
 				</div>
-
-				<div class="doc-source-solo">
-					<span class="lsf" title="ONLY show {{ highlight_classes_to_doctypes[highlight_class].encode('utf8') }}" onClick="javascript:killResultsNotMatchingClass('{{ highlight_class.encode('utf8') }}');">smile</span>
-				</div>
-
-				<div class="doc-source-mute">
-					<span class="lsf" title="DISMISS all {{ highlight_classes_to_doctypes[highlight_class].encode('utf8') }}" onClick="javascript:killResultsMatchingClass('{{ highlight_class.encode('utf8') }}');">frustrate</span>
-				</div>
 				</li>
 
