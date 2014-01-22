@@ -31,7 +31,7 @@ def add_to_index(key, document):
 	# Making use of the local_id hack that shortcuts a way to searching for
 	# the "primary key" of a given doc_type
 	if "local_id" in document and doc_type != "UNTYPED":
-		document[doc_type] = document['local_id']
+		document[doc_type] = document['blob']
 
 	# Get the current time in UTC and set `last_indexed` on the document
 	document['last_indexed'] = datetime.datetime.now(tzutc())
