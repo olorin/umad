@@ -20,6 +20,7 @@ def os_to_document(os_resource):
 	version          = os_resource.details['version']
 	release          = os_resource.details['release']
 	distro           = os_resource.details['distro']
+	support_notes    = os_resource.details['notes']
 	collection       = os_resource.collection
 	lifecycle_status = os_resource.status.name
 
@@ -98,10 +99,16 @@ def os_to_document(os_resource):
 
 	server_yieldable['lifecycle_status'] = lifecycle_status
 
+	if support_notes:
+		server_yieldable['support_notes'] = support_notes
+		digest += ' '+support_notes
+
 	if lifecycle_status != 'Disposed':
 		excerpt = "{name} is a {support} {machinetype} in {container}, running {distro} {version}. ".format(**server_yieldable)
 		if collection:
 			excerpt += "It belongs to {customer} (customer_id: {taskid}). ".format(**server_yieldable)
+		if support_notes:
+			excerpt += "\nNotes: {support_notes} ".format(**server_yieldable)
 	else:
 		excerpt = "{name} has been disposed. ".format(**server_yieldable)
 		# Redo the digest, it's all bogus now
