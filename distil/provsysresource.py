@@ -14,13 +14,14 @@ def debug(msg=''):
 def os_to_document(os_resource):
 	"Take an OS provsys resource, return a document to give to UMAD"
 
-	resource_id  = os_resource.id
-	os_name      = os_resource.name
-	supportlevel = os_resource.details['supportlevel']
-	version      = os_resource.details['version']
-	release      = os_resource.details['release']
-	distro       = os_resource.details['distro']
-	collection   = os_resource.collection
+	resource_id      = os_resource.id
+	os_name          = os_resource.name
+	supportlevel     = os_resource.details['supportlevel']
+	version          = os_resource.details['version']
+	release          = os_resource.details['release']
+	distro           = os_resource.details['distro']
+	collection       = os_resource.collection
+	lifecycle_status = os_resource.status.name
 
 	# Determine chassis and location
 	chassis = os_resource.container
@@ -95,9 +96,16 @@ def os_to_document(os_resource):
 	server_yieldable['support'] = supportlevel
 	digest += ' '+supportlevel
 
-	excerpt = "{name} is a {support} {machinetype} in {container}, running {distro} {version}. ".format(**server_yieldable)
-	if collection:
-		excerpt += "It belongs to {customer} (customer_id: {taskid}). ".format(**server_yieldable)
+	server_yieldable['lifecycle_status'] = lifecycle_status
+
+	if lifecycle_status != 'Disposed':
+		excerpt = "{name} is a {support} {machinetype} in {container}, running {distro} {version}. ".format(**server_yieldable)
+		if collection:
+			excerpt += "It belongs to {customer} (customer_id: {taskid}). ".format(**server_yieldable)
+	else:
+		excerpt = "{name} has been disposed. ".format(**server_yieldable)
+		# Redo the digest, it's all bogus now
+		digest = "{name}".format(**server_yieldable)
 
 	server_yieldable['blob'] = digest.strip()
 	server_yieldable['excerpt'] = excerpt.strip()
