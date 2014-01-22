@@ -17,6 +17,10 @@
 					% if customer_name:
 						% customer_name = u'↜ {0}'.format(customer_name)
 					% end
+					% doc_type = other_metadata.get('doc_type')
+					% if doc_type:
+						% del(other_metadata[doc_type])
+					% end
 					<a href="{{ id.encode('utf8') }}">{{ linktext.encode('utf8') }}</a> <span class="customer-name">{{ customer_name.encode('utf8') }}</span>
 					<!-- OPTIONAL FOR NOW
 					<span class="lsf social-button-jabber" title="SHARE with #robots" onClick="javascript:shareWithSysadmins('{{ id.encode('utf8').encode('base64').replace('\n','').strip() }}', '{{ linktext.encode('utf8').encode('base64').replace('\n','').strip() }}');">sns</span>
@@ -41,6 +45,9 @@
 						% end
 						% if 'title' in other_metadata:
 							% del(other_metadata['title'])
+						% end
+						% if 'doc_type' in other_metadata:
+							% del(other_metadata['doc_type'])
 						% end
 					<div class="other-metadata">
 						Other metadata
