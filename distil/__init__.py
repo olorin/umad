@@ -5,6 +5,7 @@ import http_generic
 import rt_ticket
 import rt_ticket_query
 import provsysservers
+import provsysvlans
 import provsysresource
 import provsys
 
@@ -47,6 +48,8 @@ class Distiller(object):
 				self.fetcher = rt_ticket_query
 			elif url.startswith('provsysservers://'):
 				self.fetcher = provsysservers
+			elif url.startswith('provsysvlans://'):
+				self.fetcher = provsysvlans
 			elif url.startswith('https://resources.engineroom.anchor.net.au/resources/'):
 				self.fetcher = provsysresource
 			elif url.startswith('provsys://'):

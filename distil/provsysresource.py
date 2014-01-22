@@ -11,6 +11,65 @@ def debug(msg=''):
 	print msg
 
 
+def vlan_to_document(vlan_resource):
+	"Take a VLAN resource, return a document to give to UMAD"
+
+	resource_id      = vlan_resource.id
+	collection       = vlan_resource.collection
+	lifecycle_status = vlan_resource.status.name
+	description      = vlan_resource.details['notes']
+	vlan_shortname   = vlan_resource.name
+	vlan_longname    = vlan_resource.details['vlan_longname']
+	vlan_id          = vlan_resource.details['serialnum']
+
+	location = vlan_resource.container
+	location_name = location.name if location is not None else '' # I <3 ternary
+
+	# The uri seems to have auth credentials in it, which we want to strip
+	uri = re.sub(r'(https?://)([^@]+@)?(.*)', r'\1\3', vlan_resource._uri)
+
+	# Put it all together
+	vlan_yieldable = {}
+	digest = ''
+
+	vlan_yieldable['url']   = uri
+
+	vlan_yieldable['name']           = "{0} {1}".format(vlan_id, vlan_shortname)
+	vlan_yieldable['title']          = "VLAN {0} {1}".format(vlan_id, vlan_shortname)
+	vlan_yieldable['vlan_shortname'] = vlan_shortname
+	digest += ' '+vlan_yieldable['name']
+
+	if collection:
+		vlan_yieldable['customer'] = collection.name
+		vlan_yieldable['taskid']   = collection.ourclientref
+		digest += ' {0} {1}'.format(collection.name, collection.ourclientref)
+
+	vlan_yieldable['location'] = location_name
+	digest += ' '+location_name
+
+	vlan_yieldable['lifecycle_status'] = lifecycle_status
+	vlan_yieldable['description']      = description
+	vlan_yieldable['vlan_id']          = vlan_id
+	vlan_yieldable['vlan_longname']    = vlan_longname
+
+	if lifecycle_status != 'Disposed':
+		excerpt = "VLAN {vlan_id} ({vlan_shortname}) is a VLAN at {location}. ".format(**vlan_yieldable)
+		if collection:
+			excerpt += "It belongs to {customer} (customer_id: {taskid}). ".format(**vlan_yieldable)
+		if description:
+			excerpt += "\nNotes: {description} ".format(**vlan_yieldable)
+	else:
+		excerpt = "VLAN {name} with ID {vlan_id} has been disposed. ".format(**vlan_yieldable)
+		# Redo the digest, it's all bogus now
+		digest = "{name}".format(**vlan_yieldable)
+
+	vlan_yieldable['blob'] = digest.strip()
+	vlan_yieldable['excerpt'] = excerpt.strip()
+
+	return vlan_yieldable
+
+
+
 def os_to_document(os_resource):
 	"Take an OS provsys resource, return a document to give to UMAD"
 
@@ -142,9 +201,11 @@ def blobify(url):
 
 	resource = result
 	oses_to_index = []
+	vlans_to_index = []
+
 
 	# XXX: Performance! \o/
-	#os_type_ids = [ x.id for x in Type.search(parent='Generic OS install') ]
+	# os_type_ids = [ x.id for x in Type.search(parent='Generic OS install') ]
 	#   Linux&
 	#   Windows&
 	#   BSD&
@@ -172,7 +233,18 @@ def blobify(url):
 		debug("Resource {0} is an OS, will enqueue".format(resource_id))
 		oses_to_index.append(resource)
 
+	# We now handle VLANs!
+	# XXX: This is evil hardcoding
+	elif resource.type.id == 65:
+		debug("Resource {0} is a VLAN, will enqueue".format(resource_id))
+		vlans_to_index.append(resource)
+
 	debug("Ready to index OSes")
 	for os in oses_to_index:
 		debug("Document'ing OS {0}".format(os.name))
 		yield os_to_document(os)
+
+	debug("Ready to index VLANs")
+	for os in vlans_to_index:
+		debug("Document'ing VLAN {0}".format(os.name))
+		yield vlan_to_document(os)
