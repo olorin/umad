@@ -28,9 +28,8 @@ def add_to_index(key, document):
 	if 'blob' not in document:
 		raise InvalidDocument("The document MUST have a 'blob' field, cannot add to index: {0}".format(document))
 
-	# Making use of the local_id hack that shortcuts a way to searching for
-	# the "primary key" of a given doc_type
-	if "local_id" in document and doc_type != "UNTYPED":
+	# Allow the user to intuitively specify a doc_type as a search field
+	if doc_type != "UNTYPED":
 		document[doc_type] = document['blob']
 
 	# Pass the document's type along as extra metadata, for the renderer's
