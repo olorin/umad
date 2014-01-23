@@ -8,6 +8,8 @@ class InvalidAuditlogPosition(Exception): pass
 
 class HumanIsDeadMismatch(Exception): pass
 
+class AuditlogPositionUnknown(Exception): pass
+
 def debug(msg):
 	pass # Comment out the next line to suppress debug output
 	#print msg
@@ -20,6 +22,8 @@ class AuditlogScratchpad(object):
 
 	def get(self):
 		position = self.conn.get('auditlog_position')
+		if not position:
+			raise AuditlogPositionUnknown("No record of current auditlog position, have you primed the scratchpad yet?")
 		position = int(position)
 		return position
 
