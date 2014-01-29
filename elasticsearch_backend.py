@@ -85,11 +85,26 @@ def valid_search_query(search_term):
 	return test_results[u'valid']
 
 def search_index(search_term, max_hits=MAX_HITS):
-	results = es.search(index = ELASTICSEARCH_SEARCH_INDEXES, q = search_term, size=max_hits, df="blob", default_operator="AND")
-	hits = results['hits']['hits']
+	all_hits = []
+
+	# As a temporary local hack, query each index explicitly and perform our own ranking.
+	# Provsys ranks highest, then new gollum docs, then old Map wiki, then RT tickets.
+	for backend in KNOWN_DOC_TYPES:
+		results = es.search(index="umad_{0}".format(backend), q=search_term, size=max_hits, df="blob", default_operator="AND")
+		hits = results['hits']['hits']
+		hits = [ {
+			'id':             x['_id'],
+			'blob':           x['_source']['blob'],
+			'score':          x['_score'],
+			'other_metadata': [ (y,x['_source'][y]) for y in x['_source'] if y not in ('url','blob') ]
+			} for x in hits ]
+
+		all_hits += hits
+
+	return {'hits':all_hits, 'hit_limit':MAX_HITS}
+
 
 	# XXX: Do sorting and ranking here? Roll it into the search() call
-
 
 	# A hit looks like this:
 	# {
@@ -104,14 +119,7 @@ def search_index(search_term, max_hits=MAX_HITS):
 	#     'id':    u'https://resources.engineroom.anchor.net.au/resources/8737',
 	#     'blob':  u"complete virtual machine jellyfish misaka squeeze debian barney's colo 7828"
 	# }
-	hits = [ {
-		'id':             x['_id'],
-		'blob':           x['_source']['blob'],
-		'score':          x['_score'],
-		'other_metadata': [ (y,x['_source'][y]) for y in x['_source'] if y not in ('url','blob') ]
-		} for x in hits ]
 
-	return {'hits':hits, 'hit_limit':MAX_HITS}
 
 def get_from_index(url):
 	doc_type = determine_doc_type(url)
