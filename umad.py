@@ -99,7 +99,7 @@ def search():
 			# We want this so we can do searchterm highlighting before passing it to the renderer.
 			hit = {}
 			hit['id'] = doc['id']
-			hit['score'] = doc['score']
+			hit['score'] = "{0:.2f}".format(doc['score'])
 			hit['extract'] = query_re.sub(r'<strong>\1</strong>', cgi.escape(doc['blob'][start_offset:start_offset+400])  )
 			# But if we have an excerpt, use that in preference to formatting the blob
 			if 'other_metadata' in doc:
