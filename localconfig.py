@@ -3,7 +3,7 @@
 
 # Make sure to add your new doc_types to this list as well as to
 # `determine_doc_type` below.
-KNOWN_DOC_TYPES = [ 'map', 'rt', 'provsys', 'docs' ]
+KNOWN_DOC_TYPES = [ 'provsys', 'docs', 'map', 'rt' ]
 #KNOWN_DOC_TYPES.append('UNTYPED')
 
 
