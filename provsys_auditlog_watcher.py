@@ -1,13 +1,12 @@
 # Priming the scratchpad
 # ======================
 
-# Audit log entries have a unique monotonic increasing identifier, and it is
-# believed that the numberline is non-sparse except in very rare cases (which
-# can be tested for). As such, we can follow all audit entries by incrementing
-# our counter and attempting to fetch the corresponding audit log entry.
+# Audit log entries have a unique monotonic increasing identifier. As such, we
+# can follow the stream of auditlog events by fetching all entries newer than
+# the last-seen, and logging our progress.
 
-# The watcher needs to keep a position-marker of the oldest (lowest-numbered)
-# not-yet-fetched audit log entry. We use Redis for this scratchpad. As it is
+# The watcher needs to keep a position-marker of the newest (highest-numbered)
+# seen-and-enqueued audit log entry. We use Redis for this scratchpad. As it is
 # currently too complex to initially-populate the scratchpad from this code, it
 # is a one-time manual process.
 
@@ -27,66 +26,88 @@
 
 import sys
 import os
+import re
 import json
 import requests
 from urllib import urlencode
-import redis
 import time
+import datetime
+from dateutil.tz import *
 
-class FailedToRetrieveAuditlogEntry(Exception): pass
+from provsys_auditlog_lib import AuditlogScratchpad
+
+class FailedToRetrieveAuditlogs(Exception): pass
+
+class InvalidAuditlogEntryUrl(Exception): pass
 
 def debug(msg=''):
 	pass # uncomment the following line to enable debug output
 	print msg
 
 
-AUDITLOG_ENTRY_URL_TEMPLATE = 'https://resources.engineroom.anchor.net.au/logs/{0}'.format
-RESOURCE_LASTUPDATED_CACHE_TTL = 7 * 24 * 60 * 60 # 1 week, in seconds
+AUDITLOGS_URL = 'https://resources.engineroom.anchor.net.au/logs'
+AUDITLOG_ENTRY_URL_RE = re.compile(r'^{0}/(\d+)$'.format(AUDITLOGS_URL))
 UMAD_INDEXER_URL = 'https://umad-indexer.anchor.net.au/'
+
+scratchpad = AuditlogScratchpad()
+json_headers = {}
+json_headers['Accept'] = 'application/json'
+pres_key = "provsys_resource_id:{0}".format
+
+
+def get_newer_than(last_known_good):
+	response = requests.get(AUDITLOGS_URL, auth=('script','script'), verify='AnchorCA.pem', headers=json_headers, params={'id':'>{0}'.format(last_known_good), 'apikey':"UMAD provsys log watcher"})
+	if response.status_code != 200:
+		raise FailedToRetrieveAuditlogs("Didn't get a 200 Success while retrieving auditlog entries newer than {0}, something has exploded badly, bailing".format(last_known_good))
+
+	auditlog_entries = json.loads(response.content)
+	return auditlog_entries
+
+
+def fetch_entry(resource_url):
+	debug("Fetching auditlog entry: {0}".format(resource_url))
+	response = requests.get(resource_url, auth=('script','script'), verify='AnchorCA.pem', headers=json_headers)
+	if response.status_code != 200:
+		raise FailedToRetrieveAuditlogs("Didn't get a 200 Success while retrieving auditlog entry {0}, something exploded, bailing".format(resource_url))
+
+	auditlog_entry = json.loads(response.content)
+	return auditlog_entry
+
+def dump_entry(dikt):
+	for key in dikt:
+		if dikt[key]:
+			print "\t{0}\n\t\t{1}".format(key, dikt[key])
 
 
 def main(argv=None):
 	if argv is None:
 		argv = sys.argv
 
-	json_headers = {}
-	json_headers['Accept'] = 'application/json'
-	pres_key = "provsys_resource_id:{0}".format
-	last_successful_enqueued_url = None
-
-
 	# Find our feet
-	auditlog_scratchpad = redis.StrictRedis(host='localhost', port=6379, db=0)
-	auditlog_position = auditlog_scratchpad.get('auditlog_position')
-	if not auditlog_position:
-		print "Couldn't fetch current auditlog position from Redis, have you primed it yet?"
-		return 2
-	debug("Will look for next auditlog entry with ID {0}".format(auditlog_position))
+	auditlog_position = scratchpad()[0]
+	debug("Last enqueued auditlog entry had ID {0}".format(auditlog_position))
 
-	# Keep fetching and incrementing until you get a 404
-	while True:
-		debug("Fetching auditlog entry with ID {0}".format(auditlog_position))
-		auditlog_entry_url = AUDITLOG_ENTRY_URL_TEMPLATE(auditlog_position)
+	new_auditlog_entries = [ x.encode('utf8') for x in get_newer_than(auditlog_position) ]
+	new_auditlog_entries.sort() # Super important! We must work in positive order otherwise we might miss entries
+	new_auditlog_entries = new_auditlog_entries[:50] # XXX: quick testing
 
-		auditlog_entry_response = requests.get(auditlog_entry_url, auth=('script','script'), verify='AnchorCA.pem', headers=json_headers)
-		if auditlog_entry_response.status_code == 404:
-			debug("Got a 404 Not Found for auditlog entry {0}, assume we've caught up with all auditlog events".format(auditlog_position))
-			break
-		if auditlog_entry_response.status_code != 200:
-			print "Didn't get a 200 Success trying to retrieve auditlog entry {0}, something has exploded badly, bailing".format(auditlog_position)
-			return 1
+	last_successful_enqueued_url = None
+	for url in new_auditlog_entries:
+		new_auditlog_position = AUDITLOG_ENTRY_URL_RE.match(url)
+		if not new_auditlog_position:
+			raise InvalidAuditlogEntryUrl("How did we get this URL? It's not valid: {0}".format(url))
+		new_auditlog_position = new_auditlog_position.group(1)
 
-		auditlog_entry_json_blob = auditlog_entry_response.content # FIXME: add sanity checking
-		auditlog_entry = json.loads(auditlog_entry_json_blob)
-
-		# Only resources matter
-		if auditlog_entry['tablename'] == 'resource':
+		entry = fetch_entry(url)
+		last_updated_timestamp = entry['logDate']
+		if entry['tablename'] == 'resource':
+			# XXX: dump_entry( entry )
 			# Now stash the 'logDate' in Redis and enqueue the 'record' (URL)
-			resource_id  = auditlog_entry['rowID']
-			resource_url = auditlog_entry['record']
-			last_updated_timestamp = auditlog_entry['logDate']
+			resource_id  = entry['rowID']
+			resource_url = entry['record']
 
-			auditlog_scratchpad.setex(pres_key(resource_id), RESOURCE_LASTUPDATED_CACHE_TTL, last_updated_timestamp)
+			scratchpad.updated_resource(resource_id, last_updated_timestamp)
+
 
 			# Don't bother enqueueing again if we just did it. This
 			# behaviour relies on the fact that this process is
@@ -98,18 +119,20 @@ def main(argv=None):
 				r = requests.get(UMAD_INDEXER_URL, params={'url':resource_url}, verify='AnchorCA.pem')
 				if r.status_code == 200:
 					last_successful_enqueued_url = resource_url
-					debug("Success enqueueing {0}".format(resource_url))
+					debug("\tSuccess enqueueing {0}".format(resource_url))
 				else:
 					print "Didn't get a 200 Success while enqueueing resource URL {0}, HTTP status code {1}".format(resource_url, r.status_code)
 			else:
-				debug("Just enqueued that URL, skipping {0}".format(resource_url))
-		else:
-			debug("Skipping, don't care about a non-resource")
+				debug("\tJust enqueued that URL, skipping {0}".format(resource_url))
 
+
+		else:
+			debug("\tSkipping, don't care about a non-resource")
 
 		# That was some good auditlog, have another helping
-		auditlog_position = auditlog_scratchpad.incr('auditlog_position')
-		debug()
+		current_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+		scratchpad(new_auditlog_position, current_time)
+		#debug("Saved new position {0}".format(new_auditlog_position))
 
 
 	# Bide our time until cron runs us again. Oh yes, we will have thee...

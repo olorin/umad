@@ -13,7 +13,7 @@ def main(argv=None):
 
 	# SET mode
 	if argv:
-		new_position = scratchpad.set(argv[0])
+		new_position = scratchpad.set(*argv)
 		print "All done, position has been recorded as {0}".format(new_position)
 
 	# GET mode
