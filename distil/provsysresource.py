@@ -185,6 +185,10 @@ def os_to_document(os_resource):
 		if support_notes:
 			excerpt += "\nNotes: {support_notes} ".format(**server_yieldable)
 	else:
+		if 'distro' in server_yieldable:  del server_yieldable['distro']
+		if 'version' in server_yieldable: del server_yieldable['version']
+		if 'support' in server_yieldable: del server_yieldable['support']
+
 		excerpt = "{name} has been disposed. ".format(**server_yieldable)
 		# Redo the digest, it's all bogus now
 		digest = "{name}".format(**server_yieldable)
