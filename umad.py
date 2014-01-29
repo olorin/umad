@@ -80,10 +80,14 @@ def search():
 		result_docs = [ x for x in result_docs if not x['id'].startswith('https://ticket.api.anchor.com.au/') ]
 		result_docs = [ x for x in result_docs if not x['id'].startswith('provsys://') ]
 
+		# Sort all results before presentation
+		result_docs.sort(key=lambda doc: doc['score'], reverse=True)
 		for doc in result_docs:
 			# doc is a dictionary with keys:
 			#     blob
 			#     id
+			#     score
+			#     other_metadata
 			first_instance = doc['blob'].find( search_term.strip('"') )
 			debug("First instance of %s is at %s" % (search_term, first_instance))
 
@@ -95,6 +99,7 @@ def search():
 			# We want this so we can do searchterm highlighting before passing it to the renderer.
 			hit = {}
 			hit['id'] = doc['id']
+			hit['score'] = doc['score']
 			hit['extract'] = query_re.sub(r'<strong>\1</strong>', cgi.escape(doc['blob'][start_offset:start_offset+400])  )
 			# But if we have an excerpt, use that in preference to formatting the blob
 			if 'other_metadata' in doc:
