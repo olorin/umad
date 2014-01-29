@@ -82,6 +82,10 @@ def os_to_document(os_resource):
 	release          = os_resource.details['release']
 	distro           = os_resource.details['distro']
 	support_notes    = os_resource.details['notes']
+	maint_weekday    = os_resource.details['maint_weekday']
+	maint_hour       = os_resource.details['maint_hour']
+	maint_minute     = os_resource.details['maint_minute']
+	maint_duration   = os_resource.details['maint_duration']
 	collection       = os_resource.collection
 	lifecycle_status = os_resource.status.name
 
@@ -160,6 +164,14 @@ def os_to_document(os_resource):
 
 	server_yieldable['lifecycle_status'] = lifecycle_status
 
+	if all([ x is not None for x in (maint_weekday, maint_hour, maint_minute, maint_duration) ]):
+		print "maint is active"
+		server_yieldable['maint_weekday']  = maint_weekday
+		server_yieldable['maint_hour']     = maint_hour
+		server_yieldable['maint_minute']   = maint_minute
+		server_yieldable['maint_duration'] = maint_duration
+		server_yieldable['maint_time']     = "{maint_hour}:{maint_minute:02}".format(**server_yieldable)
+
 	if support_notes:
 		server_yieldable['support_notes'] = support_notes
 		digest += ' '+support_notes
@@ -168,6 +180,8 @@ def os_to_document(os_resource):
 		excerpt = "{name} is a {support} {machinetype} in {container}, running {distro} {version}. ".format(**server_yieldable)
 		if collection:
 			excerpt += "It belongs to {customer} (customer_id: {taskid}). ".format(**server_yieldable)
+		if 'maint_time' in server_yieldable and 'maint_weekday' in server_yieldable:
+			excerpt += "Maintenance occurs every {maint_weekday} at {maint_time}. ".format(**server_yieldable)
 		if support_notes:
 			excerpt += "\nNotes: {support_notes} ".format(**server_yieldable)
 	else:
