@@ -51,6 +51,9 @@ body {
 .document-score {
 	font-size: smaller;
 	color: #aaaaaa;
+	position: absolute;
+	top: 1em;
+	right: 0.75em;
 }
 
 .inline-query-display {
