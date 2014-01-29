@@ -49,11 +49,13 @@ body {
 }
 
 .document-score {
-	font-size: smaller;
+	font-family: sans-serif;
+	font-size: xx-large;
 	color: #aaaaaa;
 	position: absolute;
-	top: 1em;
-	right: 0.75em;
+	top: 0em;
+	right: 0.1em;
+	opacity: 0.25;
 }
 
 .inline-query-display {
