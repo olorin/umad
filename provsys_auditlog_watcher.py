@@ -129,10 +129,11 @@ def main(argv=None):
 		else:
 			debug("\tSkipping, don't care about a non-resource")
 
-		# That was some good auditlog, have another helping
-		current_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+		# That was some good auditlog, have another helping.
+		# Jump through some hoops to get a timezone-aware datetime and then render it accordingly.
+		current_time = datetime.datetime.utcnow().replace(tzinfo=tzutc()).strftime('%Y-%m-%d %H:%M:%S.%f%z')
 		scratchpad(new_auditlog_position, current_time)
-		#debug("Saved new position {0}".format(new_auditlog_position))
+		debug("Saved new position {0} at time {1}".format(new_auditlog_position, current_time))
 
 
 	# Bide our time until cron runs us again. Oh yes, we will have thee...
