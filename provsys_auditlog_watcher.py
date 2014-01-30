@@ -140,9 +140,15 @@ def main(argv=None):
 
 
 if __name__ == "__main__":
-	SLEEP_5MIN_BEFORE_EXITING = os.environ.get('SLEEP_5MIN_BEFORE_EXITING')
+	GHETTO_CRON_INTERVAL_SECONDS = os.environ.get('GHETTO_CRON_INTERVAL_SECONDS')
+	if GHETTO_CRON_INTERVAL_SECONDS is not None:
+		try:
+			GHETTO_CRON_INTERVAL_SECONDS = int(GHETTO_CRON_INTERVAL_SECONDS)
+		except ValueError as e:
+			debug("Couldn't convert GHETTO_CRON_INTERVAL_SECONDS to an integer. Bailing.")
+			sys.exit(2)
 	rc = main()
-	if SLEEP_5MIN_BEFORE_EXITING:
-		debug("Running in ghetto-cron mode, sleeping for 300 seconds before exiting...")
-		time.sleep(5*60)
+	if GHETTO_CRON_INTERVAL_SECONDS:
+		debug("Running in ghetto-cron mode, sleeping for {0} seconds before exiting...".format(GHETTO_CRON_INTERVAL_SECONDS))
+		time.sleep(GHETTO_CRON_INTERVAL_SECONDS)
 	sys.exit(rc)
