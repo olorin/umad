@@ -87,7 +87,7 @@ class UmadProvsysAuditlogLagCheck(NagiosCheck):
             auditlog_position = int(auditlog_position)
             # XXX: ignore any timestamp problems right now
 
-            debug("Last enqueued entry   had ID {0} and timestamp {1}".format(auditlog_position, auditlog_timestamp))
+            debug("The last auditlog entry we enqueued had  ID {0} and timestamp {1}".format(auditlog_position, auditlog_timestamp))
 
             debug("Fetching newest auditlog URL")
             response = requests.get(AUDITLOGS_URL, auth=('script','script'), verify='/etc/ssl/AnchorCA.pem', headers=json_headers, params={'_limit':1})
@@ -108,7 +108,7 @@ class UmadProvsysAuditlogLagCheck(NagiosCheck):
             newest_position = newest_entry['id']
             newest_timestamp = newest_entry['logDate']
 
-            debug("Newest auditlog entry has ID {0} and timestamp {1}".format(newest_position, newest_timestamp))
+            debug("The newest auditlog entry in provsys has ID {0} and timestamp {1}".format(newest_position, newest_timestamp))
 
             t1 = parse(auditlog_timestamp)
             t2 = parse(newest_timestamp)
@@ -116,9 +116,9 @@ class UmadProvsysAuditlogLagCheck(NagiosCheck):
             # XXX: Check that both t1 and t2 are timezone-aware
             assert t1.strftime('%z')
             assert t2.strftime('%z')
-            assert t1 >= t2
+            assert t2 >= t1
 
-            lag = t1-t2
+            lag = t2-t1
             try:
                 lag_seconds = lag.total_seconds()
             except AttributeError as e:
