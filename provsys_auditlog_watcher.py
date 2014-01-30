@@ -31,8 +31,6 @@ import json
 import requests
 from urllib import urlencode
 import time
-import datetime
-from dateutil.tz import *
 
 from provsys_auditlog_lib import AuditlogScratchpad
 
@@ -130,9 +128,8 @@ def main(argv=None):
 
 		# That was some good auditlog, have another helping.
 		# Jump through some hoops to get a timezone-aware datetime and then render it accordingly.
-		current_time = datetime.datetime.utcnow().replace(tzinfo=tzutc()).strftime('%Y-%m-%d %H:%M:%S.%f%z')
-		scratchpad(new_auditlog_position, current_time)
-		debug("Saved new position {0} at time {1}".format(new_auditlog_position, current_time))
+		scratchpad(new_auditlog_position, last_updated_timestamp)
+		debug("Saved new position {0} at time {1}".format(new_auditlog_position, last_updated_timestamp))
 
 
 	# Bide our time until cron runs us again. Oh yes, we will have thee...
