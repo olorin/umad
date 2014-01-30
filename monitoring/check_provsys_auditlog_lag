@@ -1,0 +1,159 @@
+#!/usr/bin/python
+
+# WHERE IT RUNS
+#
+# On the machine running the provsys auditlog watcher, and its associated Redis
+# scratchpad.
+#
+# WHAT IT DOES
+#
+# Query the provisioning system for the latest auditlog entry. Get the current
+# position marker from the Redis scratchpad. Compare the two - the difference
+# is the time taken for new auditlog entries to be detected and inserted into
+# the indexing queue, referred to as `lag`.
+#
+# The degree of lag is dependent on how frequently the watcher is run. Assuming
+# a small trickle of events, the lag should be no longer than the interval
+# between runs, plus the time taken to process the events.
+#
+# DEPENDENCIES
+#
+# You will need the pynagioscheck library, standard Redis bindings, standard
+# json library and the Requests http library.
+#   * https://github.com/saj/pynagioscheck
+
+"""Check for delays in enqueueing provsys resource updates."""
+
+import sys
+import json
+import requests
+import redis
+from dateutil.parser import *
+from nagioscheck import NagiosCheck, UsageError
+from nagioscheck import PerformanceMetric, Status
+
+
+WARN_DEFAULT = 300
+CRIT_DEFAULT = 3600
+
+AUDITLOGS_URL = 'https://resources.engineroom.anchor.net.au/logs'
+json_headers = {}
+json_headers['Accept'] = 'application/json'
+
+
+class FailedToRetrieveAuditlogs(Exception): pass
+
+class AuditlogPositionUnknown(Exception): pass
+
+
+class UmadProvsysAuditlogLagCheck(NagiosCheck):
+    version = '0.0.1'
+
+    def __init__(self):
+        NagiosCheck.__init__(self)
+
+        self.add_option('w', 'warn-threshold', 'warning',
+                        'check warning threshold for oldest URL in seconds (default %d)' %
+                            WARN_DEFAULT)
+        self.add_option('c', 'crit-threshold', 'critical',
+                        'check critical threshold for oldest URL in seconds (default %d)' %
+                            CRIT_DEFAULT)
+
+
+    def check(self, opts, args):
+        warn = WARN_DEFAULT
+        crit = CRIT_DEFAULT
+        debug_lines = []
+
+        if opts.warning:
+            warn = float(opts.warning)
+
+        if opts.critical:
+            crit = float(opts.critical)
+
+        def debug(msg=''):
+            debug_lines.append(msg)
+
+
+        try:
+            scratchpad = redis.StrictRedis(host='localhost', port=6379, db=0, socket_timeout=1)
+            pipeline = scratchpad.pipeline()
+            pipeline.get('auditlog_position')
+            pipeline.get('auditlog_position_timestamp')
+            auditlog_position, auditlog_timestamp = pipeline.execute()
+
+            if not auditlog_position:
+                raise AuditlogPositionUnknown("No record of current auditlog position, have you primed the scratchpad yet?")
+            auditlog_position = int(auditlog_position)
+            # XXX: ignore any timestamp problems right now
+
+            debug("Last enqueued entry   had ID {0} and timestamp {1}".format(auditlog_position, auditlog_timestamp))
+
+            debug("Fetching newest auditlog URL")
+            response = requests.get(AUDITLOGS_URL, auth=('script','script'), verify='/etc/ssl/AnchorCA.pem', headers=json_headers, params={'_limit':1})
+            if response.status_code != 200:
+                raise FailedToRetrieveAuditlogs("Didn't get a 200 Success while finding newest auditlog entry, something has exploded badly, bailing")
+
+            auditlog_urls = json.loads(response.content)
+            if not auditlog_urls:
+                raise FailedToRetrieveAuditlogs("Got no results when finding newest auditlog entry, this should never happen, bailing")
+            newest_url = auditlog_urls[0]
+            debug("Success, fetching newest auditlog entry: {0}".format(newest_url))
+
+            response = requests.get(newest_url, auth=('script','script'), verify='/etc/ssl/AnchorCA.pem', headers=json_headers)
+            if response.status_code != 200:
+                raise FailedToRetrieveAuditlogs("Didn't get a 200 Success while retrieving auditlog entry {0}, something has exploded badly, bailing".format(newest_url))
+
+            newest_entry = json.loads(response.content)
+            newest_position = newest_entry['id']
+            newest_timestamp = newest_entry['logDate']
+
+            debug("Newest auditlog entry has ID {0} and timestamp {1}".format(newest_position, newest_timestamp))
+
+            t1 = parse(auditlog_timestamp)
+            t2 = parse(newest_timestamp)
+
+            # XXX: Check that both t1 and t2 are timezone-aware
+            assert t1.strftime('%z')
+            assert t2.strftime('%z')
+            assert t1 >= t2
+
+            lag = t1-t2
+            try:
+                lag_seconds = lag.total_seconds()
+            except AttributeError as e:
+                lag_seconds = lag.seconds + (lag.days*(24*60*60))
+
+
+            perfdata = (
+                PerformanceMetric("provsys_auditlog_enqueue_lag", lag_seconds, "s",
+                    warning_threshold=warn,
+                    critical_threshold=crit,
+                    minimum=0,
+                ),
+            )
+
+            msg = [
+                "Queue watcher is lagging by {0} seconds".format(lag_seconds),
+                None,
+                ]
+            if debug_lines:
+                debug_lines.insert(0, "Queue watcher is lagging by {0} seconds".format(lag_seconds))
+                msg.append('\n'.join(debug_lines))
+
+        except Exception as e:
+            raise Status("UNKNOWN", "Something went horribly wrong: {0}".format(e) )
+
+
+        if lag_seconds > crit:
+            raise Status("CRITICAL", msg, perfdata)
+        if lag_seconds > warn:
+            raise Status("WARNING", msg, perfdata)
+        raise Status("OK", msg, perfdata)
+
+
+
+if __name__ == "__main__":
+    UmadProvsysAuditlogLagCheck().run()
+
+# vim: ts=4 et

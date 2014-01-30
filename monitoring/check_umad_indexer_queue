@@ -1,0 +1,104 @@
+#!/usr/bin/python
+
+# WHERE IT RUNS
+#
+# On the machine hosting the UMAD indexing queue (a Redis instance).
+#
+# WHAT IT DOES
+#
+# Grab the oldest entry in the queue and determine its age. This is the
+# "length" of the queue, because it's more useful than number-of-entries.
+#
+# DEPENDENCIES
+#
+# You will need the pynagioscheck library and standard Redis bindings:
+#   * https://github.com/saj/pynagioscheck
+#   * https://pypi.python.org/pypi/redis
+
+"""Check the length of the UMAD document indexing queue."""
+
+import datetime
+import redis
+from nagioscheck import NagiosCheck, UsageError
+from nagioscheck import PerformanceMetric, Status
+
+
+WARN_DEFAULT = 60
+CRIT_DEFAULT = 3600
+
+class UmadIndexingQueueLengthCheck(NagiosCheck):
+    version = '0.0.1'
+
+    def __init__(self):
+        NagiosCheck.__init__(self)
+
+        self.add_option('w', 'warn-threshold', 'warning',
+                        'check warning threshold for oldest URL in seconds (default %d)' %
+                            WARN_DEFAULT)
+        self.add_option('c', 'crit-threshold', 'critical',
+                        'check critical threshold for oldest URL in seconds (default %d)' %
+                            CRIT_DEFAULT)
+
+
+    def check(self, opts, args):
+        warn = WARN_DEFAULT
+        crit = CRIT_DEFAULT
+
+        if opts.warning:
+            warn = float(opts.warning)
+
+        if opts.critical:
+            crit = float(opts.critical)
+
+        try:
+            r = redis.StrictRedis()
+
+            pipeline = r.pipeline()
+            pipeline.zcard('umad_indexing_queue')
+            pipeline.zrange('umad_indexing_queue', 0, 0, withscores=True)
+            (q_len, q_oldest_item) = pipeline.execute() # Should return  [ q_len, [maybe_oldest_queue_item] ]
+
+            # A non-zero number of items
+            if q_oldest_item:
+                q_oldest_item = q_oldest_item[0]
+
+                # Get our numbers
+                creation_time = datetime.datetime.utcfromtimestamp(q_oldest_item[1])
+                now           = datetime.datetime.utcnow()
+                age           = now - creation_time
+                age_seconds   = age.total_seconds() # total_seconds is only in Python 2.7 and later
+
+                q_age = '%0.3f' % age_seconds
+            else:
+                age_seconds = 0.0
+                q_age = '0.000'
+
+            perfdata = (
+                PerformanceMetric("q_len", q_len,
+                    minimum=0),
+                PerformanceMetric("oldest_url_age", q_age, "s",
+                    warning_threshold=warn,
+                    critical_threshold=crit,
+                    minimum=0,
+                ),
+            )
+
+            msg = [
+                "Oldest URL is {0}sec".format(q_age),
+                "Oldest URL is {0}sec with {1} in queue".format(q_age, q_len),
+                ]
+        except Exception as e:
+            raise Status("UNKNOWN", "Something went horribly wrong: {0}".format(e) )
+
+
+        if age_seconds > crit:
+            raise Status("CRITICAL", msg, perfdata)
+        if age_seconds > warn:
+            raise Status("WARNING", msg, perfdata)
+        raise Status("OK", msg, perfdata)
+
+
+if __name__ == '__main__':
+    UmadIndexingQueueLengthCheck().run()
+
+# vim: ts=4 et
