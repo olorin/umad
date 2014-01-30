@@ -89,7 +89,6 @@ def main(argv=None):
 
 	new_auditlog_entries = [ x.encode('utf8') for x in get_newer_than(auditlog_position) ]
 	new_auditlog_entries.sort() # Super important! We must work in positive order otherwise we might miss entries
-	new_auditlog_entries = new_auditlog_entries[:50] # XXX: quick testing
 
 	last_successful_enqueued_url = None
 	for url in new_auditlog_entries:
