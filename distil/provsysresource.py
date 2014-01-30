@@ -165,7 +165,6 @@ def os_to_document(os_resource):
 	server_yieldable['lifecycle_status'] = lifecycle_status
 
 	if all([ x is not None for x in (maint_weekday, maint_hour, maint_minute, maint_duration) ]):
-		print "maint is active"
 		server_yieldable['maint_weekday']  = maint_weekday
 		server_yieldable['maint_hour']     = maint_hour
 		server_yieldable['maint_minute']   = maint_minute
