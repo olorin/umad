@@ -36,7 +36,7 @@ def index(url):
 		if doc is None:
 			return
 		debug("Adding to index: {0} (type of the blob is {1})".format(doc['url'], type(doc['blob'])))
-		debug(doc['blob'][:400])
+		debug(doc['blob'][:400].encode('utf8'))
 		add_to_index(doc['url'], doc)
 		mention("Successfully added to index: %(url)s" % doc)
 		debug("")
