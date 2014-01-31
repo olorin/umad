@@ -59,7 +59,11 @@ def main(argv=None):
 			if doc is None:
 				continue
 			debug(colored("Adding to index: %(url)s" % doc, 'green'))
-			debug(colored(u"400 chars of blob: {0}".format(doc['blob'][:400]), 'blue'))
+			# XXX: I think, depending on the backend, the blob will be
+			# either str or unicode. We'll need to test for that, otherwise
+			# we'll cause errors needlessly.
+			# RT==str, Gollum==unicode, Map and Provsys==??
+			debug(colored(u"400 chars of blob: {0}".format(doc['blob'][:400]), 'blue')) # XXX: this line has problems with unicode
 			add_to_index(doc['url'], doc)
 			debug(colored("Success!", 'green'))
 			debug("")
