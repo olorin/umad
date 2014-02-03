@@ -81,6 +81,7 @@ def os_to_document(os_resource):
 	version          = os_resource.details['version']
 	release          = os_resource.details['release']
 	distro           = os_resource.details['distro']
+	os_wordsize      = os_resource.details['wordsize']
 	support_notes    = os_resource.details['notes']
 	maint_weekday    = os_resource.details['maint_weekday']
 	maint_hour       = os_resource.details['maint_hour']
@@ -88,6 +89,12 @@ def os_to_document(os_resource):
 	maint_duration   = os_resource.details['maint_duration']
 	collection       = os_resource.collection
 	lifecycle_status = os_resource.status.name
+
+	# Cleanup; some details are always defined but can be None if they're not set
+	if not version: version = ''
+	if not release: release = ''
+	if not os_wordsize: os_wordsize = ''
+	if os_wordsize: os_wordsize = "{0}-bit".format(os_wordsize)
 
 	# Determine chassis and location
 	chassis = os_resource.container
@@ -153,6 +160,9 @@ def os_to_document(os_resource):
 	server_yieldable['version'] = pretty_name
 	digest += ' '+pretty_name
 
+	server_yieldable['os_wordsize'] = os_wordsize
+	digest += ' '+os_wordsize
+
 	server_yieldable['container'] = containedin
 	digest += ' '+containedin
 
@@ -176,7 +186,7 @@ def os_to_document(os_resource):
 		digest += ' '+support_notes
 
 	if lifecycle_status != 'Disposed':
-		excerpt = "{name} is a {support} {machinetype} in {container}, running {distro} {version}. ".format(**server_yieldable)
+		excerpt = "{name} is a {support} {machinetype} in {container}, running {distro} {version} {os_wordsize}. ".format(**server_yieldable)
 		if collection:
 			excerpt += "It belongs to {customer} (customer_id: {taskid}). ".format(**server_yieldable)
 		if 'maint_time' in server_yieldable and 'maint_weekday' in server_yieldable:
