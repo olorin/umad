@@ -11,15 +11,18 @@ from elasticsearch_backend import *
 DEBUG = True
 def debug(msg):
 	if DEBUG:
-		print msg
-		#sys.stderr.write(msg.encode('utf8'))
-		#sys.stderr.write('\n')
-		#sys.stderr.flush()
+		if type(msg) is unicode:
+			msg = msg.encode('utf8')
+		sys.stderr.write(msg)
+		sys.stderr.write('\n')
+		sys.stderr.flush()
 
 def red(msg):
 	return colored(msg, 'red')
 def green(msg):
 	return colored(msg, 'green')
+def blue(msg):
+	return colored(msg, 'blue')
 
 
 def main(argv=None):
@@ -45,9 +48,9 @@ def main(argv=None):
 	for url in urls:
 		if url.startswith('/') and os.path.exists(url):
 			url = 'file://' + url
-		debug(colored("-" * len("URL: %s"%url), 'red'))
-		debug(colored("URL: %s" % url, 'red'))
-		debug(colored("-" * len("URL: %s"%url), 'red'))
+		debug(red("-" * len("URL: %s"%url)))
+		debug(red("URL: %s" % url))
+		debug(red("-" * len("URL: %s"%url)))
 
 		try:
 			d = distil.Distiller(url)
@@ -58,14 +61,25 @@ def main(argv=None):
 		for doc in d.docs:
 			if doc is None:
 				continue
-			debug(colored("Adding to index: %(url)s" % doc, 'green'))
-			# XXX: I think, depending on the backend, the blob will be
-			# either str or unicode. We'll need to test for that, otherwise
-			# we'll cause errors needlessly.
-			# RT==str, Gollum==unicode, Map and Provsys==??
-			debug(colored(u"400 chars of blob: {0}".format(doc['blob'][:400]), 'blue')) # XXX: this line has problems with unicode
+			debug(green("Adding to index: %(url)s" % doc))
+
+			# Depending on the backend, the blob will either be str
+			# or unicode:
+			#   Gollum:  unicode
+			#   RT:      str
+			#   Map:     str
+			#   Provsys: str
+			#
+			# We need to test for this because blindly encode()ing
+			# the blob will result in errors if it's already a
+			# UTF8 str.
+			trimmed_blob = doc['blob'][:400]
+			if type(trimmed_blob) is str:
+				debug(blue("400 chars of blob: {0}".format(trimmed_blob)))
+			else: # unicode
+				debug(blue(u"400 chars of blob: {0}".format(trimmed_blob)))
 			add_to_index(doc['url'], doc)
-			debug(colored("Success!", 'green'))
+			debug(green("Success!"))
 			debug("")
 
 			debug(red("-------"))

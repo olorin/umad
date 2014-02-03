@@ -36,11 +36,22 @@ def index(url):
 		if doc is None:
 			return
 		debug("Adding to index: {0} (type of the blob is {1})".format(doc['url'], type(doc['blob'])))
-		# XXX: I think, depending on the backend, the blob will be
-		# either str or unicode. We'll need to test for that, otherwise
-		# we'll cause errors needlessly.
-		# RT==str, Gollum==unicode, Map and Provsys==??
-		debug(doc['blob'][:400].encode('utf8')) # XXX: this line has problems with unicode
+
+		# Depending on the backend, the blob will either be str
+		# or unicode:
+		#   Gollum:  unicode
+		#   RT:      str
+		#   Map:     str
+		#   Provsys: str
+		#
+		# We need to test for this because blindly encode()ing
+		# the blob will result in errors if it's already a
+		# UTF8 str.
+		trimmed_blob = doc['blob'][:400]
+		if type(trimmed_blob) is str:
+			debug("400 chars of blob: {0}".format(trimmed_blob))
+		else: # unicode
+			debug(u"400 chars of blob: {0}".format(trimmed_blob))
 		add_to_index(doc['url'], doc)
 		mention("Successfully added to index: %(url)s" % doc)
 		debug("")
