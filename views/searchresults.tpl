@@ -2,7 +2,7 @@
 		% if searchterm:
 			% if hits:
 				<div id="hitstats">
-					<span style="font-size: larger;">Displaying <strong><span id="hitcount">{{ len(hits) }}</span> results</strong></span>
+					<span style="font-size: larger;">Displaying <strong><span id="hitcount">{{ len(hits) }}</span> {{ "result" if len(hits) == 1 else "results" }}</strong></span>
 					% if hit_limit > 0 and len(hits) >= hit_limit:
 						<div class="hitstats-explanation">
 							<em>Results may be truncated, hitlimit={{ hit_limit }}</em>
