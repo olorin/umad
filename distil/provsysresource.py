@@ -103,12 +103,15 @@ def os_to_document(os_resource):
 	containedin = 'NOT_AN_OS_CONTAINER'
 
 	location = None
+	chassis_config_summary = None
 	if chassis is not None:
 		# Some resources aren't "sane", we can't rely on them being in
 		# a meaningful chassis and location.
 		chassis.load(with_fields=['name', 'type','container']) # override lazy loading
 		# "Virtual Machine" or "Rackmount Chassis"
 		chassistype = chassis.type.name
+		# Get the hardware specs as well, if available
+		chassis_config_summary = chassis.details.get('config_summary')
 
 		location = chassis.container
 		if location is not None:
@@ -189,6 +192,8 @@ def os_to_document(os_resource):
 		excerpt = "{name} is a {support} {machinetype} in {container}, running {distro} {version} {os_wordsize}. ".format(**server_yieldable)
 		if collection:
 			excerpt += "It belongs to {customer} (customer_id: {taskid}). ".format(**server_yieldable)
+		if chassis_config_summary:
+			excerpt += "It's got {0}. ".format(chassis_config_summary)
 		if 'maint_time' in server_yieldable and 'maint_weekday' in server_yieldable:
 			excerpt += "Maintenance occurs every {maint_weekday} at {maint_time}. ".format(**server_yieldable)
 		if support_notes:
