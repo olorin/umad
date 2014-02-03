@@ -59,11 +59,11 @@
 							% metadata_value = other_metadata[key]
 							% # Not quite ideal, we should really be catching any "real" iterable (list/dict/tuple), and falling back to default for anything else
 							% if isinstance(metadata_value, (str, unicode)):
-								<li class="metadata"><strong>{{ key.capitalize().encode('utf8') }}:</strong> {{ metadata_value.encode('utf8') }}</li>
+								<li class="metadata"><strong>{{ key.encode('utf8') }}:</strong> {{ metadata_value.encode('utf8') }}</li>
 							% elif isinstance(metadata_value, (bool, int)):
-								<li class="metadata"><strong>{{ key.capitalize().encode('utf8') }}:</strong> {{ "{0}".format(metadata_value) }}</li>
+								<li class="metadata"><strong>{{ key.encode('utf8') }}:</strong> {{ "{0}".format(metadata_value) }}</li>
 							% else:
-								<li class="metadata"><strong>{{ key.capitalize().encode('utf8') }}:</strong> {{ ', '.join(sorted(metadata_value)).encode('utf8') }}</li>
+								<li class="metadata"><strong>{{ key.encode('utf8') }}:</strong> {{ ', '.join(sorted(metadata_value)).encode('utf8') }}</li>
 							% end
 						% end
 						</ul>
