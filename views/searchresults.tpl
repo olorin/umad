@@ -1,11 +1,29 @@
 		<div id="output">
 		% if searchterm:
 			% if hits:
+				% # XXX: Push sanity futher up the stack
+				% for hit in hits:
+					% hit['other_metadata'] = dict(hit['other_metadata'])
+				% end
+
+				% # See if we might have been truncated anywhere, hit_limit applies on a per doc_type basis.
+				% # XXX: This is a hack, we should be checking other_metadata->doc_type (where present) instead of highlight.
+				% truncated = False
+				% for doc_type in doc_types_present:
+					% num_hits_of_this_type = len([ x for x in hits if x['highlight_class']==doc_type[1] ])
+					% if num_hits_of_this_type >= hit_limit:
+						% truncated = True
+						% break
+					% end
+				% end
+
 				<div id="hitstats">
-					<span style="font-size: larger;">Displaying <strong><span id="hitcount">{{ len(hits) }}</span> {{ "result" if len(hits) == 1 else "results" }}</strong></span>
-					% if hit_limit > 0 and len(hits) >= hit_limit:
+					% if not truncated:
+						<span style="font-size: larger;">Showing {{ "all " if len(hits) > 1 else "" }}<strong><span id="hitcount">{{ len(hits) }}</span> {{ "result" if len(hits) == 1 else "results" }}</strong></span>
+					% else:
+						<span style="font-size: larger;">Display limited to <strong><span id="hitcount">{{ len(hits) }}</span> {{ "result" if len(hits) == 1 else "results" }} </strong></span> <span title="Explain why">(❔)</span>
 						<div class="hitstats-explanation">
-							<em>Results may be truncated, hitlimit={{ hit_limit }}</em>
+							<em>Results may be truncated, no more than {{ hit_limit }} of each document type are displayed</em>
 						</div>
 					% end
 				</div>
