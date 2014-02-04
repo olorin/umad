@@ -83,10 +83,11 @@ def os_to_document(os_resource):
 	distro           = os_resource.details['distro']
 	os_wordsize      = os_resource.details['wordsize']
 	support_notes    = os_resource.details['notes']
-	maint_weekday    = os_resource.details['maint_weekday']
-	maint_hour       = os_resource.details['maint_hour']
-	maint_minute     = os_resource.details['maint_minute']
-	maint_duration   = os_resource.details['maint_duration']
+	# Not all OS types can be managed for maintenance
+	maint_weekday    = os_resource.details.get('maint_weekday')
+	maint_hour       = os_resource.details.get('maint_hour')
+	maint_minute     = os_resource.details.get('maint_minute')
+	maint_duration   = os_resource.details.get('maint_duration')
 	collection       = os_resource.collection
 	lifecycle_status = os_resource.status.name
 
