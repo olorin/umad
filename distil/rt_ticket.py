@@ -284,12 +284,16 @@ def blobify(url):
 	if contact_timestamps:
 		ticketblob['last_contact'] = max(contact_timestamps).astimezone(tzutc())
 
-	# Only set customer_url if the ticket has that metadata
-	if customer_url:
-		ticketblob['customer_url'] = customer_url
+	# Only set customer details if we have that metadata
+	if customer_id:
+		ticketblob['customer_id'] = customer_id
 
 	# Only set customer_name if we know it
 	if customer_name:
 		ticketblob['customer_name'] = customer_name
+
+	maybe_customer_details = ' '.join(  [ x for x in (customer_name,customer_id) if x is not None ]  )
+	if maybe_customer_details:
+		ticketblob['customer'] = maybe_customer_details
 
 	yield ticketblob

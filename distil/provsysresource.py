@@ -40,8 +40,9 @@ def vlan_to_document(vlan_resource):
 	digest += ' '+vlan_yieldable['name']
 
 	if collection:
-		vlan_yieldable['customer'] = collection.name
-		vlan_yieldable['taskid']   = collection.ourclientref
+		vlan_yieldable['customer_name'] = collection.name
+		vlan_yieldable['customer_id']   = collection.ourclientref
+		vlan_yieldable['customer']      = '{0} {1}'.format(collection.name, collection.ourclientref)
 		digest += ' {0} {1}'.format(collection.name, collection.ourclientref)
 
 	if location_name:
@@ -49,6 +50,7 @@ def vlan_to_document(vlan_resource):
 		digest += ' '+location_name
 
 	vlan_yieldable['lifecycle_status'] = lifecycle_status
+
 	if description:
 		vlan_yieldable['description']      = description
 	vlan_yieldable['vlan_id']          = vlan_id
@@ -58,7 +60,7 @@ def vlan_to_document(vlan_resource):
 	if lifecycle_status != 'Disposed':
 		excerpt = "VLAN {vlan_id} ({vlan_shortname}) is a VLAN at {location}. ".format(**vlan_yieldable)
 		if collection:
-			excerpt += "It belongs to {customer} (customer_id: {taskid}). ".format(**vlan_yieldable)
+			excerpt += "It belongs to {customer_name} (customer_id: {customer_id}). ".format(**vlan_yieldable)
 		if description:
 			excerpt += "\nNotes: {description} ".format(**vlan_yieldable)
 	else:
@@ -155,8 +157,9 @@ def os_to_document(os_resource):
 	digest += ' '+os_name
 
 	if collection:
-		server_yieldable['customer'] = collection.name
-		server_yieldable['taskid']   = collection.ourclientref
+		server_yieldable['customer_name'] = collection.name
+		server_yieldable['customer_id']   = collection.ourclientref
+		server_yieldable['customer']      = '{0} {1}'.format(collection.name, collection.ourclientref)
 		digest += ' {0} {1}'.format(collection.name, collection.ourclientref)
 
 	server_yieldable['distro'] = distro
@@ -194,7 +197,7 @@ def os_to_document(os_resource):
 	if lifecycle_status != 'Disposed':
 		excerpt = "{name} is a {support} {machinetype} in {container}, running {distro} {version} {os_wordsize}. ".format(**server_yieldable)
 		if collection:
-			excerpt += "It belongs to {customer} (customer_id: {taskid}). ".format(**server_yieldable)
+			excerpt += "It belongs to {customer_name} (customer_id: {customer_id}). ".format(**server_yieldable)
 		if chassis_config_summary:
 			excerpt += "It's got {0}. ".format(chassis_config_summary)
 		if 'maint_time' in server_yieldable and 'maint_weekday' in server_yieldable:
