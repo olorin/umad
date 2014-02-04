@@ -14,7 +14,7 @@ def blobify(UNUSED):
 	server.apikey       = "Sysadmin convenience script"
 	server.ca_cert_file = None
 
-	results = Resource.search(supertype="VLAN Definition")
+	results = Resource.search(supertype="VLAN Definition", status="Any")
 	if not results:
 		return
 

@@ -44,8 +44,9 @@ def vlan_to_document(vlan_resource):
 		vlan_yieldable['taskid']   = collection.ourclientref
 		digest += ' {0} {1}'.format(collection.name, collection.ourclientref)
 
-	vlan_yieldable['location'] = location_name
-	digest += ' '+location_name
+	if location_name:
+		vlan_yieldable['location'] = location_name
+		digest += ' '+location_name
 
 	vlan_yieldable['lifecycle_status'] = lifecycle_status
 	if description:
