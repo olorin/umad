@@ -177,7 +177,8 @@ def os_to_document(os_resource):
 
 	server_yieldable['lifecycle_status'] = lifecycle_status
 
-	if all([ x is not None for x in (maint_weekday, maint_hour, maint_minute, maint_duration) ]):
+	# These may be None or an empty string, depending on whether they've been set previously
+	if all([ x not in (None, '', u'') for x in (maint_weekday, maint_hour, maint_minute, maint_duration) ]):
 		server_yieldable['maint_weekday']  = maint_weekday
 		server_yieldable['maint_hour']     = maint_hour
 		server_yieldable['maint_minute']   = maint_minute
