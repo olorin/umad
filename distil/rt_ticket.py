@@ -288,9 +288,11 @@ def blobify(url):
 	if customer_id:
 		ticketblob['customer_id'] = customer_id
 
-	# Only set customer_name if we know it
 	if customer_name:
 		ticketblob['customer_name'] = customer_name
+
+	if customer_url:
+		ticketblob['customer_url'] = customer_url
 
 	maybe_customer_details = ' '.join(  [ x for x in (customer_name,customer_id) if x is not None ]  )
 	if maybe_customer_details:
