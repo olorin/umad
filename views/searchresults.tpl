@@ -2,7 +2,8 @@
 		% if searchterm:
 			% if hits:
 				% # XXX: Push sanity futher up the stack
-				% for hit in hits:
+				% for i,hit in enumerate(hits):
+					% hit['result_number'] = i+1
 					% hit['other_metadata'] = dict(hit['other_metadata'])
 				% end
 
