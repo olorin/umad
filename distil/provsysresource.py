@@ -254,12 +254,13 @@ def blobify(url):
 
 	# A bit more specialised, we're not using supertype='Generic Chassis'
 	# because only certain chassis types are likely to be renamed.
-	# 8/9/51 = Rackmount/Desktop/Colocated
-	chassis_type_ids = [8, 9, 51]
+	# 8/9/32/51 = Rackmount/Desktop/Virtual/Colocated
+	chassis_type_ids = [8, 9, 32, 51]
 
 
 	# Check if we're dealing with a chassis (a physical one that might be
-	# renamed) and find all the OSes inside.
+	# renamed, or a virtual one that might be migrated) and find all the
+	# OSes inside.
 	if resource.type.id in chassis_type_ids:
 		debug("Resource {0} is a chassis, will find OSes contained within".format(resource_id))
 		this_chassis = resource
