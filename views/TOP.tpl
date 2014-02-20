@@ -21,7 +21,6 @@
 			hitcount.text( $(".result-card").length );
 		}
 
-		
 		function killResultsMatchingClass(resultClass) {
 			var cardSelector = ".result-card." + resultClass;
 			$( cardSelector ).fadeOut(1000, function() { $( cardSelector ).remove(); refreshHitcount(); });
@@ -57,7 +56,7 @@
 		//
 		// ❤❤❤❤❤❤❤❤❤ clickjacking because we love you ❤❤❤❤❤❤❤❤❤
 		//
-		function initEvilAnalytics() { 
+		function initEvilAnalytics() {
 			// Try to connect to the analytics websockets server
 			// This is to try and see if our results suck. It really doesn't
 			// matter if this stuff doesn't get through at all, or even if the
@@ -65,7 +64,7 @@
 			// the entire javascript
 			//
 			try {
-				evilAnalyticsSocket = new WebSocket("wss://"+document.location.hostname+":9876"); 
+				evilAnalyticsSocket = new WebSocket("wss://"+document.location.hostname+":9876");
 			} catch(e) {
 				console.log("Don't have websockets. Can't spy on ur clikz. DINOSAAAAAUR", e);
 				evilAnalyticsSocket = null;
@@ -80,7 +79,7 @@
 			if (evilAnalyticsSocket == null) return 1;
 			try {
 				evilAnalyticsSocket.send(stuff);
-			} catch(e) { 
+			} catch(e) {
 				console.log("umad totally loves your browser cause it has websockets but it couldn't send analytics. awwww man.", e);
 			}
 			1;
