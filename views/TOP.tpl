@@ -104,6 +104,23 @@
 			} catch(e) { console.log(e); }
 			1;
 		}
+		function evilUserReindex(hitObject) {
+			try {
+				now = new Date().getTime();
+				userClickCount = userClickOrder.push( hitObject['result_number'] );
+				umadEvilAnalytics(JSON.stringify({
+					'event': 'clickReindex',
+					'resultPageUUID': resultsUUID,
+					'searchTerm': {{ !json.dumps(searchterm) }},
+					'hitObject': hitObject,
+					'msFromLoadToClick': now - documentLoadTimestamp,
+					'timestamp': now / 1000,
+					'clickCountForPage': userClickCount,
+					'userClickOrder': userClickOrder
+				}));
+			} catch(e) { console.log(e); }
+			1;
+		}
 		function evilPageLeft(e) {
 			try {
 				now = new Date().getTime();
