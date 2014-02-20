@@ -161,6 +161,14 @@ li {
 	right: 0.75em;
 	color: #444444;
 }
+.result-card .reindex-button {
+	position: absolute;
+	bottom: 0.75em;
+	right: 2em;
+	color: #444444;
+	opacity: 0.5;
+}
+
 .result-card .doc-source-solo {
 	position: absolute;
 	top: 0em;
@@ -229,6 +237,12 @@ li {
 
 .result-card .metadata-button:hover span.lsf {
 	color: #5555ff;
+}
+.result-card .reindex-button:hover {
+	opacity: 1.0;
+}
+.result-card .reindex-button:hover span.lsf {
+	color: #39e639;
 }
 
 

@@ -8,6 +8,8 @@
 				%
 				% # Use json for encoding strings
 				% import json
+				% # For creating links to the umad-indexer
+				% from urllib import urlencode
 
 				<li class="result-card {{ highlight_class.encode('utf8') }}">
 				<div class="hitlink">
@@ -33,6 +35,11 @@
 				% end
 
 				<span class="excerpt">{{! extract.encode('utf8') }}</span><br />
+
+				<div class="reindex-button">
+					% umad_indexer_query_string = urlencode({'url':id.encode('utf8')})
+					<span class="lsf" title="Reindex this result"><a href="https://umad-indexer.anchor.net.au/?{{! umad_indexer_query_string }}" target="_blank">sync</a></span>
+				</div>
 
 				<div class="metadata-button">
 					<span class="lsf">tag</span>
