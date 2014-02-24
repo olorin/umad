@@ -8,21 +8,16 @@ from lxml import html
 # Plaintext-ify all the junk we get
 import html2text
 
+JUNK_CONTENT = []
+JUNK_CONTENT.append('  * Search\n\n  * Home\n  * All\n  * Files\n  * New\n  * Upload\n  * Rename\n  * Edit\n  * History')
+JUNK_CONTENT.append('  * Search\n\n  * Home\n  * All\n  * New\n  * Upload\n  * Rename\n  * Edit\n  * History') # womble stole the precious thing (Files)
 
-# XXX: constants go here
 
 class FailedToRetrievePage(Exception): pass
-
-def tidy_url(url):
-	"XXX: what's this for?"
-
-	return url
 
 def blobify(url):
 	MAPWIKI_USER = os.environ.get('MAPWIKI_USER', '')
 	MAPWIKI_PASS = os.environ.get('MAPWIKI_PASS', '')
-
-	url = tidy_url(url)
 
 	response = requests.get(url, auth=(MAPWIKI_USER, MAPWIKI_PASS))
 	try:
@@ -41,8 +36,8 @@ def blobify(url):
 	doc_tree = html.fromstring(response.text)
 	content = html2text.html2text(response.text)
 	# We could probably do this with lxml and some XPath, but meh
-	content = content.replace('  * Search\n\n  * Home\n  * All\n  * Files\n  * New\n  * Upload\n  * Rename\n  * Edit\n  * History', '')
-	content = content.replace('  * Search\n\n  * Home\n  * All\n  * New\n  * Upload\n  * Rename\n  * Edit\n  * History', '') # womble stole the precious thing (Files)
+	for JUNK in JUNK_CONTENT:
+		content = content.replace(JUNK, '')
 
 	# XXX: We're assuming here that all pages across all wikis are in a single index and namespace
 	# XXX: What if the page is empty? Might break a whole bunch of assumptions below this point.
