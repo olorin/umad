@@ -8,6 +8,11 @@ import json
 import requests
 
 
+# XXX: This distiller is obsolete and should be removed, it's doesn't do all
+# the nice things that the real RT distiller does, and isn't really needed now
+# that we have proper indexing infrastructure.
+
+
 class MissingAuthToken(Exception): pass
 
 
@@ -51,7 +56,7 @@ def fetch(url):
 		print >>sys.stderr, "There was an error, got HTTP response %s" % r.status_code
 		return
 
-	tickets = json.loads(r.content) # FIXME: add error-checking
+	tickets = json.loads(r.content) # XXX: add error-checking
 
 	# Index 'em
 	for ticket in tickets:
@@ -63,7 +68,7 @@ def fetch(url):
 		ticket_status  = ticket['status']
 
 		messages_response  = requests.get(ticket['ticket_messages_url'], verify=True, headers=headers)
-		messages = json.loads(messages_response.content) # FIXME: add error-checking
+		messages = json.loads(messages_response.content) # XXX: add error-checking
 		messages = [ clean_message(x) for x in messages ]
 
 		yield { 'url':ticket_url, 'subject':ticket_subject, 'status':ticket_status, 'messages':messages }

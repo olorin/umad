@@ -30,5 +30,3 @@ def blobify(url):
 		title = url
 
 	return [{ 'url':url, 'blob':content, 'title':title }]
-
-

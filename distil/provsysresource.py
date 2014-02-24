@@ -223,11 +223,11 @@ def os_to_document(os_resource):
 def blobify(url):
 	'''Example URL: https://resources.engineroom.anchor.net.au/resources/10150 '''
 
-	server.requester    = 'umad_tma'
+	server.requester    = 'umad_distiller'
 	server.uri          = 'https://resources.engineroom.anchor.net.au/'
-	server.user         = "script"
-	server.password     = "script"
-	server.apikey       = "Sysadmin convenience script"
+	server.user         = "someuser"
+	server.password     = "somepass"
+	server.apikey       = "umad_distiller"
 	server.ca_cert_file = None
 
 	# Get the resource

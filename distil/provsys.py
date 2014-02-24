@@ -7,6 +7,10 @@ import json
 from provisioningclient import *
 
 
+# XXX: This distiller is obsolete and should be removed, it's based on
+# searching provsys for matching names.
+
+
 def fetch(servername):
 	server.requester    = 'umad_tma'
 	server.uri          = 'https://resources.engineroom.anchor.net.au/'

@@ -5,6 +5,10 @@ import re
 import requests
 
 
+# XXX: Might be more sensible to treat Map pages like Gollum pages, and just
+# let the HTML-to-Markdown processor have at it.
+
+
 TITLE_RE           = re.compile(r'<<Title(\((.*)\))?>>')
 NON_TITLE_MACRO_RE = re.compile(r'<<(?!Title[(>])')
 WIKIWORD_RE        = re.compile(r'([a-z]+)([A-Z])')

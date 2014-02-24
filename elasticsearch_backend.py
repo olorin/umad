@@ -51,7 +51,7 @@ def add_to_index(key, document):
 
 # Useful for cleaning up mistakes when docs get indexed incorrectly, eg.:
 # >>> import elasticsearch_backend
-# >>> elasticsearch_backend.delete_from_index('https://rt.engineroom.anchor.net.au/Ticket/Display.html?id=123456')
+# >>> elasticsearch_backend.delete_from_index('https://docs.anchor.net.au/some/obsolete/page')
 def delete_from_index(url):
 	doc_type = determine_doc_type(url)
 	index_name = "umad_%s" % doc_type
@@ -66,6 +66,7 @@ def delete_from_index(url):
 	except elasticsearch.exceptions.NotFoundError as e:
 		pass
 
+	# XXX: nuke this one day
 	# Get rid of it from the legacy index as well
 	try:
 		es.delete(
@@ -88,7 +89,7 @@ def search_index(search_term, max_hits=MAX_HITS):
 	all_hits = []
 
 	# As a temporary local hack, query each index explicitly and perform our own ranking.
-	# Provsys ranks highest, then new gollum docs, then old Map wiki, then RT tickets.
+	# Goal: Provsys ranks highest, then new gollum docs, then old Map wiki, then RT tickets.
 	for backend in KNOWN_DOC_TYPES:
 		results = es.search(index="umad_{0}".format(backend), q=search_term, size=max_hits, df="blob", default_operator="AND")
 		hits = results['hits']['hits']
@@ -101,23 +102,25 @@ def search_index(search_term, max_hits=MAX_HITS):
 
 		all_hits += hits
 
+	# XXX: Do our own sorting and ranking here? Or roll it into the
+	# search() call once we figure out the full-blown JSON query syntax
+	# that ES uses.
+
 	return {'hits':all_hits, 'hit_limit':MAX_HITS}
 
-
-	# XXX: Do sorting and ranking here? Roll it into the search() call
 
 	# A hit looks like this:
 	# {
 	#     'other_metadata':
 	#         {
-	#             u'url':      u'https://resources.engineroom.anchor.net.au/resources/8737',
-	#             u'customer': u"Barney's colo 7828",
-	#             u'blob':     u"complete virtual machine jellyfish misaka squeeze debian barney's colo 7828",
-	#             u'name':     u'misaka'
+	#             u'url':      u'http://www.imdb.com/title/tt1319708/',
+	#             u'customer': u'Hyron',
+	#             u'blob':     u"I didn't ask for this",
+	#             u'name':     u'Deus Ex: Human Revolution'
 	#         },
 	#     'score': 0.095891505000000002,
-	#     'id':    u'https://resources.engineroom.anchor.net.au/resources/8737',
-	#     'blob':  u"complete virtual machine jellyfish misaka squeeze debian barney's colo 7828"
+	#     'id':    u'http://www.imdb.com/title/tt1319708/',
+	#     'blob':  u"I didn't ask for this"
 	# }
 
 
