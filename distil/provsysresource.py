@@ -225,8 +225,8 @@ def blobify(url):
 
 	server.requester    = 'umad_distiller'
 	server.uri          = 'https://resources.engineroom.anchor.net.au/'
-	server.user         = "someuser"
-	server.password     = "somepass"
+	server.user         = "script"
+	server.password     = "script"
 	server.apikey       = "umad_distiller"
 	server.ca_cert_file = None
 
