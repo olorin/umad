@@ -1,15 +1,13 @@
 		<div id="searchbox">
-			<a href="/?q=mad"><img src="/static/umad.png" style="border:0;" alt="UMAD logo"></a><br />
 
 			<form name="q" method="get" action="/" 
 % if searchterm:
 				onSubmit="evilSearchedAgain()"
 % end
 			>
-				<p id="searchform">
-					<input type="search" id="searchinput" name="q" placeholder="What be ye lookin' for?" value="{{ searchterm }}" autofocus="autofocus">
-					<input type="submit" value="Unearth Me A Document!">
-				</p>
+				<table id="searchform"><tr>
+					<td class="umadlogo-td"><a href="/?q=mad"><img src="/static/umad.png" class="umadlogo" style="border:0;" alt="UMAD logo"></a></td><td><input type="search" id="searchinput" name="q" placeholder="UMAD?" value="{{ searchterm }}" autofocus="autofocus"></td><td><input type="submit" id="searchbutton" class="lsf" value="search"></td>
+				</tr></table>
 			</form>
 
 			<div id="search-toggles">

@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title>UMAD?</title>
-	<link rel="stylesheet" href="/static/umad.css">
+	<link rel="stylesheet" href="/static/umad-responsive.css">
 
 	<script type="text/javascript">
 		var evilAnalyticsSocket;

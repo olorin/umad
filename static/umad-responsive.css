@@ -1,0 +1,83 @@
+@import url("umad.css");
+
+@media (max-width: 1024px) {
+
+body {
+	margin: 0em;
+}
+
+#container {
+	margin: 0em auto;
+	width: 100%;
+}
+
+#searchbox {
+	margin: 0em;
+	padding: 0.4em;
+}
+#searchform {
+	white-space: nowrap;
+	width: 100%;
+}
+#searchform td {
+	padding: 0em;
+	margin: 0em;
+}
+
+.umadlogo {
+	height: 1.1em;
+}
+#searchinput {
+	width: 100%;
+	padding: 0.5em;
+	height: 1.1em;
+	border: 1px solid silver;
+}
+
+#hitstats {
+	margin-top: 0em;
+	margin-bottom: 0em;
+	padding: 0.2em;
+}
+
+.document-score {
+	font-size: small;
+	opacity: 0.5;
+}
+
+ul#hits li {
+	margin: 0.5em 0em;
+}
+
+.result-card {
+	padding: 0.75em 3em 0.75em 1em;
+}
+
+#search-toggles {
+	position: static;
+	margin 0em auto;
+}
+#search-toggles .doc-type {
+	width: auto;
+	display: inline-block;
+	margin: 0.5em auto;
+}
+#search-toggles .doc-type span.right {
+	margin-left: 0.5em;
+}
+
+.highlight-red           { border-left: 5px solid red; }
+.highlight-miku          { border-left: 5px solid #3bb0b5; }
+.highlight-luka          { border-left: 5px solid #fb7fe2; }
+.highlight-portal-orange { border-left: 5px solid #f8b134; }
+.highlight-portal-blue   { border-left: 5px solid #34a8f9; }
+
+
+/* Documents' other metadata appears in a position:absolute bubble */
+.result-card .metadata-button .other-metadata {
+	width: 16em;
+	right: 2em;
+}
+
+
+} /* END MEDIA QUERY (max-width: 800px) */
