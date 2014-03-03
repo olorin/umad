@@ -85,13 +85,55 @@ def valid_search_query(search_term):
 	test_results = indices.validate_query(index=ELASTICSEARCH_SEARCH_INDEXES, q=search_term)
 	return test_results[u'valid']
 
+def type_boost(doctype, boost_factor):
+	return { "boost_factor": boost_factor, "filter": { "type": { "value": doctype } } }
+
+def linear_deweight_for_age(scale='28d'):
+	# We can mix this in for RT tickets and any documents with a "last_updated" field.
+	# The default decay factor is 0.5, meaning that the score is halved for every 28 days of age.
+	return { "gauss": { "last_updated": { "scale": scale } } }
+
 def search_index(search_term, max_hits=MAX_HITS):
 	all_hits = []
 
-	# As a temporary local hack, query each index explicitly and perform our own ranking.
-	# Goal: Provsys ranks highest, then new gollum docs, then old Map wiki, then RT tickets.
+	# Perform one query for each backend, because we might have tainted indices that we
+	# don't want to touch.
 	for backend in KNOWN_DOC_TYPES:
-		results = es.search(index="umad_{0}".format(backend), q=search_term, size=max_hits, df="blob", default_operator="AND")
+		q_dict = {
+			"query": {
+				"function_score": {
+					"functions": [
+						# This is a dummy boost, as ES complains if there are no functions to run.
+						{ "boost_factor": 1.0 },
+						# Goal: Provsys ranks highest, then new gollum docs, then old Map wiki, then RT tickets.
+						type_boost('provsys', 3.0),
+						type_boost('gollum',  2.0),
+						type_boost('map',     1.8),
+						# Funnel pages are low-value
+						{ "boost_factor": 0.5, "filter": { "query": { "query_string": { "query": "url:(Funnel AND Sales)" } } } },
+						# CSR Procedures are especially useful
+						{ "boost_factor": 2.5, "filter": { "query": { "query_string": { "query": "url:\"CustomerService/Procedures\"" } } } },
+					],
+					"query": {
+						"query_string": {
+							"query": search_term,
+							"default_operator": "and",
+							"fields": [ "title^1.5", "customer_name", "blob" ]
+						}
+					},
+					"score_mode": "multiply"
+				}
+			}
+		}
+
+		if backend == 'rt':
+			# We *should* be able to mix this in with a filter so that it only applies to rt documents,
+			# but that doesn't seem to work and all the non-rt shards complain.
+			q_dict['query']['function_score']['functions'].append(linear_deweight_for_age())
+			# Searching for RT ticket numbers is highly appropriate.
+			q_dict['query']['function_score']['query']['query_string']['fields'].append("local_id^3")
+
+		results = es.search(index="umad_{0}".format(backend), body=q_dict, size=max_hits)
 		hits = results['hits']['hits']
 		hits = [ {
 			'id':             x['_id'],
