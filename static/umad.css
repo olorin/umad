@@ -17,10 +17,32 @@ body {
 	border-radius: 10px;
 	position: relative;
 }
+#searchform {
+}
+#searchform td {
+}
 
+.umadlogo {
+	margin-left: 0.5em;
+	margin-right: 0.5em;
+}
+.umadlogo-td {
+	width: 1em; /* This will auto-expand */
+	vertical-align: middle;
+}
 #searchinput {
 	width: 390px;
 	padding: 3px;
+}
+#searchbutton {
+	font-size: large;
+	width: 100%;
+	padding-left: 1em;
+	padding-right: 1em;
+	height: 1.75em;
+	text-decoration: none !important;
+	background-color: #4387fd;
+	border: 1px solid silver;
 }
 
 #hitstats {
@@ -117,6 +139,11 @@ a {
 
 ul {
 	list-style-type: none;
+}
+
+ul#hits {
+	margin: 0em 0.25em 1em 0.25em;
+	padding-left: 0em;
 }
 
 ul#hits li {
