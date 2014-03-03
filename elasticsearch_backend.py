@@ -102,10 +102,6 @@ def search_index(search_term, max_hits=MAX_HITS):
 
 		all_hits += hits
 
-	# XXX: Do our own sorting and ranking here? Or roll it into the
-	# search() call once we figure out the full-blown JSON query syntax
-	# that ES uses.
-
 	return {'hits':all_hits, 'hit_limit':MAX_HITS}
 
 
