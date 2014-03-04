@@ -6,7 +6,7 @@
 % end
 			>
 				<table id="searchform"><tr>
-					<td class="umadlogo-td"><a href="/?q=mad"><img src="/static/umad.png" class="umadlogo" style="border:0;" alt="UMAD logo"></a></td><td><input type="search" id="searchinput" name="q" placeholder="UMAD?" value="{{ searchterm }}" autofocus="autofocus"></td><td><input type="submit" id="searchbutton" class="lsf" value="search"></td>
+					<td class="umadlogo-td"><a href="/?q=mad"><img src="/static/img/umad.png" class="umadlogo" style="border:0;" alt="UMAD logo"></a></td><td><input type="search" id="searchinput" name="q" placeholder="UMAD?" value="{{ searchterm }}" autofocus="autofocus"></td><td><input type="submit" id="searchbutton" class="lsf" value="search"></td>
 				</tr></table>
 			</form>
 

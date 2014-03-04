@@ -41,10 +41,10 @@ def highlight_document_source(url):
 
 
 
-@route('/static/<filename>')
-def server_static(filename):
+@route('/static/<filepath:path>')
+def server_static(filepath):
 	static_path = os.path.join( os.getcwd(), 'static' )
-	return static_file(filename, root=static_path)
+	return static_file(filepath, root=static_path)
 
 @route('/')
 @view('mainpage')

@@ -275,12 +275,12 @@ li {
 /* For Ligature font support: http://kudakurage.com/ligature_symbols/ */
 @font-face {
 	font-family: 'LigatureSymbols';
-	src: url('LigatureSymbols-2.11.eot');
-	src: url('LigatureSymbols-2.11.eot?#iefix') format('embedded-opentype'),
-	     url('LigatureSymbols-2.11.woff') format('woff'),
-	     url('LigatureSymbols-2.11.ttf') format('truetype'),
-	     url('LigatureSymbols-2.11.svg#LigatureSymbols') format('svg');
-	src: url('LigatureSymbols-2.11.ttf') format('truetype');
+	src: url('/static/font/LigatureSymbols-2.11.eot');
+	src: url('/static/font/LigatureSymbols-2.11.eot?#iefix') format('embedded-opentype'),
+	     url('/static/font/LigatureSymbols-2.11.woff') format('woff'),
+	     url('/static/font/LigatureSymbols-2.11.ttf') format('truetype'),
+	     url('/static/font/LigatureSymbols-2.11.svg#LigatureSymbols') format('svg');
+	src: url('/static/font/LigatureSymbols-2.11.ttf') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }
