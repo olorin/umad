@@ -6,7 +6,7 @@
 pull_deploy: pull restart
 
 pull:
-	git pull
+	git pull origin master
 
 restart:
 	sudo /usr/local/bin/allah restart umad_gunicorn
@@ -18,11 +18,13 @@ restart:
 
 # Acts on your local dev repo
 
-rollout: push kick_server
+rollout: checkout_master push kick_server
+
+checkout_master:
+	git checkout master
 
 push:
 	git push
 
 kick_server:
-	ssh umad.anchor.net.au -- sudo -u umad make -C /home/umad/app
-
+	ssh umad.anchor.net.au -- sudo -u umad make -C /home/umad/app pull_deploy
