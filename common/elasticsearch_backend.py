@@ -123,6 +123,21 @@ def search_index(search_term, max_hits=MAX_HITS):
 					},
 					"score_mode": "multiply"
 				}
+			},
+			"highlight": {
+				"pre_tags": [ "<strong><em>" ],
+				"post_tags": [ "</em></strong>" ],
+				# Pre-escape the highlight fragments treating them as HTML content, then slap our highlighting tags on
+				"encoder": "html",
+				"fields": {
+					"blob": {},
+					"excerpt": {
+						# Don't break down excerpt fields, they're ready-to-consume
+						"number_of_fragments": 0,
+						# Display 200 chars from the start of field if no highlights are found
+						"no_match_size": 200
+					}
+				}
 			}
 		}
 
@@ -139,7 +154,8 @@ def search_index(search_term, max_hits=MAX_HITS):
 			'id':             x['_id'],
 			'blob':           x['_source']['blob'],
 			'score':          x['_score'],
-			'other_metadata': [ (y,x['_source'][y]) for y in x['_source'] if y not in ('url','blob') ]
+			'other_metadata': [ (y,x['_source'][y]) for y in x['_source'] if y not in ('url','blob') ],
+			'highlight':      x['highlight']
 			} for x in hits ]
 
 		all_hits += hits
@@ -158,7 +174,12 @@ def search_index(search_term, max_hits=MAX_HITS):
 	#         },
 	#     'score': 0.095891505000000002,
 	#     'id':    u'http://www.imdb.com/title/tt1319708/',
-	#     'blob':  u"I didn't ask for this"
+	#     'blob':  u"I didn't ask for this",
+	#     'highlight':
+	#         {
+	#             u'blob':    [ "list", "of", "highlighted", "blob", "fragments" ],
+	#             u'excerpt': [ "singleton list of the excerpt, highlighted up" ],
+	#         }
 	# }
 
 
