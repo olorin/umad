@@ -113,7 +113,7 @@ def main(argv=None):
 			# inbetween, would result in the second update being
 			# ignored.
 			if resource_url != last_successful_enqueued_url:
-				r = requests.get(UMAD_INDEXER_URL, params={'url':resource_url}, verify='AnchorCA.pem')
+				r = requests.get(UMAD_INDEXER_URL, params={'url':resource_url})
 				if r.status_code == 200:
 					last_successful_enqueued_url = resource_url
 					debug("\tSuccess enqueueing {0}".format(resource_url))
