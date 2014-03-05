@@ -88,19 +88,14 @@ def search():
 			#     id
 			#     score
 			#     other_metadata
-			first_instance = doc['blob'].find( search_term.strip('"') )
-			debug("First instance of %s is at %s" % (search_term, first_instance))
-
-			start_offset = 0
-			if first_instance >= 0: # should never fail
-				start_offset = max(first_instance-100, 0)
+			#     highlight
 
 			# The extract *must* be safe for HTML inclusion, as we don't do further escaping later.
 			# We want this so we can do searchterm highlighting before passing it to the renderer.
 			hit = {}
 			hit['id'] = doc['id']
 			hit['score'] = "{0:.2f}".format(doc['score'])
-			hit['extract'] = query_re.sub(r'<strong>\1</strong>', cgi.escape(doc['blob'][start_offset:start_offset+400])  )
+			hit['extract'] = query_re.sub(r'<strong>\1</strong>', cgi.escape(doc['blob'][:400])  )
 			# But if we have an excerpt, use that in preference to formatting the blob
 			if 'other_metadata' in doc:
 				other_metadata = dict(doc['other_metadata'])
