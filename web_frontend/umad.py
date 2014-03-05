@@ -94,6 +94,10 @@ def search():
 			hit = {}
 			hit['id'] = doc['id']
 			hit['score'] = "{0:.2f}".format(doc['score'])
+
+			# XXX: We can probably assume at this stage that ES is always returning highlights now.
+			#      Test for presence of blob and excerpt, and use them.
+
 			hit['extract'] = cgi.escape(doc['blob'][:400])
 			# But if we have an excerpt, use that in preference to formatting the blob
 			if 'other_metadata' in doc:
