@@ -63,7 +63,6 @@ def search():
 
 	if q:
 		search_term = q
-		query_re = re.compile('('+search_term+')', re.IGNORECASE) # turn the search_term into a regex-group for later
 
 		# Pre-query validity check
 		template_dict['valid_search_query'] = valid_search_query(search_term)
@@ -90,17 +89,17 @@ def search():
 			#     other_metadata
 			#     highlight
 
-			# The extract *must* be safe for HTML inclusion, as we don't do further escaping later.
-			# We want this so we can do searchterm highlighting before passing it to the renderer.
+			# Elasticsearch pre-escapes HTML for us, before applying its highlight tags.
+			# We then pass this extract to the renderer, directing it not to escape HTML.
 			hit = {}
 			hit['id'] = doc['id']
 			hit['score'] = "{0:.2f}".format(doc['score'])
-			hit['extract'] = query_re.sub(r'<strong>\1</strong>', cgi.escape(doc['blob'][:400])  )
+			hit['extract'] = cgi.escape(doc['blob'][:400])
 			# But if we have an excerpt, use that in preference to formatting the blob
 			if 'other_metadata' in doc:
 				other_metadata = dict(doc['other_metadata'])
 				if 'excerpt' in other_metadata:
-					hit['extract'] = query_re.sub(r'<strong>\1</strong>', cgi.escape(  other_metadata['excerpt']  )  )
+					hit['extract'] = cgi.escape(other_metadata['excerpt'])
 				if 'last_updated' in other_metadata:
 					pretty_last_updated = parse(other_metadata['last_updated']).astimezone(tzlocal()).strftime('%Y-%m-%d %H:%M')
 					doc['other_metadata'].append( ('last_updated_sydney',pretty_last_updated)  )
