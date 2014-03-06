@@ -163,8 +163,8 @@ def search_index(search_term, max_hits=MAX_HITS):
 				}
 			},
 			"highlight": {
-				"pre_tags": [ "<strong><em>" ],
-				"post_tags": [ "</em></strong>" ],
+				"pre_tags": [ "<strong>" ],
+				"post_tags": [ "</strong>" ],
 				# Pre-escape the highlight fragments treating them as HTML content, then slap our highlighting tags on
 				"encoder": "html",
 				"fields": {
