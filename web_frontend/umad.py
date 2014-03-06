@@ -102,18 +102,28 @@ def search():
 			hit['id'] = doc['id']
 			hit['score'] = "{0:.2f}".format(doc['score'])
 
-			# XXX: We can probably assume at this stage that ES is always returning highlights now.
-			#      Test for presence of blob and excerpt, and use them.
+			# Should be safe to assume that ES is always returning highlights now.
+			# Test for presence of blob and excerpt, and use them.
+			#
+			# I've mixed feelings on how to present the highlight fragments. Google
+			# appears to present just one. We always get a list of highlights (up to 5),
+			# and could provide a couple of fragments like so:
+			#
+			#     extract = '&hellip;<br/>'.join(highlights)
+			#
+			# But, it's difficult to identify the breaks visually so I'm sticking
+			# with 1st-fragment for now.
+			if doc['highlight'].get('excerpt'): # None (False) if not present, or empty list (False), or populated list (True)
+				hit['extract'] = doc['highlight'].get('excerpt')[0]
+			elif doc['highlight'].get('blob'): # None (False) if not present, or empty list (False), or populated list (True)
+				hit['extract'] = doc['highlight'].get('blob')[0]
+			else:
+				hit['extract'] = cgi.escape(doc['blob'][:400])
 
-			hit['extract'] = cgi.escape(doc['blob'][:400])
-			# But if we have an excerpt, use that in preference to formatting the blob
-			if 'other_metadata' in doc:
-				other_metadata = dict(doc['other_metadata'])
-				if 'excerpt' in other_metadata:
-					hit['extract'] = cgi.escape(other_metadata['excerpt'])
-				if 'last_updated' in other_metadata:
-					pretty_last_updated = parse(other_metadata['last_updated']).astimezone(tzlocal()).strftime('%Y-%m-%d %H:%M')
-					doc['other_metadata'].append( ('last_updated_sydney',pretty_last_updated)  )
+			if 'last_updated' in doc['other_metadata']:
+				pretty_last_updated = parse(doc['other_metadata']['last_updated']).astimezone(tzlocal()).strftime('%Y-%m-%d %H:%M')
+				doc['other_metadata']['last_updated_sydney'] = pretty_last_updated
+
 			hit['highlight_class'] = highlight_document_source(doc['id'])[1]
 			if hit['highlight_class']: # test if not-empty
 				template_dict['doc_types_present'].add(highlight_document_source(doc['id']))
