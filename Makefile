@@ -8,6 +8,7 @@ pull_deploy: pull_production restart
 pull_production:
 	git checkout master
 	git pull
+	git pull --tags
 	git checkout production
 
 restart:
