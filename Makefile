@@ -28,6 +28,7 @@ checkout_master:
 
 push:
 	git push
+	git push --tags
 
 kick_server:
 	ssh umad.anchor.net.au -- sudo -u umad make -C /home/umad/app pull_deploy
