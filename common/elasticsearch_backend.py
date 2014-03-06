@@ -95,6 +95,9 @@ def linear_deweight_for_age(scale='28d'):
 
 def build_hit(doc):
 	source = doc['_source']
+	# XXX: Not sure under what circumstances this happens, but it's been seen
+	if not 'highlight' in doc:
+		doc['highlight'] = {}
 	hit = {
 		'id':             doc['_id'],
 		'score':          doc['_score'],
