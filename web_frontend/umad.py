@@ -85,11 +85,12 @@ def search():
 		result_docs.sort(key=itemgetter('score'), reverse=True)
 		for doc in result_docs:
 			# doc is a dictionary with keys:
-			#     blob
-			#     id
-			#     score
-			#     other_metadata
-			#     highlight
+			#     id		str
+			#     score		number
+			#     type		str
+			#     blob		str
+			#     other_metadata	dict
+			#     highlight		dict
 
 			# Elasticsearch pre-escapes HTML for us, before applying its highlight tags.
 			# We then pass this extract to the renderer, directing it not to escape HTML.
