@@ -3,10 +3,12 @@
 
 # Acts on the server
 
-pull_deploy: pull restart
+pull_deploy: pull_production restart
 
-pull:
-	git pull origin master
+pull_production:
+	git checkout master
+	git pull
+	git checkout production
 
 restart:
 	sudo /usr/local/bin/allah restart umad_gunicorn
