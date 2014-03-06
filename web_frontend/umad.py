@@ -92,6 +92,10 @@ def search():
 			#     other_metadata	dict
 			#     highlight		dict
 
+			# Don't display deleted RT tickets, bail out early.
+			if doc['type'] == 'rt' and doc['other_metadata'].get('status') == 'deleted':
+				continue
+
 			# Elasticsearch pre-escapes HTML for us, before applying its highlight tags.
 			# We then pass this extract to the renderer, directing it not to escape HTML.
 			hit = {}
@@ -124,11 +128,6 @@ def search():
 			# id:              A URL, used as HTML and as an attribute; let renderer escape it
 			# extract:         Arbitrary text, used as HTML; we escape it
 			# other_metadata:  Arbitrary text, let the renderer escape it
-
-			# Don't display the result if it's a deleted RT ticket.
-			sane_meta = dict(hit['other_metadata'])
-			if 'rt' in sane_meta and sane_meta.get('status') == 'deleted':
-				continue
 
 			template_dict['hits'].append(hit)
 
