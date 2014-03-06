@@ -3,6 +3,7 @@
 <head>
 	<title>UMAD?</title>
 	<link rel="stylesheet" href="/static/style/umad-responsive.css">
+	<link rel="search" type="application/opensearchdescription+xml" title="UMAD?" href="/umad-opensearch.xml">
 
 	<script type="text/javascript">
 		var evilAnalyticsSocket;

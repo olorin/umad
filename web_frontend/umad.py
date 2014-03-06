@@ -6,7 +6,7 @@ import cgi
 from optparse import OptionParser
 from operator import itemgetter
 
-from bottle import route, request, template, static_file, run, view, default_app
+from bottle import route, request, response, template, static_file, run, view, default_app
 
 from dateutil.parser import *
 from dateutil.tz import *
@@ -41,6 +41,39 @@ def highlight_document_source(url):
 
 	return ('DEFAULT', '')
 
+
+
+@route('/umad-opensearch.xml')
+def serve_opensearch_definition():
+	opensearch_template = '''<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>{{shortname}}</ShortName>
+  <Description>{{description}}</Description>
+  <Tags>{{tags}}</Tags>
+  <Contact>{{contact}}</Contact>
+  <Url type="text/html" 
+       template="{{search_root}}?q={searchTerms}&amp;count={count?}"/>
+  <Url type="application/opensearchdescription+xml" 
+       rel="self" 
+       template="{{search_root}}umad-opensearch.xml"/>
+  <Image type="image/x-icon" 
+         height="16" 
+         width="16">{{search_root}}static/img/badapple16.ico</Image>
+  <Image type="image/png" 
+         height="64" 
+         width="64">{{search_root}}static/img/badapple64.png</Image>
+</OpenSearchDescription>'''
+
+	search_root = '{0}://{1}/'.format(request['wsgi.url_scheme'], request['HTTP_HOST'])
+	opensearch_description = template(opensearch_template,
+		shortname='UMAD? ({0})'.format(request['SERVER_NAME']),
+		description='Ask about Anchor and ye shall receive.',
+		tags='anchor provsys rt tickets map wiki moin gollum docs',
+		contact='barney.desmond@anchor.net.au',
+		search_root=search_root)
+
+	response.content_type = 'application/opensearchdescription+xml'
+	return opensearch_description
 
 
 @route('/static/<filepath:path>')
