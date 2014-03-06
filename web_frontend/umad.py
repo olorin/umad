@@ -117,10 +117,8 @@ def search():
 			hit['highlight_class'] = highlight_document_source(doc['id'])[1]
 			if hit['highlight_class']: # test if not-empty
 				template_dict['doc_types_present'].add(highlight_document_source(doc['id']))
-			if 'other_metadata' in doc:
-				hit['other_metadata'] = doc['other_metadata'] # any other keys that the backend might provide
-			else:
-				hit['other_metadata'] = []
+
+			hit['other_metadata'] = doc['other_metadata'] # any other keys that the backend might provide
 
 			# More About Escaping, we have:
 			#
