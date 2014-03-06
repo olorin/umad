@@ -167,13 +167,15 @@ def search_index(search_term, max_hits=MAX_HITS):
 				"post_tags": [ "</strong>" ],
 				# Pre-escape the highlight fragments treating them as HTML content, then slap our highlighting tags on
 				"encoder": "html",
+				"fragment_size": 200,
 				"fields": {
-					"blob": {},
-					"excerpt": {
-						# Don't break down excerpt fields, they're ready-to-consume
-						"number_of_fragments": 0,
+					"blob": {
 						# Display 200 chars from the start of field if no highlights are found
 						"no_match_size": 200
+					},
+					"excerpt": {
+						# Don't break down excerpt fields, they're ready-to-consume
+						"number_of_fragments": 1
 					}
 				}
 			}
