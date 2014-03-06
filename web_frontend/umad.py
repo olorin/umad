@@ -125,7 +125,7 @@ def search():
 				doc['other_metadata']['last_updated_sydney'] = pretty_last_updated
 
 			hit['highlight_class'] = highlight_document_source(doc['id'])[1]
-			if hit['highlight_class']: # test if not-empty
+			if hit['highlight_class']:
 				template_dict['doc_types_present'].add(highlight_document_source(doc['id']))
 
 			hit['other_metadata'] = doc['other_metadata'] # any other keys that the backend might provide
@@ -134,6 +134,8 @@ def search():
 			#
 			# highlight_class: CSS identifier(?), used as an HTML attribute, please keep this sane and not requiring escaping; let renderer escape it
 			# id:              A URL, used as HTML and as an attribute; let renderer escape it
+			# score:           Numeric string
+			# type:            Simple text string
 			# extract:         Arbitrary text, used as HTML; we escape it
 			# other_metadata:  Arbitrary text, let the renderer escape it
 
