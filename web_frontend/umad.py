@@ -4,6 +4,8 @@ import re
 import cStringIO
 import cgi
 from optparse import OptionParser
+from operator import itemgetter
+
 from bottle import route, request, template, static_file, run, view, default_app
 
 from dateutil.parser import *
@@ -80,7 +82,7 @@ def search():
 		result_docs = [ x for x in result_docs if not x['id'].startswith('provsys://') ]
 
 		# Sort all results before presentation
-		result_docs.sort(key=lambda doc: doc['score'], reverse=True)
+		result_docs.sort(key=itemgetter('score'), reverse=True)
 		for doc in result_docs:
 			# doc is a dictionary with keys:
 			#     blob
