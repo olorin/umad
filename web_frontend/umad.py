@@ -51,8 +51,12 @@ def server_static(filepath):
 @route('/')
 @view('mainpage')
 def search():
-	q = request.query.q or ''
-	debug("Search term: %s" % q)
+	q     = request.query.q     or ''
+	count = request.query.count or MAX_HITS
+	# Some people are weird, yo
+	try: count = int(count)
+	except: count = MAX_HITS
+	debug("Search term: {0}, with count of {1}".format(q, count))
 
 	# Fill up a dictionary to pass to the templating engine. It expects the searchterm and a list of document-hits
 	template_dict = {}
@@ -73,7 +77,7 @@ def search():
 			return template_dict
 
 		# Search nao
-		results = search_index(search_term)
+		results = search_index(search_term, max_hits=count)
 		result_docs = results['hits']
 		template_dict['hit_limit'] = results['hit_limit']
 

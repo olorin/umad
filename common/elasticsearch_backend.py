@@ -131,7 +131,7 @@ def build_hit(doc):
 	return hit
 
 
-def search_index(search_term, max_hits=MAX_HITS):
+def search_index(search_term, max_hits=0):
 	all_hits = []
 
 	# Perform one query for each backend, because we might have tainted indices that we
@@ -188,13 +188,18 @@ def search_index(search_term, max_hits=MAX_HITS):
 			# Searching for RT ticket numbers is highly appropriate.
 			q_dict['query']['function_score']['query']['query_string']['fields'].append("local_id^3")
 
-		results = es.search(index="umad_{0}".format(backend), body=q_dict, size=max_hits)
+		idx_name = "umad_{0}".format
+		if max_hits:
+			results = es.search(index=idx_name(backend), body=q_dict, size=max_hits)
+		else:
+			results = es.search(index=idx_name(backend), body=q_dict) # ES defaults to 10
 		docs = results['hits']['hits']
 		hits = [ build_hit(doc) for doc in docs ]
 
 		all_hits += hits
 
-	return {'hits':all_hits, 'hit_limit':MAX_HITS}
+	# Would be nice to turn this section into yields, lose the hit_limit if we can get away without it
+	return {'hits':all_hits, 'hit_limit':max_hits}
 
 
 def get_from_index(url):
