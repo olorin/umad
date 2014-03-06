@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title>UMAD?</title>
-	<link rel="stylesheet" href="/static/umad-responsive.css">
+	<link rel="stylesheet" href="/static/style/umad-responsive.css">
 
 	<script type="text/javascript">
 		var evilAnalyticsSocket;
@@ -157,8 +157,8 @@
 		window.onbeforeunload = evilPageLeft;
 % end
 	</script>
-	<script src="/static/jquery-1.10.2.min.js"></script>
-	<script src="/static/jquery-base64.js"></script>
+	<script src="/static/js/jquery-1.10.2.min.js"></script>
+	<script src="/static/js/jquery-base64.js"></script>
 
 </head>
 

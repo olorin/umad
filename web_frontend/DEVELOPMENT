@@ -1,0 +1,10 @@
+Dependencies
+============
+
+You'll need the following Python dependencies installed:
+
+* elasticsearch - for connecting to your ElasticSearch cluster
+* bottle - for HTTP request routing and handling
+* dateutil - for timestamp mangling
+* pyScss - for CSS preprocessing
+* WSGI app container (optional)

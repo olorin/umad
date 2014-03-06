@@ -93,7 +93,45 @@ def linear_deweight_for_age(scale='28d'):
 	# The default decay factor is 0.5, meaning that the score is halved for every 28 days of age.
 	return { "gauss": { "last_updated": { "scale": scale } } }
 
-def search_index(search_term, max_hits=MAX_HITS):
+def build_hit(doc):
+	source = doc['_source']
+	hit = {
+		'id':             doc['_id'],
+		'score':          doc['_score'],
+		'type':           doc['_type'],
+		'blob':           source['blob'],
+		'other_metadata': source,
+		'highlight':      doc['highlight']
+	}
+	if 'url' in hit['other_metadata']:
+		del(hit['other_metadata']['url'])
+	if 'blob' in hit['other_metadata']:
+		del(hit['other_metadata']['blob'])
+
+	# A hit looks like this:
+	# {
+	#     'other_metadata':
+	#         {
+	#             u'url':      u'http://www.imdb.com/title/tt1319708/',
+	#             u'customer': u'Hyron',
+	#             u'blob':     u"I didn't ask for this",
+	#             u'name':     u'Deus Ex: Human Revolution'
+	#         },
+	#     'score': 0.095891505000000002,
+	#     'type':  u'quote_page',
+	#     'id':    u'http://www.imdb.com/title/tt1319708/',
+	#     'blob':  u"I didn't ask for this",
+	#     'highlight':
+	#         {
+	#             u'blob':    [ u"list", u"of", u"highlighted", u"blob", u"fragments" ],
+	#             u'excerpt': [ u"singleton list of the excerpt, highlighted up" ],
+	#         }
+	# }
+
+	return hit
+
+
+def search_index(search_term, max_hits=0):
 	all_hits = []
 
 	# Perform one query for each backend, because we might have tainted indices that we
@@ -123,6 +161,23 @@ def search_index(search_term, max_hits=MAX_HITS):
 					},
 					"score_mode": "multiply"
 				}
+			},
+			"highlight": {
+				"pre_tags": [ "<strong>" ],
+				"post_tags": [ "</strong>" ],
+				# Pre-escape the highlight fragments treating them as HTML content, then slap our highlighting tags on
+				"encoder": "html",
+				"fragment_size": 200,
+				"fields": {
+					"blob": {
+						# Display 200 chars from the start of field if no highlights are found
+						"no_match_size": 200
+					},
+					"excerpt": {
+						# Don't break down excerpt fields, they're ready-to-consume
+						"number_of_fragments": 1
+					}
+				}
 			}
 		}
 
@@ -133,33 +188,18 @@ def search_index(search_term, max_hits=MAX_HITS):
 			# Searching for RT ticket numbers is highly appropriate.
 			q_dict['query']['function_score']['query']['query_string']['fields'].append("local_id^3")
 
-		results = es.search(index="umad_{0}".format(backend), body=q_dict, size=max_hits)
-		hits = results['hits']['hits']
-		hits = [ {
-			'id':             x['_id'],
-			'blob':           x['_source']['blob'],
-			'score':          x['_score'],
-			'other_metadata': [ (y,x['_source'][y]) for y in x['_source'] if y not in ('url','blob') ]
-			} for x in hits ]
+		idx_name = "umad_{0}".format
+		if max_hits:
+			results = es.search(index=idx_name(backend), body=q_dict, size=max_hits)
+		else:
+			results = es.search(index=idx_name(backend), body=q_dict) # ES defaults to 10
+		docs = results['hits']['hits']
+		hits = [ build_hit(doc) for doc in docs ]
 
 		all_hits += hits
 
-	return {'hits':all_hits, 'hit_limit':MAX_HITS}
-
-
-	# A hit looks like this:
-	# {
-	#     'other_metadata':
-	#         {
-	#             u'url':      u'http://www.imdb.com/title/tt1319708/',
-	#             u'customer': u'Hyron',
-	#             u'blob':     u"I didn't ask for this",
-	#             u'name':     u'Deus Ex: Human Revolution'
-	#         },
-	#     'score': 0.095891505000000002,
-	#     'id':    u'http://www.imdb.com/title/tt1319708/',
-	#     'blob':  u"I didn't ask for this"
-	# }
+	# Would be nice to turn this section into yields, lose the hit_limit if we can get away without it
+	return {'hits':all_hits, 'hit_limit':max_hits}
 
 
 def get_from_index(url):
