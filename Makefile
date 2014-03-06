@@ -7,8 +7,8 @@ pull_deploy: pull_production restart
 
 pull_production:
 	git checkout master
+	git fetch --tags
 	git pull
-	git pull --tags
 	git checkout production
 
 restart:
