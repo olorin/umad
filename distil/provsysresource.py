@@ -286,6 +286,6 @@ def blobify(url):
 		yield os_to_document(os)
 
 	debug("Ready to index VLANs")
-	for os in vlans_to_index:
-		debug("Document'ing VLAN {0}".format(os.name))
-		yield vlan_to_document(os)
+	for vlan in vlans_to_index:
+		debug("Document'ing VLAN {0}".format(vlan.name))
+		yield vlan_to_document(vlan)
