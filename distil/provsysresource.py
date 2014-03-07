@@ -108,14 +108,16 @@ def os_to_document(os_resource):
 
 	location = None
 	chassis_config_summary = None
+	chassis_support_notes = None
 	if chassis is not None:
 		# Some resources aren't "sane", we can't rely on them being in
 		# a meaningful chassis and location.
 		chassis.load(with_fields=['name', 'type','container']) # override lazy loading
-		# "Virtual Machine" or "Rackmount Chassis"
+		# "Virtual Machine" or "Rackmount Chassis" or "Desktop Chassis"
 		chassistype = chassis.type.name
 		# Get the hardware specs as well, if available
 		chassis_config_summary = chassis.details.get('config_summary')
+		chassis_support_notes  = chassis.details.get('notes')
 
 		location = chassis.container
 		if location is not None:
@@ -193,6 +195,9 @@ def os_to_document(os_resource):
 	if support_notes:
 		server_yieldable['support_notes'] = support_notes
 		digest += ' '+support_notes
+	if chassis_support_notes:
+		server_yieldable['chassis_support_notes'] = chassis_support_notes
+		digest += ' '+chassis_support_notes
 
 	if lifecycle_status != 'Disposed':
 		excerpt = "{name} is a {support} {machinetype} in {container}, running {distro} {version} {os_wordsize}. ".format(**server_yieldable)
@@ -204,6 +209,11 @@ def os_to_document(os_resource):
 			excerpt += "Maintenance occurs every {maint_weekday} at {maint_time}. ".format(**server_yieldable)
 		if support_notes:
 			excerpt += "\nNotes: {support_notes} ".format(**server_yieldable)
+		if chassis_support_notes:
+			if support_notes:
+				excerpt += "\n{chassis_support_notes}".format(**server_yieldable)
+			else:
+				excerpt += "\nNotes: {chassis_support_notes} ".format(**server_yieldable)
 	else:
 		if 'distro' in server_yieldable:  del server_yieldable['distro']
 		if 'version' in server_yieldable: del server_yieldable['version']
