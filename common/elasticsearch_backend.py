@@ -95,7 +95,8 @@ def linear_deweight_for_age(scale='28d'):
 
 def build_hit(doc):
 	source = doc['_source']
-	# XXX: Not sure under what circumstances this happens, but it's been seen
+	# Highlight data is only present if the highlighter found something relevant.
+	# Fake it up if necessary so the later code can make clean assumptions.
 	if not 'highlight' in doc:
 		doc['highlight'] = {}
 	hit = {
@@ -172,10 +173,7 @@ def search_index(search_term, max_hits=0):
 				"encoder": "html",
 				"fragment_size": 200,
 				"fields": {
-					"blob": {
-						# Display 200 chars from the start of field if no highlights are found
-						"no_match_size": 200
-					},
+					"blob": {},
 					"excerpt": {
 						# Don't break down excerpt fields, they're ready-to-consume
 						"number_of_fragments": 1

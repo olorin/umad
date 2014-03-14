@@ -139,7 +139,7 @@ def search():
 			hit['id'] = doc['id']
 			hit['score'] = "{0:.2f}".format(doc['score'])
 
-			# Should be safe to assume that ES is always returning highlights now.
+			# ES always returns a highlight dict now, though it may be empty.
 			# Test for presence of blob and excerpt, and use them.
 			#
 			# I've mixed feelings on how to present the highlight fragments. Google
