@@ -155,7 +155,7 @@ def search():
 			elif doc['highlight'].get('blob'): # None (False) if not present, or empty list (False), or populated list (True)
 				hit['extract'] = doc['highlight'].get('blob')[0]
 			else:
-				hit['extract'] = cgi.escape(doc['blob'][:400])
+				hit['extract'] = cgi.escape(doc['blob'][:200])
 
 			if 'last_updated' in doc['other_metadata']:
 				pretty_last_updated = parse(doc['other_metadata']['last_updated']).astimezone(tzlocal()).strftime('%Y-%m-%d %H:%M')
