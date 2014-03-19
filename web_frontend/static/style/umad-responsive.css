@@ -76,6 +76,7 @@ ul#hits li {
 .result-card .metadata-button .other-metadata {
 	width: 16em;
 	right: 2em;
+	left: inherit;
 }
 
 
