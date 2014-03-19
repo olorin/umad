@@ -18,6 +18,8 @@ body {
 #searchform {
 	white-space: nowrap;
 	width: 100%;
+	border-collapse: collapse;
+	border-spacing: 0;
 }
 #searchform td {
 	padding: 0em;
