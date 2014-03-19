@@ -193,11 +193,13 @@ def os_to_document(os_resource):
 		server_yieldable['maint_time']     = "{maint_hour}:{maint_minute:02}".format(**server_yieldable)
 
 	if support_notes:
-		server_yieldable['support_notes'] = support_notes
-		digest += ' '+support_notes
+		# support_notes isn't absolutely guaranteed to be a string
+		server_yieldable['support_notes'] = str(support_notes)
+		digest += ' {0}'.format(support_notes)
 	if chassis_support_notes:
-		server_yieldable['chassis_support_notes'] = chassis_support_notes
-		digest += ' '+chassis_support_notes
+		# chassis_support_notes isn't absolutely guaranteed to be a string
+		server_yieldable['chassis_support_notes'] = str(chassis_support_notes)
+		digest += ' {0}'.format(chassis_support_notes)
 
 	if lifecycle_status != 'Disposed':
 		excerpt = "{name} is a {support} {machinetype} in {container}, running {distro} {version} {os_wordsize}. ".format(**server_yieldable)
