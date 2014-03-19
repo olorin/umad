@@ -7,6 +7,6 @@
 	versioning = ANCHOR-STANDARD-PRODUCTION
 	user = umad
 	host = trick60.syd1.anchor.net.au
-	command = cd /home/umad/app/ && git fetch --tags && git checkout %s && sudo /usr/local/bin/allah restart umad_gunicorn
+	command = cd /home/umad/app/ && git fetch --tags && git checkout %s && sudo /usr/local/bin/allah restart umad_gunicorn && sudo /usr/local/bin/allah restart umad-indexing-listener_gunicorn && sudo /usr/local/bin/allah restart umad-analytics-server && sudo /usr/local/bin/allah restart umad-indexing-worker && sudo /usr/local/bin/allah restart umad-provsys-auditlog-watcher
 
 # vim: syntax=gitconfig
