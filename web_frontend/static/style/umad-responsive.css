@@ -18,6 +18,8 @@ body {
 #searchform {
 	white-space: nowrap;
 	width: 100%;
+	border-collapse: collapse;
+	border-spacing: 0;
 }
 #searchform td {
 	padding: 0em;
@@ -25,13 +27,10 @@ body {
 }
 
 .umadlogo {
-	height: 1.1em;
+	height: 2em;
 }
 #searchinput {
 	width: 100%;
-	padding: 0.5em;
-	height: 1.1em;
-	border: 1px solid silver;
 }
 
 #hitstats {
