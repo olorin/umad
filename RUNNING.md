@@ -7,13 +7,8 @@ Call `distil_some_stuff.py`, feeding it URLs and file paths.
 Config
 ------
 
-You'll need a `localconfig.py`, this is not supplied in the codebase. It'll
-look something like this, just supply whatever variables are relevant for you.
-
-    ELASTICSEARCH_NODES = [ "your.fqdn.here:9200" ]
-    MAX_HITS = 50
-
-
+You'll need to setup your `localconfig.py`, a live example is included with the
+codebase. Define your document types and cluster address suitably.
 
 
 Searching
@@ -44,10 +39,13 @@ You can also just use bottle's builtin server, something like this:
 UMAD Indexer
 ============
 
-The indexer is composed of two components.
+The indexer is composed of multiple components.
 
 1. A listener daemon that receives notifications from systems and stuffs the URL in a Redis database.
 2. A worker daemon that pops URLs from the same database and indexes them.
+
+Your distiller plugins may also bring dependencies of their own.
+
 
 Requirements
 ------------
@@ -61,3 +59,19 @@ You will also need some Python libraries:
 * `lxml`
 * `provisioningclient`
 
+```
+pip install redis requests lxml
+```
+
+The provsys distiller will also need the `provisioningclient` library.
+
+```
+pip install provisioningclient
+```
+
+An interactive script for running one-shot indexing, `distil_some_stuff.py`, is
+included. It has a couple of dependencies for enhanced prettiness:
+
+```
+pip install colorama termcolor
+```
