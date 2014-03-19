@@ -25,21 +25,25 @@ body {
 .umadlogo {
   margin-left: 0.5em;
   margin-right: 0.5em;
+  vertical-align: middle;
 }
 .umadlogo-td {
   width: 1em; /* This will auto-expand */
-  vertical-align: middle;
 }
 #searchinput {
   width: 390px;
-  padding: 3px;
+	font-size: 100%;
+	height: 2em;
+  /*padding: 3px;*/
+	padding: 0.5em;
+	border: 1px solid silver;
 }
 #searchbutton {
-  font-size: large;
+	font-size: 100%;
+	height: 2em;
   width: 100%;
   padding-left: 1em;
   padding-right: 1em;
-  height: 1.75em;
   text-decoration: none !important;
   background-color: #4387fd;
   border: 1px solid silver;
