@@ -66,7 +66,7 @@ pip install redis requests lxml
 The provsys distiller will also need the `provisioningclient` library.
 
 ```
-pip install provisioningclient
+pip install --extra-index-url http://packages.engineroom.anchor.net.au/pypi/ provisioningclient
 ```
 
 An interactive script for running one-shot indexing, `distil_some_stuff.py`, is
