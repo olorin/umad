@@ -18,7 +18,7 @@
 					<pre class="search-example">rt:376603</pre></li>
 				<li>Perhaps a <a href="javascript:fillInSearchBox('_type:map SSL');">wiki result for SSL</a>
 					<pre class="search-example">_type:map SSL</pre></li>
-				<li>Or a server <a href="javascript:fillInSearchBox('customer:roosters');">belonging to the Roosters</a>
+				<li>Documents (servers/ticket/wiki) <a href="javascript:fillInSearchBox('customer:roosters');">pertaining to the Roosters</a>
 					<pre class="search-example">customer:roosters</pre>
 				</li>
 				<li>Tickets that <a href="javascript:fillInSearchBox('realname:&quot;Matthias Oertli&quot; dell');">Matthias has had a hand in, with Dell</a>
