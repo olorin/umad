@@ -137,6 +137,7 @@ def blobify(url):
 	ticket_subject     = ticket['subject']
 	ticket_status      = ticket['status']
 	ticket_queue       = ticket['queue']
+	ticket_category    = ticket['category']
 	ticket_priority    = ticket['priority']
 	ticket_lastupdated = ticket['lastupdated']
 	customer_visible   = True if not ticket['private'] else False
@@ -231,6 +232,7 @@ def blobify(url):
 	# - ticket_subject (string)
 	# - ticket_status (string)
 	# - ticket_queue (string)
+	# - ticket_category (string)
 	# - ticket_priority (int)
 	# - messages (iterable of dicts)
 	# - public_messages (iterable of dicts)
@@ -269,6 +271,7 @@ def blobify(url):
 		'subject':          ticket_subject,
 		'status':           ticket_status,
 		'queue':            ticket_queue,
+		'category':         ticket_category,
 		'priority':         ticket_priority,
 		'realname':         realnames,
 		'email':            emails,
