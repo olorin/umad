@@ -35,7 +35,7 @@ Ghetto mode
 
 You can also just use bottle's builtin server, something like this:
 
-    python umad.py -b 192.168.0.1 -p 8080
+   cd web_frontend; python umad.py -b 192.168.0.1 -p 8080
 
 
 
