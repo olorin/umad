@@ -16,8 +16,8 @@
 					<pre class="search-example">_type:rt email:matt.palmer@anchor.com.au</pre></li>
 				<li>Or a particular ticket number, <a href="javascript:fillInSearchBox('rt:376603');">376603</a>
 					<pre class="search-example">rt:376603</pre></li>
-				<li>Perhaps a <a href="javascript:fillInSearchBox('_type:map SSL');">wiki result for SSL</a>
-					<pre class="search-example">_type:map SSL</pre></li>
+				<li>Perhaps a <a href="javascript:fillInSearchBox('map:SSL');">wiki result for SSL</a>
+					<pre class="search-example">map:SSL</pre></li>
 				<li>Documents (servers/ticket/wiki) <a href="javascript:fillInSearchBox('customer:roosters');">pertaining to the Roosters</a>
 					<pre class="search-example">customer:roosters</pre>
 				</li>
