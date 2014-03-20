@@ -165,7 +165,11 @@ def search():
 			if hit['highlight_class']:
 				template_dict['doc_types_present'].add(highlight_document_source(doc['id']))
 
-			hit['other_metadata'] = doc['other_metadata'] # any other keys that the backend might provide
+			# Any other keys that the backend might provide
+			hit['other_metadata'] = doc['other_metadata']
+			# Filter out any metadata keys with a value of None
+			# (we've seen this on RT tickets' "Category" field).
+			hit['other_metadata'] = dict((k,v) for k,v in hit['other_metadata'].iteritems() if v is not None)
 
 			# More About Escaping, we have:
 			#
