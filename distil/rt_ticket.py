@@ -137,7 +137,7 @@ def blobify(url):
 	ticket_subject     = ticket['subject']
 	ticket_status      = ticket['status']
 	ticket_queue       = ticket['queue']
-	ticket_category    = ticket['category']
+	ticket_category    = ticket['category'] # Unlike some other fields, this can be None
 	ticket_priority    = ticket['priority']
 	ticket_lastupdated = ticket['lastupdated']
 	customer_visible   = True if not ticket['private'] else False
@@ -232,7 +232,7 @@ def blobify(url):
 	# - ticket_subject (string)
 	# - ticket_status (string)
 	# - ticket_queue (string)
-	# - ticket_category (string)
+	# - ticket_category (string or None)
 	# - ticket_priority (int)
 	# - messages (iterable of dicts)
 	# - public_messages (iterable of dicts)
@@ -271,13 +271,16 @@ def blobify(url):
 		'subject':          ticket_subject,
 		'status':           ticket_status,
 		'queue':            ticket_queue,
-		'category':         ticket_category,
 		'priority':         ticket_priority,
 		'realname':         realnames,
 		'email':            emails,
 		'last_updated':     ticket_lastupdated,
 		'customer_visible': customer_visible,
 		}
+
+	# Only set category if it's meaningful
+	if ticket_category:
+		ticketblob['category'] = ticket_category
 
 	# Only set public_blob if we've got it
 	if public_blob:
