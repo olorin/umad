@@ -24,33 +24,42 @@ debug("Debug logging is enabled")
 
 
 
-@route('/')
+@route('/', method=['GET','DELETE'])
 def index():
 	url = request.query.url or ''
 	debug(u"URL to index: %s" % url)
 
 	if not url:
-		abort(400, "Y U DO DIS? I can't index this url: '{0}'".format(url))
+		human_method = { 'GET':"index", 'DELETE':"delete" }.get(request.method, 'something-something-action')
+		abort(400, "Y U DO DIS? I can't {0} something unless you give me 'url' as a query parameter".format(human_method))
+
+	human_action = { 'GET':"indexing", 'DELETE':"deletion" }.get(request.method, 'something-something-action')
 
 	try:
+		if request.method == 'DELETE':
+			queue_name  = 'umad_deletion_queue'
+			barber_name = 'barber_deletion' # Not sure if we need a separate signalling channel, but it shouldn't hurt
+		else:
+			queue_name  = 'umad_indexing_queue'
+			barber_name = 'barber'
+
 		# Throw URLs into Redis. We're using this idiom to provide what is
 		# effectively a "BSPOP" (blocking pop from a set), on a sorted set.
 		# cf. Event Notification: http://redis.io/commands/blpop
 		# I-It's not like I wanted the set to be sorted or anything! I'm
 		# keeping input timestamps, just so you know.
 		pipeline = teh_redis.pipeline()
-		pipeline.zadd('umad_indexing_queue', time.time(), url)
-		pipeline.lpush('barber', 'dummy_value')
+		pipeline.zadd(queue_name, time.time(), url)
+		pipeline.lpush(barber_name, 'dummy_value')
 		pipeline.execute() # will return something like:   [ {0|1}, num_dummies ]
-		debug(u"Successful insertion of %s" % url)
+		debug(u"Successful insertion of {0} for {1}".format(url, human_action))
 	except Exception as e:
 		abort(500, "Something went boom: {0}".format(e))
 
 
-	return u"Success, enqueued URL for indexing: '{0}'".format(url)
+	return u"Success, enqueued URL for {0}: '{1}'".format(human_action, url)
 
 
 
 # For encapsulating in a WSGI container
 application = default_app()
-
