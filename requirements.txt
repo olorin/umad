@@ -1,0 +1,21 @@
+# pip install -r requirements.txt
+
+# These are the requirements for all UMAD components as shipped. Not all of
+# them will be necessary for your installation. provisioningclient in
+# particular is very Anchor-specific, you can ditch that and the provsys
+# distillers.
+
+bottle>=0.12
+chardet
+elasticsearch
+lxml
+
+python-dateutil
+redis
+requests
+
+--extra-index-url http://packages.engineroom.anchor.net.au/pypi/
+provisioningclient
+
+colorama
+termcolor

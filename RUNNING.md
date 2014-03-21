@@ -50,28 +50,17 @@ Your distiller plugins may also bring dependencies of their own.
 Requirements
 ------------
 
-You will need the Redis server running somewhere, ideally the same host that's running the indexing daemons.
+You will need the Redis server running somewhere, ideally the same host that's
+running the indexing daemons.
 
-You will also need some Python libraries:
+You will need some Python libraries, listed in `requirements.txt`. The easiest
+way to install the libraries is to use pip to handle dependencies:
 
-* Redis bindings (`redis-py`)
-* `requests`
-* `lxml`
-* `provisioningclient`
+    pip install -r requirements.txt
 
-```
-pip install redis requests lxml
-```
-
-The provsys distiller will also need the `provisioningclient` library.
-
-```
-pip install --extra-index-url http://packages.engineroom.anchor.net.au/pypi/ provisioningclient
-```
+The provsys distiller needs the `provisioningclient` library. If this doesn't
+apply to you, remove the applicable lines from `requirements.txt`
 
 An interactive script for running one-shot indexing, `distil_some_stuff.py`, is
-included. It has a couple of dependencies for enhanced prettiness:
-
-```
-pip install colorama termcolor
-```
+included. Its dependencies, *colorama* and *termcolor*, can also be removed from
+`requirements.txt` if you don't make use of it.
