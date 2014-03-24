@@ -39,10 +39,8 @@ def index():
 	try:
 		if request.method == 'DELETE':
 			queue_name  = 'umad_deletion_queue'
-			barber_name = 'barber_deletion' # Not sure if we need a separate signalling channel, but it shouldn't hurt
 		else:
 			queue_name  = 'umad_indexing_queue'
-			barber_name = 'barber'
 
 		# Throw URLs into Redis. We're using this idiom to provide what is
 		# effectively a "BSPOP" (blocking pop from a set), on a sorted set.
@@ -51,7 +49,7 @@ def index():
 		# keeping input timestamps, just so you know.
 		pipeline = teh_redis.pipeline()
 		pipeline.zadd(queue_name, time.time(), url)
-		pipeline.lpush(barber_name, 'dummy_value')
+		pipeline.lpush('barber', 'dummy_value')
 		pipeline.execute() # will return something like:   [ {0|1}, num_dummies ]
 		debug(u"Successful insertion of {0} for {1}".format(url, human_action))
 	except Exception as e:
