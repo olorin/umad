@@ -27,7 +27,7 @@ debug("Debug logging is enabled")
 
 def index(url):
 	#debug("-" * len("URL: %s" % url))
-	debug("URL: %s" % url)
+	debug("URL to index: {0}".format(url))
 	#debug("-" * len("URL: %s" % url))
 
 	d = distil.Distiller(url)
@@ -57,6 +57,15 @@ def index(url):
 		debug("")
 
 
+def delete(url):
+	debug("URL to delete: {0}".format(url))
+	try:
+		delete_from_index(url)
+	except Exception as e:
+		mention("Failed to delete {0} from index: {1}".format(url, e) )
+	else:
+		mention("Deleted {0} from index".format(url) )
+
 
 
 def main(argv=None):
@@ -69,6 +78,21 @@ def main(argv=None):
 			# Get URLs out of Redis. We're using this idiom to provide what is
 			# effectively a "BSPOP" (blocking pop from a set), on a sorted set.
 			# cf. Event Notification: http://redis.io/commands/blpop
+
+			# Process deletions
+			while True:
+				pipeline = teh_redis.pipeline()
+				pipeline.zrange('umad_deletion_queue', 0, 0)
+				pipeline.zremrangebyrank('umad_deletion_queue', 0, 0)
+				(urls, urlcount) = pipeline.execute() # Should return:  [ [maybe_single_url], {0|1} ]
+
+				if not urls:
+					break
+				url = urls[0]
+
+				delete(url)
+
+			# Process additions/updates
 			while True:
 				pipeline = teh_redis.pipeline()
 				pipeline.zrange('umad_indexing_queue', 0, 0)
