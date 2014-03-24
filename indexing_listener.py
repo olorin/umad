@@ -1,10 +1,11 @@
 import sys
 import os
 import time
+from optparse import OptionParser
 
 import redis
 
-from bottle import route, request, default_app, abort
+from bottle import route, request, run, default_app, abort
 
 
 teh_redis = redis.StrictRedis(host='localhost', port=6379, db=0)
@@ -63,3 +64,24 @@ def index():
 
 # For encapsulating in a WSGI container
 application = default_app()
+
+
+def main(argv=None):
+	if argv is None:
+		argv = sys.argv
+
+	parser = OptionParser()
+	parser.add_option("--verbose", "-v", dest="debug", action="store_true", default=False,       help="Log exactly what's happening")
+	parser.add_option("--bind", "-b",    dest="bind_host",                  default='localhost', help="Hostname/IP to listen on, [default: %default]")
+	parser.add_option("--port", "-p",    dest="bind_port", type="int",      default=8081,        help="Port number to listen on, [default: %default]")
+	(options, search_terms) = parser.parse_args(args=argv)
+
+	global DEBUG
+	DEBUG = options.debug
+
+	run(host=options.bind_host, port=options.bind_port, debug=True)
+
+	return 0
+
+if __name__ == "__main__":
+	sys.exit(main())
