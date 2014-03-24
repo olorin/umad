@@ -15,8 +15,9 @@ class BadUrl(Exception): pass
 class NoUrlHandler(Exception): pass
 
 class Distiller(object):
-	def __init__(self, url):
+	def __init__(self, url, indexer_url=None):
 		self.url = url
+		self.indexer_url = indexer_url
 		self.fetcher = None
 		self.docs = [] # Each element looks like:  { 'url':"foo", 'blob':"bar" }
 
@@ -68,5 +69,6 @@ class Distiller(object):
 
 
 	def blobify(self):
+		# XXX: Pass self.indexer_url through to each blobify function.
+		# XXX: Should probably be properly-OO and have each distiller subclass this basic distiller.
 		self.docs = self.fetcher.blobify(self.url)
-

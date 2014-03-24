@@ -23,14 +23,15 @@ DEBUG = True
 PID_PREFIX = '[pid {0}] '.format(os.getpid())
 debug("Debug logging is enabled")
 
+UMAD_INDEXER_URL = os.environ.get('UMAD_INDEXER_URL', 'https://umad-indexer.anchor.net.au/')
+debug("UMAD indexer is located at: {0}".format(UMAD_INDEXER_URL))
+
 
 
 def index(url):
-	#debug("-" * len("URL: %s" % url))
 	debug("URL to index: {0}".format(url))
-	#debug("-" * len("URL: %s" % url))
 
-	d = distil.Distiller(url)
+	d = distil.Distiller(url, indexer_url=UMAD_INDEXER_URL)
 
 	for doc in d.docs:
 		if doc is None:
