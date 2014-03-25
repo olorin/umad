@@ -218,6 +218,9 @@ li {
 .highlight-portal-blue {
   border-left: 3px solid #34a8f9;
 }
+.highlight-lavender {
+  border-left: 3px solid #b57edc;
+}
 .result-card .metadata-button .other-metadata {
   position: absolute;
   width: 20em;

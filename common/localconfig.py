@@ -1,6 +1,6 @@
 # Make sure to add your new doc_types to this list as well as to
 # `determine_doc_type` below.
-KNOWN_DOC_TYPES = [ 'provsys', 'docs', 'map', 'rt' ]
+KNOWN_DOC_TYPES = [ 'provsys', 'docs', 'map', 'rt', 'customer' ]
 
 
 # Define this function yourself, remember to add doc_types to the list above.
@@ -16,6 +16,9 @@ def determine_doc_type(url):
 
 	if url.startswith('https://docs.anchor.net.au/'):
 		return "docs"
+
+	if url.startswith('https://customer.api.anchor.com.au/customers/'):
+		return "customer"
 
 	# This must return UNTYPED if everything else fails
 	# XXX: actually, index names must apparently be lowercase, so this is invalid

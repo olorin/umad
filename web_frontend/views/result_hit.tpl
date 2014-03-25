@@ -4,6 +4,7 @@
 				% highlight_classes_to_doctypes['highlight-portal-blue'] = "gollum docs"
 				% highlight_classes_to_doctypes['highlight-luka'] = "RT tickets"
 				% highlight_classes_to_doctypes['highlight-miku'] = "Map wiki pages"
+				% highlight_classes_to_doctypes['highlight-lavender'] = "customers"
 				% highlight_classes_to_doctypes[''] = "documents of unknown origin"
 				%
 				% # Use json for encoding strings
