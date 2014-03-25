@@ -8,7 +8,7 @@ import provsysservers
 import provsysvlans
 import provsysresource
 import provsys
-import customer 
+import customer
 
 
 class BadUrl(Exception): pass
@@ -57,7 +57,7 @@ class Distiller(object):
 			elif url.startswith('provsys://'):
 				self.fetcher = provsys
 			
-                        elif url.startswith('https://customer.api.anchor.com.au/customers/'):
+			elif url.startswith('https://customer.api.anchor.com.au/customers/'):
 				self.fetcher = customer
 
 			elif url.startswith( ('http://', 'https://') ):
