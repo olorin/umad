@@ -8,6 +8,7 @@ import provsysservers
 import provsysvlans
 import provsysresource
 import provsys
+import customer 
 
 
 class BadUrl(Exception): pass
@@ -55,6 +56,10 @@ class Distiller(object):
 				self.fetcher = provsysresource
 			elif url.startswith('provsys://'):
 				self.fetcher = provsys
+			
+                        elif url.startswith('https://customer.api.anchor.com.au/customers/'):
+				self.fetcher = customer
+
 			elif url.startswith( ('http://', 'https://') ):
 				self.fetcher = http_generic
 			elif url.startswith('file:///'):
