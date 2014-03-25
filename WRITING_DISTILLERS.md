@@ -87,4 +87,14 @@ Hello World distiller
       elif url.startswith('hello://'):
           self.fetcher = helloworld
 
+3. Tell UMAD how to recognise the new document type, this unfortunately
+   requires some duplication of effort and code. Add something like the
+   following to your `localconfig.py`
 
+      # Add to KNOWN_DOC_TYPES
+      KNOWN_DOC_TYPES.append('newtype')
+
+      # Add a detection case in determine_doc_type()
+      ...
+      if url.startswith('https://newtype.api.example.com/'):
+          return "newtype"
